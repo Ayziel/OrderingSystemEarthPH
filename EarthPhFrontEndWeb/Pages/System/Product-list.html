@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!----======== CSS ======== -->
+    <link rel="stylesheet" href="./styles/style.css">
+     
+    <!----===== Icons ===== -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <title>EarthPH</title>
+</head>
+<body>
+    <!-- navbar -->
+    <nav class="navbar">
+      <div class="logo_item">
+        <i class="bx bx-menu" id="sidebarOpen"></i>
+        <!-- <img src="images/logo.png" alt=""> --></i>EarthPH
+      </div>
+      <div class="search_bar">
+        <input type="text" placeholder="Search" />
+      </div>
+      <div class="navbar_content">
+        <i class="bi bi-grid"></i>
+        <i class='' id="darkLight"></i>
+        <i class='bx bx-bell' ></i>
+        <img src="images/profile.jpg" alt="" class="profile" />
+      </div>
+    </nav>
+    <!-- sidebar -->
+    <nav class="sidebar">
+      <div class="menu_content">
+        <ul class="menu_items">
+          <!-- duplicate or remove this li tag if you want to add or remove navlink with submenu -->
+          <!-- start -->
+          <li class="item">
+            <a href="index.html" class="nav_link">
+              <span class="navlink_icon">
+                <i class="bx bx-grid-alt"></i>
+              </span>
+              <span class="navlink">Dashboard</span>
+            </a>
+          </li>
+          <!-- end -->
+          <!-- duplicate this li tag if you want to add or remove  navlink with submenu -->
+          <!-- start -->
+          <li class="item">
+            <div href="Orders-Day.html" class="nav_link submenu_item">
+              <span class="navlink_icon">
+                </i><i class='bx bx-cart-alt'></i>
+              </span>
+              <span class="navlink">Orders</span>
+              <i class="bx bx-chevron-right arrow-left"></i>
+              
+            </div>
+            <ul class="menu_items submenu">
+                <a href="Orders-Day.html" class="nav_link sublink">Day</a>
+                <a href="Orders-Week.html" class="nav_link sublink">Week</a>
+                <a href="Orders-Month.html" class="nav_link sublink">Month</a>
+                <a href="All-Orders.html" class="nav_link sublink">All Orders</a>
+            </ul>
+          </li>
+          <li class="item">
+            <div href="#" class="nav_link submenu_item">
+              <span class="navlink_icon">
+                <i class='bx bx-store-alt' ></i>
+              </span>
+              <span class="navlink">Stores</span>
+              <i class="bx bx-chevron-right arrow-left"></i>
+            </div>
+            <ul class="menu_items submenu">
+              <a href="Stores-Barangay.html" class="nav_link sublink">Barangay</a>
+              <a href="All-Stores.html" class="nav_link sublink">All stores</a>
+              <a href="Product-list.html" class="nav_link sublink">Products</a>
+            </ul>
+          </li>
+          <li class="item">
+            <div href="#" class="nav_link submenu_item">
+              <span class="navlink_icon">
+                <i class='bx bx-support'></i>
+              </span>
+              <span class="navlink">Agents</span>
+              <i class="bx bx-chevron-right arrow-left"></i>
+            </div>
+            <ul class="menu_items submenu">
+                <a href="Agent-Name.html" class="nav_link sublink">By Name</a>
+                <a href="Agent-Leader.html" class="nav_link sublink">By Team Leader</a>
+            </ul>
+          </li>
+          <li class="item">
+            <div href="#" class="nav_link submenu_item">
+              <span class="navlink_icon">
+                <i class='bx bx-user' ></i>
+              </span>
+              <span class="navlink">Admin
+              </span>
+              <i class="bx bx-chevron-right arrow-left"></i>
+            </div>
+            <ul class="menu_items submenu">
+              <a href="Add-Agent.html" class="nav_link sublink">Add Agent</a>
+              <a href="Add-Product.html" class="nav_link sublink">Add Products</a>
+            </ul>
+          </li>
+          <!-- end -->
+        </ul>
+        
+        <!-- Sidebar Open / Close -->
+        <div class="bottom_content">
+          <div class="bottom expand_sidebar">
+            <span> Expand</span>
+            <i class='bx bx-log-in' ></i>
+          </div>
+          <div class="bottom collapse_sidebar">
+            <span> Collapse</span>
+            <i class='bx bx-log-out'></i>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+<!-- Product Table -->
+<div class="dash-content" style="margin-left: 200px; margin-top: 180px; padding: 0px 100px;">
+  <div class="activity">
+      <div class="title">
+          <span class="text">All Products</span>
+      </div>
+
+      <!-- Table for Products -->
+      <table class="product-table">
+          <thead>
+              <tr>
+                  <th>ID</th>
+                  <th>Product</th>
+                  <th>Description</th>
+                  <th>Brand</th>
+                  <th>Price</th>
+              </tr>
+          </thead>
+          <tbody id="product-list">
+              <!-- Rows will be dynamically populated -->
+          </tbody>
+      </table>
+  </div>
+</div>
+
+<!-- Modal Specific to Product -->
+<div id="modal-product" class="modal-product">
+  <div class="modal-product-content">
+      <span class="close-product">&times;</span>
+      <h2>Product Details</h2>
+      <p><strong>Name:</strong> <span id="modal-product-name"></span></p>
+      <p><strong>Description:</strong> <span id="modal-product-description"></span></p>
+      <p><strong>Brand:</strong> <span id="modal-product-brand"></span></p>
+      <p><strong>Price:</strong> <span id="modal-product-price"></span></p>
+  </div>
+</div>
+
+    
+  
+  
+  
+    
+
+    <script src="./scripts/script.js"></script>
+    <script src="./scripts/productList.js"></script>
+</body>
+</html>

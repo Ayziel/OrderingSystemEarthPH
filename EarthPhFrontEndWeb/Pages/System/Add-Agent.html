@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!----======== CSS ======== -->
+    <link rel="stylesheet" href="./styles/style.css">
+     
+    <!----===== Icons ===== -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <title>EarthPH</title>
+</head>
+<body>
+    <!-- navbar -->
+    <nav class="navbar">
+      <div class="logo_item">
+        <i class="bx bx-menu" id="sidebarOpen"></i>
+        <!-- <img src="images/logo.png" alt=""> --></i>EarthPH
+      </div>
+      <div class="search_bar">
+        <input type="text" placeholder="Search" />
+      </div>
+      <div class="navbar_content">
+        <i class="bi bi-grid"></i>
+        <i class='' id="darkLight"></i>
+        <i class='bx bx-bell' ></i>
+        <img src="images/profile.jpg" alt="" class="profile" />
+      </div>
+    </nav>
+    <!-- sidebar -->
+    <nav class="sidebar">
+      <div class="menu_content">
+        <ul class="menu_items">
+          <!-- duplicate or remove this li tag if you want to add or remove navlink with submenu -->
+          <!-- start -->
+          <li class="item">
+            <a href="index.html" class="nav_link">
+              <span class="navlink_icon">
+                <i class="bx bx-grid-alt"></i>
+              </span>
+              <span class="navlink">Dashboard</span>
+            </a>
+          </li>
+
+          <li class="item">
+            <div href="Orders-Day.html" class="nav_link submenu_item">
+              <span class="navlink_icon">
+                </i><i class='bx bx-cart-alt'></i>
+              </span>
+              <span class="navlink">Orders</span>
+              <i class="bx bx-chevron-right arrow-left"></i>
+              
+            </div>
+            <ul class="menu_items submenu">
+              <a href="Orders-Day.html" class="nav_link sublink">Day</a>
+              <a href="Orders-Week.html" class="nav_link sublink">Week</a>
+              <a href="Orders-Month.html" class="nav_link sublink">Month</a>
+              <a href="All-Orders.html" class="nav_link sublink">All Orders</a>
+            </ul>
+          </li>
+          <li class="item">
+            <div href="#" class="nav_link submenu_item">
+              <span class="navlink_icon">
+                <i class='bx bx-store-alt' ></i>
+              </span>
+              <span class="navlink">Stores</span>
+              <i class="bx bx-chevron-right arrow-left"></i>
+            </div>
+            <ul class="menu_items submenu">
+                <a href="Stores-Barangay.html" class="nav_link sublink">Barangay</a>
+                <a href="All-Stores.html" class="nav_link sublink">All stores</a>
+                <a href="Product-list.html" class="nav_link sublink">Products</a>
+            </ul>
+          </li>
+          <li class="item">
+            <div href="#" class="nav_link submenu_item">
+              <span class="navlink_icon">
+                <i class='bx bx-support'></i>
+              </span>
+              <span class="navlink">Agents</span>
+              <i class="bx bx-chevron-right arrow-left"></i>
+            </div>
+            <ul class="menu_items submenu">
+                <a href="Agent-Name.html" class="nav_link sublink">By Name</a>
+                <a href="Agent-Leader.html" class="nav_link sublink">By Team Leader</a>
+            </ul>
+          </li>
+          <li class="item">
+            <div href="#" class="nav_link submenu_item">
+              <span class="navlink_icon">
+                <i class='bx bx-user' ></i>
+              </span>
+              <span class="navlink">Admin
+              </span>
+              <i class="bx bx-chevron-right arrow-left"></i>
+            </div>
+            <ul class="menu_items submenu">
+              <a href="Add-Agent.html" class="nav_link sublink">Add Agent</a>
+              <a href="Add-Product.html" class="nav_link sublink">Add Products</a>
+            </ul>
+          </li>
+          <!-- end -->
+        </ul>
+        
+        <!-- Sidebar Open / Close -->
+        <div class="bottom_content">
+          <div class="bottom expand_sidebar">
+            <span> Expand</span>
+            <i class='bx bx-log-in' ></i>
+          </div>
+          <div class="bottom collapse_sidebar">
+            <span> Collapse</span>
+            <i class='bx bx-log-out'></i>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <section class="dashboard">
+        <div class="dash-content">
+            <div class="activity">
+                <div class="title">
+                    <span class="text"><i class='bx bxs-user-account' ></i>
+                        Add Agent
+                    </span>
+                </div>
+        
+                <form action="#" class="form" id="userForm">
+                  <div class="column">
+                    <div class="input-box">
+                      <label>First Name</label>
+                      <input type="text" id="firstName" placeholder="Enter first name" required />
+                    </div>
+                    <div class="input-box">
+                      <label>Last Name</label>
+                      <input type="text" id="lastName" placeholder="Enter last name" required />
+                    </div>
+                  </div>
+                  
+                  <div class="column">
+                    <div class="input-box">
+                      <label>Phone Number</label>
+                      <input type="number" id="phoneNumber" placeholder="Enter phone number" required />
+                    </div>
+                    <div class="input-box">
+                      <label>Work Phone</label>
+                      <input type="number" id="workPhone" placeholder="Enter work phone" required />
+                    </div>
+                  </div>
+                
+                  <div class="input-box">
+                    <label>Email Address</label>
+                    <input type="email" id="email" placeholder="Enter email address" required />
+                  </div>
+                
+                  <div class="input-box address">
+                    <label>Team</label>
+                    <div class="column">
+                      <div class="select-box">
+                        <select id="team" required>
+                          <option hidden>Select a team</option>
+                          <option value="Alpha">Alpha</option>
+                          <option value="Betta">Betta</option>
+                          <option value="Delta">Delta</option>
+                          <option value="Gamma">Gamma</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                
+                  <button type="submit">Submit</button>
+                </form>
+                
+        </div>
+    </section>
+
+    <script src="./scripts/script.js"></script>    
+    <script src="./scripts/addAgent.js"></script>  
+</body>
+</html>
