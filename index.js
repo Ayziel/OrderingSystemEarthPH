@@ -17,7 +17,7 @@ app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/earthph')
+mongoose.connect('mongodb://Earthphsdev:Earthphsdev@194.233.79.169:5002/')
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
