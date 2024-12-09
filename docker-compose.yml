@@ -1,0 +1,23 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"  # Map container's port 5001 to your local machine's port
+    volumes:
+      - .:/app  # Sync local files with the container
+      - /app/node_modules  # Avoid overriding node_modules
+    environment:
+      - MONGO_URL=mongodb://db:27017/earthph  # Connect to MongoDB container using its service name 'db'
+
+  db:
+    image: mongo:5.0  # MongoDB image
+    container_name: mongo
+    ports:
+      - "27017:27017"  # Expose MongoDB on port 27017
+    volumes:
+      - mongodb_data:/data/db  # Persist MongoDB data to volume
+
+volumes:
+  mongodb_data:
