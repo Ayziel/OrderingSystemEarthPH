@@ -6,6 +6,7 @@ let sales = 0;
 let stores = 0;
 let customers = 0;
 let agents = 0;
+let topSales = [];
 
 // Function to update the progress bar, percentage, and item name dynamically
 // Function to update the progress bar, percentage, and item name dynamically
@@ -30,89 +31,6 @@ function updateProgress(index, itemName, percentage) {
     }
 }
 
-// Example: Dynamically update the progress bars for all 5 items
-
- 
-
-// Dashboard 1 Morris-chart
-$(function () {
-    "use strict";
-
-    // Extra chart
-    Morris.Area({
-        element: 'extra-area-chart',
-        data: [
-            {
-                period: '2000',
-                iphone: 12,
-                imac: 5,
-                ibook: 23,
-                samsung: 34,
-                android: 56
-            },
-            {
-                period: '2002',
-                iphone: 25,
-                imac: 38,
-                ibook: 47,
-                samsung: 50,
-                android: 62
-            },
-            {
-                period: '2003',
-                iphone: 60,
-                imac: 55,
-                ibook: 75,
-                samsung: 65,
-                android: 40
-            },
-            {
-                period: '2004',
-                iphone: 43,
-                imac: 20,
-                ibook: 15,
-                samsung: 35,
-                android: 28
-            },
-            {
-                period: '2005',
-                iphone: 70,
-                imac: 65,
-                ibook: 55,
-                samsung: 10,
-                android: 90
-            },
-            {
-                period: '2006',
-                iphone: 34,
-                imac: 50,
-                ibook: 40,
-                samsung: 60,
-                android: 75
-            },
-            {
-                period: '2007',
-                iphone: 25,
-                imac: 12,
-                ibook: 30,
-                samsung: 10,
-                android: 85
-            }
-        ],
-        lineColors: ['#26DAD2', '#fc6180', '#62d1f3', '#ffb64d', '#4680ff'],
-        xkey: 'period',
-        ykeys: ['iphone', 'imac', 'ibook', 'samsung', 'android'],
-        labels: ['iphone', 'imac', 'ibook', 'samsung', 'android'],
-        pointSize: 0,
-        lineWidth: 0,
-        resize: true,
-        fillOpacity: 0.8,
-        behaveLikeLine: true,
-        gridLineColor: '#e0e0e0',
-        hideHover: 'auto'
-    });
-});
-
 document.addEventListener('DOMContentLoaded', () => {
     fetchOrders();
 });
@@ -134,9 +52,6 @@ function fetchOrders() {
             }
 
             const { totalSales, sales, productSales } = processOrders(orders);
-
-            console.log(`Total Sales: ₱${totalSales.toFixed(2)}`);
-            console.log(`Total Quantity Sold: ${sales}`);
 
             const sortedProducts = sortAndDisplayTopProducts(productSales);
 
@@ -180,14 +95,13 @@ function sortAndDisplayTopProducts(productSales) {
     const sortedProducts = Object.entries(productSales)
         .sort((a, b) => b[1].quantity - a[1].quantity)
         .slice(0, 5);
-
-    console.log("Top 5 Products Sold:");
     sortedProducts.forEach(([name, { id, quantity }], index) => {
-        console.log(`${index + 1}. ${name} (ID: ${id}) - Quantity Sold: ${quantity}`);
     });
-
+    topSales = sortedProducts;
+    chart()
     return sortedProducts;
 }
+
 
 // Function to update the UI with the total sales, quantity sold, and top products
 function updateUI(totalSales, sales) {
@@ -198,7 +112,6 @@ function updateUI(totalSales, sales) {
 }
 
 // Function to update the progress bars for the top 5 products
-// Function to update progress bars and percentage text
 // Function to update progress bars and percentage text
 function updateProgress(id, productName, percentage) {
     const progressBar = document.getElementById("top" + id + "Progress");
@@ -225,8 +138,6 @@ function updateProgress(id, productName, percentage) {
     } else {
         console.error(`Item element for top${id} not found.`);
     }
-
-    console.log("percentage", percentage)
 }
 
 // Function to update progress bars for sorted products
@@ -247,8 +158,6 @@ function updateProgressBars(sortedProducts, sales) {
 }
 
 
-
-// Fetch the users data from the server
 // Function to fetch users and log the count
 function fetchUsers() {
     fetch('http://localhost:5001/users/getUsers')
@@ -260,7 +169,6 @@ function fetchUsers() {
         })
         .then(data => {
             agents = data.users.length; // Store the number of agents in the global variable
-            console.log(`Number of users: ${agents}`);
         })
         .catch(error => {
             console.error('Error fetching data:', error);
@@ -271,3 +179,380 @@ function fetchUsers() {
 // Call the fetchUsers function
 fetchUsers();
 
+
+// #region Dashboard Chart 
+// function chart() {
+//     fetch('http://localhost:5001/chartData/getChartData')
+//         .then(response => {
+//             if (!response.ok) {
+//                 console.error(`HTTP error! status: ${response.status}`);
+//                 throw new Error(`HTTP error! status: ${response.status}`);
+//             }
+//             return response.json();
+//         })
+//         .then(chartData => {
+//             if (!chartData || chartData.length === 0) {
+//                 console.log('No chart data found.');
+//                 return;
+//             }
+
+//             // Generate labels dynamically for the current month and the last 5 months
+//             const labels = Array.from({ length: 6 }, (_, i) => {
+//                 const date = new Date();
+//                 date.setMonth(date.getMonth() - (5 - i)); // Get last 6 months including current month
+//                 const month = date.toLocaleString('default', { month: 'long' }); // Get the full month name
+//                 const year = date.getFullYear(); // Get the year
+//                 return `${month} ${year}`; // Month and Year (e.g., December 2024)
+//             });
+
+//             console.log("chartData", chartData); // Debugging the chart data
+
+//             // Collect the items and their corresponding sales data
+//             const itemSalesData = [];
+
+//             chartData.forEach(item => {
+//                 item.itemSales.forEach(sale => {
+//                     // Parse the saleDate string into a Date object
+//                     const saleDate = new Date(sale.saleDate);
+//                     const saleMonth = saleDate.getMonth(); // Get the month index (0-11)
+//                     const saleYear = saleDate.getFullYear(); // Get the year (e.g., 2024)
+
+//                     // Determine the current month and year
+//                     const currentDate = new Date();
+//                     const currentMonth = currentDate.getMonth(); // Current month index (0-11)
+//                     const currentYear = currentDate.getFullYear(); // Current year
+
+//                     // Compare the sale's month and year to determine its position in the labels array
+//                     let monthIndex = -1;
+//                     for (let i = 0; i < 6; i++) {
+//                         const targetDate = new Date();
+//                         targetDate.setMonth(currentMonth - (5 - i)); // Calculate the target month
+//                         if (saleYear === targetDate.getFullYear() && saleMonth === targetDate.getMonth()) {
+//                             monthIndex = i;
+//                             break;
+//                         }
+//                     }
+
+//                     // Skip sales that are outside of the last 6 months
+//                     if (monthIndex === -1) return;
+
+//                     // Check if the item already exists in the itemSalesData array
+//                     const existingItem = itemSalesData.find(i => i.label === sale.itemName);
+//                     if (existingItem) {
+//                         // Update the existing item data by adding the total quantity for the sale month
+//                         existingItem.data[monthIndex] += sale.totalQuantity;
+//                     } else {
+//                         // Create a new entry for the item with zero values for each month
+//                         const newItem = {
+//                             label: sale.itemName,
+//                             data: Array(6).fill(0), // Initialize all months with 0 sales
+//                         };
+//                         // Add the sale quantity for the sale month
+//                         newItem.data[monthIndex] = sale.totalQuantity;
+//                         itemSalesData.push(newItem);
+//                     }
+//                 });
+//             });
+
+//             console.log(itemSalesData); // To debug and see the generated data
+
+//             var ctx = document.getElementById('myLineChart').getContext('2d');
+
+//             var myLineChart = new Chart(ctx, {
+//                 type: 'line',
+//                 data: {
+//                     labels, // Use dynamically generated labels (months)
+//                     datasets: itemSalesData.map((item, index) => ({
+//                         label: item.label,
+//                         data: item.data,
+//                         borderColor: getBorderColor(index),
+//                         backgroundColor: getBackgroundColor(index),
+//                         borderWidth: 2,
+//                         tension: 0.4
+//                     }))
+//                 },
+//                 options: {
+//                     responsive: true,
+//                     scales: {
+//                         y: {
+//                             beginAtZero: true
+//                         }
+//                     },
+//                     plugins: {
+//                         legend: {
+//                             display: true,
+//                             position: 'top'
+//                         },
+//                         tooltip: {
+//                             enabled: true
+//                         }
+//                     }
+//                 }
+//             });
+//         })
+//         .catch(error => {
+//             console.error('Error fetching chart data:', error);
+//         });
+// }
+
+
+
+// Function to generate a random color (can be customized)
+
+
+function chart() {
+    // Hardcoded sample data for the last 6 months
+    const labels = ['November 2024', 'October 2024', 'September 2024', 'August 2024', 'July 2024', 'June 2024'];
+    
+    const itemSalesData = [
+        {
+            label: 'Item A',
+            data: [25, 30, 45, 50, 35, 40], // Sales data for the last 6 months
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        },
+        {
+            label: 'Item B',
+            data: [40, 60, 55, 70, 65, 80],
+            borderColor: 'rgba(153, 102, 255, 1)',
+            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+        },
+        {
+            label: 'Item C',
+            data: [15, 25, 20, 40, 45, 50],
+            borderColor: 'rgba(255, 159, 64, 1)',
+            backgroundColor: 'rgba(255, 159, 64, 0.2)',
+        }
+    ];
+
+    console.log(itemSalesData); // To debug and see the generated data
+
+    var ctx = document.getElementById('myLineChart').getContext('2d');
+
+    var myLineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels, // Use hardcoded labels (months)
+            datasets: itemSalesData.map((item) => ({
+                label: item.label,
+                data: item.data,
+                borderColor: item.borderColor,
+                backgroundColor: item.backgroundColor,
+                borderWidth: 2,
+                tension: 0.4
+            }))
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    enabled: true
+                }
+            }
+        }
+    });
+}
+
+
+function getBorderColor(index) {
+    const colors = [
+        'rgba(0, 123, 255, 1)', // Blue
+        'rgba(255, 99, 132, 1)', // Red
+        'rgba(75, 192, 192, 1)', // Green
+        'rgba(153, 102, 255, 1)', // Purple
+        'rgba(255, 159, 64, 1)',  // Orange
+        'rgba(54, 162, 235, 1)'   // Light blue
+    ];
+    return colors[index % colors.length]; // Cycle through colors
+}
+
+// Function to generate a light background color (can be customized)
+function getBackgroundColor(index) {
+    const colors = [
+        'rgba(0, 123, 255, 0.2)', 
+        'rgba(255, 99, 132, 0.2)', 
+        'rgba(75, 192, 192, 0.2)', 
+        'rgba(153, 102, 255, 0.2)', 
+        'rgba(255, 159, 64, 0.2)', 
+        'rgba(54, 162, 235, 0.2)'
+    ];
+    return colors[index % colors.length]; // Cycle through colors
+}
+let myLineChart;
+// Process and send order data function
+function processAndSendOrderData() {
+    fetch('http://localhost:5001/orders/getOrders')
+        .then(response => {
+            if (!response.ok) {
+                console.error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(orders => {
+            if (!orders || orders.length === 0) {
+                console.log('No orders found.');
+                return;
+            }
+
+            // Process orders
+            const today = new Date().toISOString().split('T')[0];
+            const todaysOrders = orders.filter(order => {
+                const orderDate = new Date(order.orderDate).toISOString().split('T')[0];
+                return orderDate === today;
+            });
+
+            if (todaysOrders.length === 0) {
+                console.log('No orders from today.');
+                return;
+            }
+
+            // Aggregate data
+            const aggregatedData = todaysOrders.reduce((acc, order) => {
+                acc.totalSales += order.totalAmount;
+                acc.totalAmount += order.totalAmount;
+                acc.totalItems += order.totalItems;
+                acc.totalDiscount += order.discount;
+                acc.totalOrders += 1;
+
+                // Aggregate item data (if any)
+                order.products.forEach(product => {
+                    const totalProductAmount = product.price * product.quantity;
+
+                    // Add item sales to itemSales array
+                    acc.itemSales.push({
+                        itemName: product.name,
+                        saleDate: today,
+                        totalAmount: totalProductAmount,
+                        Quantity: product.quantity,
+                        totalQuantity: product.quantity  // Add the totalQuantity field here
+                    });
+                });
+
+                return acc;
+            }, {
+                totalSales: 0,
+                totalAmount: 0,
+                totalItems: 0,
+                totalDiscount: 0,
+                totalOrders: 0,
+                itemSales: []
+            });
+
+            // Sort the item sales array by totalAmount and get the top 5
+            const top5Items = aggregatedData.itemSales
+                .sort((a, b) => b.totalAmount - a.totalAmount) // Sort by total amount in descending order
+                .slice(0, 5);  // Take top 5 items
+
+            const chartData = {
+                date: today,
+                totalSales: aggregatedData.totalSales,
+                totalAmount: aggregatedData.totalAmount,
+                totalItems: aggregatedData.totalItems,
+                totalDiscount: aggregatedData.totalDiscount,
+                totalOrders: aggregatedData.totalOrders,
+                itemSales: top5Items // Only send the top 5 items
+            };
+
+            console.log("Sending chart data:", chartData);  // Log the data being sent
+
+            // Send aggregated data to backend
+            fetch('http://localhost:5001/chartData/createChartData', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(chartData)  // Send the full chart data, including item sales
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Chart data saved successfully:', data);
+            })
+            .catch(error => console.error('Error saving chart data:', error));
+        })
+        .catch(error => console.error('Error fetching orders:', error));
+
+    
+}
+// Update chart with new data
+function updateChart(aggregatedData) {
+    // Check if the chart exists and update it
+    if (myLineChart) {
+        myLineChart.data.labels.push(aggregatedData.date); // Add the new date to the chart labels
+
+        // Update the chart with new total sales data
+        myLineChart.data.datasets[0].data.push(aggregatedData.totalSales);
+
+        // Update the item sales dataset
+        myLineChart.data.datasets[1] = {
+            label: 'Top 5 Item Sales', // Adding new dataset for top 5 item sales
+            data: aggregatedData.itemSales.map(item => item.totalAmount), // Use the top 5 item sales
+            borderColor: 'rgba(153, 102, 255, 1)',
+            tension: 0.1,
+            fill: false
+        };
+
+        myLineChart.update(); // Update the chart to reflect changes
+    } else {
+        // If chart does not exist, create a new chart
+        createChart(aggregatedData);
+    }
+}
+// Create a new chart (if not already created)
+function createChart(aggregatedData) {
+    const ctx = document.getElementById('myLineChart').getContext('2d');
+    myLineChart = new Chart(ctx, { // Create the chart
+        type: 'line', // Example chart type
+        data: {
+            labels: [aggregatedData.date], // Date labels
+            datasets: [{
+                label: 'Total Sales',
+                data: [aggregatedData.totalSales],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                tension: 0.1
+            },
+            {
+                label: 'Top 5 Item Sales',
+                data: aggregatedData.itemSales.map(item => item.totalAmount), // Use the top 5 item sales
+                borderColor: 'rgba(153, 102, 255, 1)',
+                tension: 0.1,
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return `$${tooltipItem.raw.toFixed(2)}`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+// Add event listener to the button
+document.getElementById('updateChart').addEventListener('click', function() {
+    processAndSendOrderData();  // Call your function to process the order data
+
+    // Reload the page after 3 seconds (3000 milliseconds)
+    setTimeout(function() {
+        location.reload();
+    }, 3000);  // Delay in milliseconds (3 seconds)
+});
+
+// #endregion

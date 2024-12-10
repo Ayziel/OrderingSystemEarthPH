@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const userRoutes = require('./EarthPhBackEndServer/routes/userRoutes');
 const orderRoutes = require('./EarthPhBackEndServer/routes/orderRoutes');
 const productRoutes = require('./EarthPhBackEndServer/routes/productRoutes');
+const chartDataRoutes = require('./EarthPhBackEndServer/routes/chartDataRoutes');
 // const storeRoutes = require('./EarthPhBackEndServer/routes/storeRoutes');
 
 const app = express();
@@ -36,6 +37,8 @@ app.get('/', (req, res) => {
 app.use('/users', userRoutes);
 app.use('/orders', orderRoutes); 
 app.use('/products', productRoutes);
+app.use('/chartData', chartDataRoutes);
+
 // app.use('/stores', storeRoutes);
 
 // Start the server

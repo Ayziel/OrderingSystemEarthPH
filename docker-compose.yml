@@ -15,7 +15,7 @@ services:
     image: mongo:5.0  # MongoDB image
     container_name: mongo
     ports:
-      - "27017:27017"  # Expose MongoDB on port 27017
+      - "27018:27017"  # Expose MongoDB on port 27017
     volumes:
       - mongodb_data:/data/db  # Persist MongoDB data to volume
 
