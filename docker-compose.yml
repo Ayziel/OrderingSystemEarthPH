@@ -3,22 +3,24 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: app_earthph  # Updated container name
+    container_name: app_earthph # Updated container name
     ports:
-      - "5001:5001"  # Map container's port 5001 to your local machine's port
+      - "5001:5001" # Map container's port 5001 to your local machine's port 5001
     volumes:
-      - .:/app  # Sync local files with the container
-      - /app/node_modules  # Avoid overriding node_modules
+      - .:/app # Sync local files with the container
+      - /app/node_modules # Avoid overriding node_modules
     environment:
-      - MONGO_URL=mongodb://db:27017/earthph  # Connect to MongoDB container using its service name 'db'
+      - MONGO_URL=mongodb://db:27017/earthph # Connect to MongoDB container using its service name 'db'
+    depends_on:
+      - db # Ensure the app service waits for the db service to be ready
 
   db:
-    image: mongo:5.0  # MongoDB image
-    container_name: db_earthph  # Updated container name
+    image: mongo:5.0 # MongoDB image
+    container_name: db_earthph # Updated container name
     ports:
-      - "27018:27017"  # Expose MongoDB on port 27017
+      - "27018:27017" # Expose MongoDB container's port 27017 to the host's port 27018
     volumes:
-      - mongodb_earthph_data:/data/db  # Persist MongoDB data to volume
+      - mongodb_earthph_data:/data/db # Persist MongoDB data to volume
 
 volumes:
   mongodb_earthph_data:
