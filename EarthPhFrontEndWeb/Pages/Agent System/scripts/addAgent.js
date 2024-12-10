@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const userData = { firstName, lastName, phoneNumber, workPhone, email, team };
 
         try {
-            const response = await fetch('http://localhost:5001/users/createUser', {
+            const response = await fetch('https://earthph.sdevtech.com.ph/users/createUser', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

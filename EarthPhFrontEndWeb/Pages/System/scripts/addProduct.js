@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const response = await fetch('http://localhost:5001/products/createProduct', {
+            const response = await fetch('https://earthph.sdevtech.com.ph/products/createProduct', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

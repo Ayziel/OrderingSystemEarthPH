@@ -4,7 +4,7 @@ function truncateText(text, maxLength) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    fetch('http://localhost:5001/products/getProduct') // Corrected route
+    fetch('https://earthph.sdevtech.com.ph/products/getProduct') // Corrected route
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

@@ -1,5 +1,5 @@
 // Fetch the users data from the server
-fetch('http://localhost:5001/users/getUsers')
+fetch('https://earthph.sdevtech.com.ph/users/getUsers')
     .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');

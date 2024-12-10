@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Function to fetch orders and process them
 // Main function to fetch orders
 function fetchOrders() {
-    fetch('http://localhost:5001/orders/getOrders')
+    fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -160,7 +160,7 @@ function updateProgressBars(sortedProducts, sales) {
 
 // Function to fetch users and log the count
 function fetchUsers() {
-    fetch('http://localhost:5001/users/getUsers')
+    fetch('https://earthph.sdevtech.com.ph/users/getUsers')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -182,7 +182,7 @@ fetchUsers();
 
 // #region Dashboard Chart 
 // function chart() {
-//     fetch('http://localhost:5001/chartData/getChartData')
+//     fetch('https://earthph.sdevtech.com.ph/chartData/getChartData')
 //         .then(response => {
 //             if (!response.ok) {
 //                 console.error(`HTTP error! status: ${response.status}`);
@@ -390,7 +390,7 @@ function getBackgroundColor(index) {
 let myLineChart;
 // Process and send order data function
 function processAndSendOrderData() {
-    fetch('http://localhost:5001/orders/getOrders')
+    fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
         .then(response => {
             if (!response.ok) {
                 console.error(`HTTP error! status: ${response.status}`);
@@ -466,7 +466,7 @@ function processAndSendOrderData() {
             console.log("Sending chart data:", chartData);  // Log the data being sent
 
             // Send aggregated data to backend
-            fetch('http://localhost:5001/chartData/createChartData', {
+            fetch('https://earthph.sdevtech.com.ph/chartData/createChartData', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
