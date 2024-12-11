@@ -307,3 +307,7 @@ button:hover {
     }
 }
 }
+
+.logout {
+    width: 10px;
+}

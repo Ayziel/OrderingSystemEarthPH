@@ -9,6 +9,22 @@ let agents = 0;
 let topSales = [];
 let myLineChart= null;
 
+const userID = localStorage.getItem('userID');
+const userRole = localStorage.getItem('userRole');
+if (!userID) {
+    // Redirect to login if user is not logged in
+    window.location.href = '/login.html';
+}
+document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('authToken');
+    console.log("token", token);
+    if (!token) {
+        window.location.href = '/System/log-in.html';  // Redirect to login page if no token
+    }
+});
+
+
+
 // Function to update the progress bar, percentage, and item name dynamically
 // Function to update the progress bar, percentage, and item name dynamically
 function updateProgress(index, itemName, percentage) {
