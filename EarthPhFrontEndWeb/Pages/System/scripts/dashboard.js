@@ -178,9 +178,7 @@ function fetchUsers() {
             return response.json();
         })
         .then(data => {
-            console.log('Fetched Users:', data.users); // Log all users
             agents = data.users.length; // Update the global `agents` variable
-            console.log("number of users:", agents);
 
             // Call `updateUI` after updating `agents`
             updateUI(totalSales, sales);
@@ -216,8 +214,6 @@ function chart() {
                 const year = date.getFullYear(); // Get the year
                 return `${month} ${year}`; // Month and Year (e.g., December 2024)
             });
-
-            console.log("chartData", chartData); // Debugging the chart data
 
             // Collect the items and their corresponding sales data
             const itemSalesData = [];
@@ -265,9 +261,6 @@ function chart() {
                     }
                 });
             });
-
-            console.log(itemSalesData); // To debug and see the generated data
-
             // Destroy the previous chart if it exists
             if (myLineChart) {
                 myLineChart.destroy();
@@ -412,8 +405,6 @@ function processAndSendOrderData() {
                 itemSales: top5Items // Only send the top 5 items
             };
 
-            console.log("Sending chart data:", chartData);  // Log the data being sent
-
             // Send aggregated data to backend
             fetch('https://earthph.sdevtech.com.ph/chartData/createChartData', {
                 method: 'POST',
@@ -424,7 +415,6 @@ function processAndSendOrderData() {
             })
             .then(response => response.json())
             .then(data => {
-                console.log('Chart data saved successfully:', data);
                 updateUI(totalSales, sales);
             })
             .catch(error => console.error('Error saving chart data:', error));
@@ -518,9 +508,6 @@ function updateUI(totalSales, sales) {
     document.getElementById("sales").innerText = sales;
     document.getElementById("stores").innerText = 0; // Placeholder if stores isn't yet dynamic
     document.getElementById("customers").innerText = agents; // Reference the global variable directly
-    console.log("customers", agents);
-    console.log("sales", sales);
-    console.log("totalSales", totalSales);
 
 }
 
