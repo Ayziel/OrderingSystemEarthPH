@@ -9,8 +9,12 @@ let agents = 0;
 let topSales = [];
 let myLineChart= null;
 
-const userID = localStorage.getItem('userID');
+
 const userRole = localStorage.getItem('userRole');
+const usertoken = localStorage.getItem('authToken');
+console.log("userRole", userRole);
+console.log("usertoken", usertoken);
+
 if (!userID) {
     // Redirect to login if user is not logged in
     window.location.href = '/login.html';
@@ -511,8 +515,6 @@ document.getElementById('updateChart').addEventListener('click', function() {
     }, 3000);  // Delay in milliseconds (3 seconds)
 });
 
-
-
 //#endregion
 
 function updateUI(totalSales, sales) {
@@ -525,7 +527,6 @@ function updateUI(totalSales, sales) {
     console.log("totalSales", totalSales);
 
 }
-
 
 document.addEventListener('DOMContentLoaded', () => {
     chart(); // Call the chart function

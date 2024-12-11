@@ -1,3 +1,8 @@
+const userRole = localStorage.getItem('userRole');
+const usertoken = localStorage.getItem('authToken');
+console.log("userRole", userRole);
+console.log("usertoken", usertoken);
+
 // Function to truncate text for display
 function truncateText(text, maxLength) {
     return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
