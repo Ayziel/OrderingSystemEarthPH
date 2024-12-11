@@ -5,10 +5,6 @@ const submenuItems = document.querySelectorAll(".submenu_item");
 const sidebarOpen = document.querySelector("#sidebarOpen");
 const sidebarClose = document.querySelector(".collapse_sidebar");
 const sidebarExpand = document.querySelector(".expand_sidebar");
-const userRole = localStorage.getItem('userRole');
-const usertoken = localStorage.getItem('authToken');
-console.log("userRole", userRole);
-console.log("usertoken", usertoken);
 
 sidebarOpen.addEventListener("click", () => sidebar.classList.toggle("close"));
 

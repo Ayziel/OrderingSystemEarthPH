@@ -15,10 +15,6 @@ const usertoken = localStorage.getItem('authToken');
 console.log("userRole", userRole);
 console.log("usertoken", usertoken);
 
-if (!userID) {
-    // Redirect to login if user is not logged in
-    window.location.href = '/login.html';
-}
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     console.log("token", token);
