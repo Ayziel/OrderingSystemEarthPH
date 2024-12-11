@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('userRole', user.role); // Optionally store the role
 
                 // Redirect to the dashboard or another page
-                window.location.href = 'http://127.0.0.1:5501/EarthPhFrontEndWeb/Pages/System/index.html'; // Adjust path if necessary
+                window.location.href = 'https://earthph.sdevtech.com.ph//Pages/System/index.html'; // Adjust path if necessary
             } else {
                 alert('Incorrect password.');
             }

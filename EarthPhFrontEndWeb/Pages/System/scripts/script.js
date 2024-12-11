@@ -58,7 +58,7 @@ if (window.innerWidth < 768) {
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('authToken');
   if (!token) {
-      window.location.href = '/System/login.html';  // Adjust path accordingly
+      window.location.href = 'https://earthph.sdevtech.com.ph/System/login.html';  // Adjust path accordingly
   }
 });
 

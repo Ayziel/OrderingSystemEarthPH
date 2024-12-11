@@ -23,8 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
-
 // Function to update the progress bar, percentage, and item name dynamically
 // Function to update the progress bar, percentage, and item name dynamically
 function updateProgress(index, itemName, percentage) {
