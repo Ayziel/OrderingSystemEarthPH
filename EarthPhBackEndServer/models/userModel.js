@@ -29,6 +29,18 @@ const userSchema = new mongoose.Schema({
   team: {
     type: String,
     required: true  // Marked as required
+  },
+  userName: {
+    type: String,
+    required: true  // Marked as required
+  },
+  password: {
+    type: String,
+    required: true  // Marked as required
+  },
+  role: {
+    type: String,
+    required: true  // Marked as required
   }
 });
 
