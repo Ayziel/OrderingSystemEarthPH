@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!----======== CSS ======== -->
+    <link rel="stylesheet" href="./styles/main-style.css">
+    <link href="css/style.css" rel="stylesheet">
+
+    <link href="css/lib/calendar2/semantic.ui.min.css" rel="stylesheet">
+    <link href="css/lib/calendar2/pignose.calendar.min.css" rel="stylesheet">
+    <link href="css/lib/owl.carousel.min.css" rel="stylesheet" />
+    <link href="css/lib/owl.theme.default.min.css" rel="stylesheet" />
+    <link href="css/helper.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+     <!-- Bootstrap Core CSS -->
+    <link href="css/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <!----===== Icons ===== -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+    <title>EarthPH</title>
+</head>
+<body>
+    <!-- navbar -->
+    <nav class="navbar">
+      <div class="logo_item">
+        <i class="bx bx-menu" id="sidebarOpen"></i>
+        <!-- <img src="images/logo.png" alt=""> --></i>EarthPH
+      </div>
+      <div class="search_bar">
+        <input type="text" placeholder="Search" />
+      </div>
+      <div class="navbar_content">
+        <i class="bi bi-grid"></i>
+        <i class='' id="darkLight"></i>
+        <i class='bx bx-bell' ></i>
+        <img src="images/profile.jpg" alt="" class="profile" />
+      </div>
+    </nav>
+    <!-- sidebar -->
+    <nav class="sidebar">
+      <div class="menu_content">
+        <ul class="menu_items">
+          <!-- start -->
+          <li class="item">
+            <a href="index.html" class="nav_link">
+              <span class="navlink_icon">
+                <i class="bx bx-grid-alt"></i>
+              </span>
+              <span class="navlink">Dashboard</span>
+            </a>
+          </li>
+
+          <li class="item">
+            <div href="#" class="nav_link submenu_item">
+              <span class="navlink_icon">
+                <i class='bx bx-store-alt' ></i>
+              </span>
+              <span class="navlink">Stores</span>
+              <i class="bx bx-chevron-right arrow-left"></i>
+            </div>
+            <ul class="menu_items submenu">
+                <a href="Stores-Barangay.html" class="nav_link sublink">Barangay</a>
+                <a href="All-Stores.html" class="nav_link sublink">All stores</a>
+            </ul>
+          </li>
+          <li class="item">
+            <a href="Transaction-History.html" class="nav_link">
+              <span class="navlink_icon">
+                <i class='bx bx-history'></i>
+              </span>
+              <span class="navlink">Transaction <br> History</span>
+            </a>
+          </li>
+          <!-- end -->
+        </ul>
+        
+        <!-- Sidebar Open / Close -->
+        <div class="bottom_content">
+          <div class="bottom expand_sidebar">
+            <span> Expand</span>
+            <i class='bx bx-log-in' ></i>
+          </div>
+          <div class="bottom collapse_sidebar">
+            <span> Collapse</span>
+            <i class='bx bx-log-out'></i>
+          </div>
+        </div>
+      </div>
+    </nav>
+    
+                <!-- End Sidebar navigation -->
+            </div>
+            <!-- End Sidebar scroll-->
+        </div>
+        <!-- End Left Sidebar  -->
+        <!-- Page wrapper  -->
+        <div class="page-wrapper">
+            <!-- Bread crumb -->
+            <div class="row page-titles">
+                <div class="col-md-5 align-self-center">
+                    <h3 class="text-primary">Dashboard</h3> </div>
+                <div class="col-md-7 align-self-center">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                        <li class="breadcrumb-item active">Dashboard</li>
+                    </ol>
+                </div>
+            </div>
+            <!-- End Bread crumb -->
+            <!-- Container fluid  -->
+            <div class="container-fluid">
+                <!-- Start Page Content -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card p-30">
+                            <div class="media">
+                                <div class="media-left meida media-middle">
+                                    <span><i class="fa fa-usd f-s-40 color-primary"></i></span>
+                                </div>
+                                <div class="media-body media-text-right">
+                                    <h2 id="overAllProfit">0</h2>
+                                    <p class="m-b-0">Overall Profit</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card p-30">
+                            <div class="media">
+                                <div class="media-left meida media-middle">
+                                    <span><i class="fa fa-shopping-cart f-s-40 color-success"></i></span>
+                                </div>
+                                <div class="media-body media-text-right">
+                                    <h2 id="sales">0</h2>
+                                    <p class="m-b-0">Sales</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card p-30">
+                            <div class="media">
+                                <div class="media-left meida media-middle">
+                                    <span><i class="fa fa-archive f-s-40 color-warning"></i></span>
+                                </div>
+                                <div class="media-body media-text-right">
+                                    <h2 id="stores">0</h2>
+                                    <p class="m-b-0">Stores</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card p-30">
+                            <div class="media">
+                                <div class="media-left meida media-middle">
+                                    <span><i class="fa fa-user f-s-40 color-danger"></i></span>
+                                </div>
+                                <div class="media-body media-text-right">
+                                    <h2 id="customers">0</h2>
+                                    <p class="m-b-0">Customer</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row bg-white m-l-0 m-r-0 box-shadow ">
+
+                    <!-- column -->
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Profit Chart</h4>
+                                <div id="extra-area-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- column -->
+
+                    <!-- column -->
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-body browser">
+                                <div class="percentage-text">
+                                    <p class="f-w-600" id="top1Item">None</p>
+                                    <p id="top1Percentage" class="pull-right topItem">0%</p>
+                                </div>
+                                <div class="progress">
+                                    <div id="top1Progress" role="progressbar" style="width: 0%; height:8px;" class="progress-bar bg-danger wow animated progress-animated">
+                                        <span class="sr-only">0% Complete</span>
+                                    </div>
+                                </div>
+                                <div class="percentage-text">
+                                    <p class="m-t-30 f-w-600" id="top2Item" >None</p>
+                                    <p id="top2Percentage" class="pull-right topItem">0%</p>
+                                   
+                                </div>
+                                <div class="progress">
+                                    <div id="top2Progress" role="progressbar" style="width: 0%; height:8px;" class="progress-bar bg-info wow animated progress-animated">
+                                        <span class="sr-only">0% Complete</span>
+                                    </div>
+                                </div>
+                                <div class="percentage-text">
+                                    <p class="m-t-30 f-w-600" id="top3Item">None</p>
+                                    <p id="top3Percentage" class="pull-right topItem">0%</p>
+                                </div>
+                                <div class="progress">
+                                    <div id="top3Progress" role="progressbar" style="width: 0%; height:8px;" class="progress-bar bg-success wow animated progress-animated">
+                                        <span class="sr-only">0% Complete</span>
+                                    </div>
+                                </div>
+                                <div class="percentage-text">
+                                    <p class="m-t-30 f-w-600" id="top4Item">None</p>
+                                    <p id="top4Percentage" class="pull-right topItem">0%</p>
+                                </div>
+                                <div class="progress">
+                                    <div id="top4Progress" role="progressbar" style="width: 0%; height:8px;" class="progress-bar bg-warning wow animated progress-animated">
+                                        <span class="sr-only">0% Complete</span>
+                                    </div>
+                                </div>
+                                <div class="percentage-text">
+                                    <p class="m-t-30 f-w-600" id="top5Item">None</p>
+                                    <p id="top5Percentage" class="pull-right topItem">0%</p>
+                                </div>
+                                <div class="progress m-b-30">
+                                    <div id="top5Progress" role="progressbar" style="width: 0%; height:8px;" class="progress-bar bg-primary wow animated progress-animated">
+                                        <span class="sr-only">0% Complete</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- column -->
+                </div>
+                
+                <div class="col-lg-9">
+                    <div class="card">
+                        <div class="card-title">
+                            <h4>Agent Performance </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Name</th>
+                                            <th>Team</th>
+                                            <th>Sales</th>
+                                            <th>Overall Performance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr>
+                                            <td>
+                                                <div class="round-img">
+                                                    <a href=""><img src="images/avatar/4.jpg" alt=""></a>
+                                                </div>
+                                            </td>
+                                            <td>John Abraham</td>
+                                            <td><span>iBook</span></td>
+                                            <td><span>456 pcs</span></td>
+                                            <td><span class="badge badge-success">Done</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="round-img">
+                                                    <a href=""><img src="images/avatar/2.jpg" alt=""></a>
+                                                </div>
+                                            </td>
+                                            <td>John Abraham</td>
+                                            <td><span>iPhone</span></td>
+                                            <td><span>456 pcs</span></td>
+                                            <td><span class="badge badge-success">Done</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="round-img">
+                                                    <a href=""><img src="images/avatar/3.jpg" alt=""></a>
+                                                </div>
+                                            </td>
+                                            <td>John Abraham</td>
+                                            <td><span>iMac</span></td>
+                                            <td><span>456 pcs</span></td>
+                                            <td><span class="badge badge-warning">Pending</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="round-img">
+                                                    <a href=""><img src="images/avatar/4.jpg" alt=""></a>
+                                                </div>
+                                            </td>
+                                            <td>John Abraham</td>
+                                            <td><span>iBook</span></td>
+                                            <td><span>456 pcs</span></td>
+                                            <td><span class="badge badge-success">Done</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End PAge Content -->
+            </div>
+            <!-- End Container fluid  -->
+        </div>
+        <!-- End Page wrapper  -->
+    </div>
+    <!-- End Wrapper -->
+    <!-- All Jquery -->
+    <script src="scripts/lib/jquery/jquery.min.js"></script>
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="scripts/lib/bootstrap/js/popper.min.js"></script>
+    <script src="scripts/lib/bootstrap/js/bootstrap.min.js"></script>
+    <!-- slimscrollbar scrollbar JavaScript -->
+    <script src="scripts/jquery.slimscroll.js"></script>
+    <!--Menu sidebar -->
+    <script src="scripts/sidebarmenu.js"></script>
+    <!--stickey kit -->
+    <script src="scripts/lib/sticky-kit-master/dist/sticky-kit.min.js"></script>
+    <!--Custom JavaScript -->
+
+
+    <!-- Amchart -->
+     <script src="scripts/lib/morris-chart/raphael-min.js"></script>
+    <script src="scripts/lib/morris-chart/morris.js"></script>
+    <script src="scripts/lib/morris-chart/dashboard1-init.js"></script>
+
+
+	<script src="scripts/lib/calendar-2/moment.latest.min.js"></script>
+    <!-- scripit init-->
+    <script src="scripts/lib/calendar-2/semantic.ui.min.js"></script>
+    <!-- scripit init-->
+    <script src="scripts/lib/calendar-2/prism.min.js"></script>
+    <!-- scripit init-->
+    <script src="scripts/lib/calendar-2/pignose.calendar.min.js"></script>
+    <!-- scripit init-->
+    <script src="scripts/lib/calendar-2/pignose.init.js"></script>
+
+    <script src="scripts/lib/owl-carousel/owl.carousel.min.js"></script>
+    <script src="scripts/lib/owl-carousel/owl.carousel-init.js"></script>
+    <script src="scripts/scripts.js"></script>
+    <!-- scripit init-->
+
+    <script src="scripts/custom.min.js"></script>
+    <script src="./scripts/script.js"></script>
+    <script src="scripts/dashboard.js"></script>
+
+</body>
+
+</html>

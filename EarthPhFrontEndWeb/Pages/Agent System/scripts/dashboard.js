@@ -7,6 +7,7 @@ let stores = 0;
 let customers = 0;
 let agents = 0;
 let topSales = [];
+let myLineChart= null;
 
 // Function to update the progress bar, percentage, and item name dynamically
 // Function to update the progress bar, percentage, and item name dynamically
@@ -30,11 +31,6 @@ function updateProgress(index, itemName, percentage) {
         console.error(`Element with id ${itemId} not found.`);
     }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    fetchOrders();
-});
-
 // Function to fetch orders and process them
 // Main function to fetch orders
 function fetchOrders() {
@@ -51,24 +47,26 @@ function fetchOrders() {
                 return;
             }
 
+            // Process orders after fetching them
             const { totalSales, sales, productSales } = processOrders(orders);
+            
+            // Make sure the UI only updates after data is fully processed
+            updateUI(totalSales, sales);
 
             const sortedProducts = sortAndDisplayTopProducts(productSales);
 
             // Optionally, update the UI with the new data
-            updateUI(totalSales, sales);
-
-            // Update the progress bars for top 5 products
             updateProgressBars(sortedProducts, sales);
-
         })
         .catch(error => console.error('Error fetching orders:', error));
 }
 
+
+
 // Function to process the orders, calculate total sales and track product sales
 function processOrders(orders) {
-    let totalSales = 0;
-    let sales = 0;
+     totalSales = 0;
+     sales = 0;
     const productSales = {};
 
     orders.forEach(order => {
@@ -83,6 +81,7 @@ function processOrders(orders) {
                 productSales[product.name].quantity += product.quantity;
 
                 sales += product.quantity;
+                console.log("product name & quantity",product.name, product.quantity);
             });
         }
     });
@@ -104,12 +103,9 @@ function sortAndDisplayTopProducts(productSales) {
 
 
 // Function to update the UI with the total sales, quantity sold, and top products
-function updateUI(totalSales, sales) {
-    document.getElementById("overAllProfit").innerText = totalSales.toFixed(2);
-    document.getElementById("sales").innerText = sales;
-    document.getElementById("stores").innerText = 0;
-    document.getElementById("customers").innerText = agents;
-}
+
+
+
 
 // Function to update the progress bars for the top 5 products
 // Function to update progress bars and percentage text
@@ -168,7 +164,12 @@ function fetchUsers() {
             return response.json();
         })
         .then(data => {
-            agents = data.users.length; // Store the number of agents in the global variable
+            console.log('Fetched Users:', data.users); // Log all users
+            agents = data.users.length; // Update the global `agents` variable
+            console.log("number of users:", agents);
+
+            // Call `updateUI` after updating `agents`
+            updateUI(totalSales, sales);
         })
         .catch(error => {
             console.error('Error fetching data:', error);
@@ -176,190 +177,124 @@ function fetchUsers() {
         });
 }
 
-// Call the fetchUsers function
-fetchUsers();
 
-
-// #region Dashboard Chart 
-// function chart() {
-//     fetch('https://earthph.sdevtech.com.ph/chartData/getChartData')
-//         .then(response => {
-//             if (!response.ok) {
-//                 console.error(`HTTP error! status: ${response.status}`);
-//                 throw new Error(`HTTP error! status: ${response.status}`);
-//             }
-//             return response.json();
-//         })
-//         .then(chartData => {
-//             if (!chartData || chartData.length === 0) {
-//                 console.log('No chart data found.');
-//                 return;
-//             }
-
-//             // Generate labels dynamically for the current month and the last 5 months
-//             const labels = Array.from({ length: 6 }, (_, i) => {
-//                 const date = new Date();
-//                 date.setMonth(date.getMonth() - (5 - i)); // Get last 6 months including current month
-//                 const month = date.toLocaleString('default', { month: 'long' }); // Get the full month name
-//                 const year = date.getFullYear(); // Get the year
-//                 return `${month} ${year}`; // Month and Year (e.g., December 2024)
-//             });
-
-//             console.log("chartData", chartData); // Debugging the chart data
-
-//             // Collect the items and their corresponding sales data
-//             const itemSalesData = [];
-
-//             chartData.forEach(item => {
-//                 item.itemSales.forEach(sale => {
-//                     // Parse the saleDate string into a Date object
-//                     const saleDate = new Date(sale.saleDate);
-//                     const saleMonth = saleDate.getMonth(); // Get the month index (0-11)
-//                     const saleYear = saleDate.getFullYear(); // Get the year (e.g., 2024)
-
-//                     // Determine the current month and year
-//                     const currentDate = new Date();
-//                     const currentMonth = currentDate.getMonth(); // Current month index (0-11)
-//                     const currentYear = currentDate.getFullYear(); // Current year
-
-//                     // Compare the sale's month and year to determine its position in the labels array
-//                     let monthIndex = -1;
-//                     for (let i = 0; i < 6; i++) {
-//                         const targetDate = new Date();
-//                         targetDate.setMonth(currentMonth - (5 - i)); // Calculate the target month
-//                         if (saleYear === targetDate.getFullYear() && saleMonth === targetDate.getMonth()) {
-//                             monthIndex = i;
-//                             break;
-//                         }
-//                     }
-
-//                     // Skip sales that are outside of the last 6 months
-//                     if (monthIndex === -1) return;
-
-//                     // Check if the item already exists in the itemSalesData array
-//                     const existingItem = itemSalesData.find(i => i.label === sale.itemName);
-//                     if (existingItem) {
-//                         // Update the existing item data by adding the total quantity for the sale month
-//                         existingItem.data[monthIndex] += sale.totalQuantity;
-//                     } else {
-//                         // Create a new entry for the item with zero values for each month
-//                         const newItem = {
-//                             label: sale.itemName,
-//                             data: Array(6).fill(0), // Initialize all months with 0 sales
-//                         };
-//                         // Add the sale quantity for the sale month
-//                         newItem.data[monthIndex] = sale.totalQuantity;
-//                         itemSalesData.push(newItem);
-//                     }
-//                 });
-//             });
-
-//             console.log(itemSalesData); // To debug and see the generated data
-
-//             var ctx = document.getElementById('myLineChart').getContext('2d');
-
-//             var myLineChart = new Chart(ctx, {
-//                 type: 'line',
-//                 data: {
-//                     labels, // Use dynamically generated labels (months)
-//                     datasets: itemSalesData.map((item, index) => ({
-//                         label: item.label,
-//                         data: item.data,
-//                         borderColor: getBorderColor(index),
-//                         backgroundColor: getBackgroundColor(index),
-//                         borderWidth: 2,
-//                         tension: 0.4
-//                     }))
-//                 },
-//                 options: {
-//                     responsive: true,
-//                     scales: {
-//                         y: {
-//                             beginAtZero: true
-//                         }
-//                     },
-//                     plugins: {
-//                         legend: {
-//                             display: true,
-//                             position: 'top'
-//                         },
-//                         tooltip: {
-//                             enabled: true
-//                         }
-//                     }
-//                 }
-//             });
-//         })
-//         .catch(error => {
-//             console.error('Error fetching chart data:', error);
-//         });
-// }
-
-
-
-// Function to generate a random color (can be customized)
-
-
+// Function to fetch chart data and generate a chart
 function chart() {
-    // Hardcoded sample data for the last 6 months
-    const labels = ['November 2024', 'October 2024', 'September 2024', 'August 2024', 'July 2024', 'June 2024'];
-    
-    const itemSalesData = [
-        {
-            label: 'Item A',
-            data: [25, 30, 45, 50, 35, 40], // Sales data for the last 6 months
-            borderColor: 'rgba(75, 192, 192, 1)',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        },
-        {
-            label: 'Item B',
-            data: [40, 60, 55, 70, 65, 80],
-            borderColor: 'rgba(153, 102, 255, 1)',
-            backgroundColor: 'rgba(153, 102, 255, 0.2)',
-        },
-        {
-            label: 'Item C',
-            data: [15, 25, 20, 40, 45, 50],
-            borderColor: 'rgba(255, 159, 64, 1)',
-            backgroundColor: 'rgba(255, 159, 64, 0.2)',
-        }
-    ];
-
-    console.log(itemSalesData); // To debug and see the generated data
-
-    var ctx = document.getElementById('myLineChart').getContext('2d');
-
-    var myLineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels, // Use hardcoded labels (months)
-            datasets: itemSalesData.map((item) => ({
-                label: item.label,
-                data: item.data,
-                borderColor: item.borderColor,
-                backgroundColor: item.backgroundColor,
-                borderWidth: 2,
-                tension: 0.4
-            }))
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                }
-            },
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top'
-                },
-                tooltip: {
-                    enabled: true
-                }
+    fetch('https://earthph.sdevtech.com.ph/chartData/getChartData')
+        .then(response => {
+            if (!response.ok) {
+                console.error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        }
-    });
+            return response.json();
+        })
+        .then(chartData => {
+            if (!chartData || chartData.length === 0) {
+                console.log('No chart data found.');
+                return;
+            }
+
+            // Generate labels dynamically for the current month and the last 5 months
+            const labels = Array.from({ length: 6 }, (_, i) => {
+                const date = new Date();
+                date.setMonth(date.getMonth() - (5 - i)); // Get last 6 months including current month
+                const month = date.toLocaleString('default', { month: 'long' }); // Get the full month name
+                const year = date.getFullYear(); // Get the year
+                return `${month} ${year}`; // Month and Year (e.g., December 2024)
+            });
+
+            console.log("chartData", chartData); // Debugging the chart data
+
+            // Collect the items and their corresponding sales data
+            const itemSalesData = [];
+
+            chartData.forEach(item => {
+                item.itemSales.forEach(sale => {
+                    // Parse the saleDate string into a Date object
+                    const saleDate = new Date(sale.saleDate);
+                    const saleMonth = saleDate.getMonth(); // Get the month index (0-11)
+                    const saleYear = saleDate.getFullYear(); // Get the year (e.g., 2024)
+
+                    // Determine the current month and year
+                    const currentDate = new Date();
+                    const currentMonth = currentDate.getMonth(); // Current month index (0-11)
+                    const currentYear = currentDate.getFullYear(); // Current year
+
+                    // Compare the sale's month and year to determine its position in the labels array
+                    let monthIndex = -1;
+                    for (let i = 0; i < 6; i++) {
+                        const targetDate = new Date();
+                        targetDate.setMonth(currentMonth - (5 - i)); // Calculate the target month
+                        if (saleYear === targetDate.getFullYear() && saleMonth === targetDate.getMonth()) {
+                            monthIndex = i;
+                            break;
+                        }
+                    }
+
+                    // Skip sales that are outside of the last 6 months
+                    if (monthIndex === -1) return;
+
+                    // Check if the item already exists in the itemSalesData array
+                    const existingItem = itemSalesData.find(i => i.label === sale.itemName);
+                    if (existingItem) {
+                        // Update the existing item data by adding the total quantity for the sale month
+                        existingItem.data[monthIndex] += sale.totalQuantity;
+                    } else {
+                        // Create a new entry for the item with zero values for each month
+                        const newItem = {
+                            label: sale.itemName,
+                            data: Array(6).fill(0), // Initialize all months with 0 sales
+                        };
+                        // Add the sale quantity for the sale month
+                        newItem.data[monthIndex] = sale.totalQuantity;
+                        itemSalesData.push(newItem);
+                    }
+                });
+            });
+
+            console.log(itemSalesData); // To debug and see the generated data
+
+            // Destroy the previous chart if it exists
+            if (myLineChart) {
+                myLineChart.destroy();
+            }
+
+            var ctx = document.getElementById('myLineChart').getContext('2d');
+            myLineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels, // Use dynamically generated labels (months)
+                    datasets: itemSalesData.map((item, index) => ({
+                        label: item.label,
+                        data: item.data,
+                        borderColor: getBorderColor(index),
+                        backgroundColor: getBackgroundColor(index),
+                        borderWidth: 2,
+                        tension: 0.4
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            enabled: true
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching chart data:', error);
+        });
 }
 
 
@@ -387,7 +322,7 @@ function getBackgroundColor(index) {
     ];
     return colors[index % colors.length]; // Cycle through colors
 }
-let myLineChart;
+
 // Process and send order data function
 function processAndSendOrderData() {
     fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
@@ -476,6 +411,7 @@ function processAndSendOrderData() {
             .then(response => response.json())
             .then(data => {
                 console.log('Chart data saved successfully:', data);
+                updateUI(totalSales, sales);
             })
             .catch(error => console.error('Error saving chart data:', error));
         })
@@ -509,8 +445,13 @@ function updateChart(aggregatedData) {
 }
 // Create a new chart (if not already created)
 function createChart(aggregatedData) {
+    // Destroy the previous chart if it exists
+    if (window.myLineChart) {
+        window.myLineChart.destroy();
+    }
+
     const ctx = document.getElementById('myLineChart').getContext('2d');
-    myLineChart = new Chart(ctx, { // Create the chart
+    window.myLineChart = new Chart(ctx, { // Create the chart
         type: 'line', // Example chart type
         data: {
             labels: [aggregatedData.date], // Date labels
@@ -545,6 +486,7 @@ function createChart(aggregatedData) {
         }
     });
 }
+
 // Add event listener to the button
 document.getElementById('updateChart').addEventListener('click', function() {
     processAndSendOrderData();  // Call your function to process the order data
@@ -555,4 +497,27 @@ document.getElementById('updateChart').addEventListener('click', function() {
     }, 3000);  // Delay in milliseconds (3 seconds)
 });
 
-// #endregion
+
+
+//#endregion
+
+function updateUI(totalSales, sales) {
+    document.getElementById("overAllProfit").innerText = totalSales.toFixed(2);
+    document.getElementById("sales").innerText = sales;
+    document.getElementById("stores").innerText = 0; // Placeholder if stores isn't yet dynamic
+    document.getElementById("customers").innerText = agents; // Reference the global variable directly
+    console.log("customers", agents);
+    console.log("sales", sales);
+    console.log("totalSales", totalSales);
+
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    chart(); // Call the chart function
+    fetchUsers();
+    updateUI(totalSales, sales, agents);
+    fetchOrders()
+});
+
+// Call updateUI with the correct value

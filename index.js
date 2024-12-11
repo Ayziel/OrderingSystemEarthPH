@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose'); // Keep this line only once
 const cors = require('cors');
 const bodyParser = require('body-parser');
+require('dotenv').config();
 
 // Import routes
 const userRoutes = require('./EarthPhBackEndServer/routes/userRoutes');
@@ -19,9 +20,11 @@ app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 // Connect to MongoDB (ensure mongoose is already imported at the top)
-mongoose.connect(process.env.MONGO_URL)
+const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/earthph';
+mongoose.connect(mongoURL)
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log('MongoDB connection error:', err));
+
 
 
 // Serve static files (like index.html) from the specified folder
@@ -44,4 +47,5 @@ app.use('/chartData', chartDataRoutes);
 // Start the server
 app.listen(5001, () => {
   console.log('Server started on port 5001');
+  console.log(`Connecting to MongoDB at: ${mongoURL}`);
 });
