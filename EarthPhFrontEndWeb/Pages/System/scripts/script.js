@@ -73,6 +73,6 @@ function logoutUser() {
     localStorage.removeItem('userRole');
     console.log('User logged out.');
     // Redirect to the login page
-    window.location.href = '/System/login.html'; // Adjust path as needed
+    window.location.href = 'https://earthph.sdevtech.com.ph/System/login.html'; // Adjust path as needed
 }
 
