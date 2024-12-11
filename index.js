@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose'); // Keep this line only once
 const cors = require('cors');
 const bodyParser = require('body-parser');
-require('dotenv').config();
 
 // Import routes
 const userRoutes = require('./EarthPhBackEndServer/routes/userRoutes');
