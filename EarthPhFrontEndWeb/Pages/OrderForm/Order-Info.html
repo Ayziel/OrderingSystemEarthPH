@@ -7,6 +7,7 @@
     
     <!-- Linking the CSS file -->
     <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/orderInfo.css">
 </head>
 <body>
     <div class="form-container">
@@ -234,7 +235,6 @@
             </div>
 
             <!-- Survey Button -->
-<button id="surveyBtn" class="survey-button">Product Preferences Survey</button>
 
 <!-- Survey Modal -->
 <div id="surveyModal" class="modal">
@@ -315,8 +315,6 @@
 
         </form>
 
-            
-            <button id="printOrderBtn" style="display: none;" onclick="printOrder()">Print Order</button>
         </div>
         
         <div id="orderReceipt" style="display: none;">
@@ -347,7 +345,37 @@
 
     </div>
 
+    <!-- Receipt Modal -->
+    <div id="receiptModal" class="modal-receipt">
+        <!-- Modal Content -->
+        <div class="modal-content-receipt">
+            <h2>Receipt</h2>
+            <!-- Receipt Details Placeholder -->
+            <div class="receipt-details-receipt">
+                <p><strong>Elliss:</strong></p>
+                <p>Contact No: +0921388200</p>
+                <br>
+                <p><strong>RECEIPT</strong></p>
+                <hr>
+                <p><strong>IssueDate:</strong> 2023-08-15</p>
+                <p><strong>Item Purchased:</strong> Product XYZ</p>
+                <p><strong>Total Amount:</strong> PHP 1,500.00</p>
+                <p><strong>Payment Method:</strong> Credit Card</p>
+                <p><strong>Status:</strong> Paid</p>
+            </div>
+            
+            <!-- Print Receipt Button -->
+            <button id="printReceiptBtn">Print Receipt</button>
+        
+            <!-- Close Button -->
+            <button class="close-receipt">Close</button>
+        </div>
+    </div>
+    
+    
+  
+  <script src="./scripts/orderInfo.js"></script>
     <script src="script.js"></script>   
-    <!-- <script src="../../handlers/OrderHandler.js"></script>      -->
+
 </body>
 </html>

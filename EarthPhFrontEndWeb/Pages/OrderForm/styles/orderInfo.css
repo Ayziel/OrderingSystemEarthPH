@@ -1,0 +1,98 @@
+/* Modal Styling */
+.modal-receipt {
+    display: none;
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.1);
+    width: 100%;
+    height: 100%;
+}
+
+.modal-content-receipt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.receipt-details {
+    font-family: Arial, sans-serif;
+    margin-top: 20px;
+}
+
+.receipt-details p {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 5px 0;
+}
+
+.close-receipt {
+    color: white;
+    background-color: red;
+    font-size: 14px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.close-receipt:hover {
+    background-color: darkred;
+}
+
+#submitReceiptBtn, #printReceiptBtn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#submitReceiptBtn:hover, #printReceiptBtn:hover {
+    background-color: #45a049;
+}
+
+/* Print Styles */
+@media print {
+    .modal-content-receipt {
+        width: 100%;
+        max-width: none;
+        padding: 0;
+        border: none;
+    }
+
+    .modal-content-receipt h2 {
+        text-align: center;
+    }
+
+    .receipt-details {
+        margin-top: 0px;
+    }
+
+    #printReceiptBtn, .close-receipt {
+        display: none; /* Hide buttons during print */
+    }
+    
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .modal-receipt {
+        display: none; /* Hide the modal background during print */
+    }
+}

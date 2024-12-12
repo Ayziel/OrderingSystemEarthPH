@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Preference Survey</title>
+    <link rel="stylesheet" href="./styles/productPreference.css">
+</head>
+<body>
+    <div class="form-container">
+        <h1>Product Preference Survey</h1>
+        <form>
+            <div class="form-group">
+                <label for="shop-name">Shop Name</label>
+                <input type="text" id="shop-name" name="shop-name" placeholder="Enter shop name">
+            </div>
+            <div class="form-group">
+                <label for="product-type">Top Selling Product</label>
+                <select id="product-type" name="product-type">
+                    <option value="type1">Product 1</option>
+                    <option value="type2">Product 2</option>
+                    <option value="type3">Product 3</option>
+                    <!-- Add more options as necessary -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="quantity">Preferred Quantity</label>
+                <input type="number" id="quantity" name="quantity" placeholder="Enter preferred quantity">
+            </div>
+            <div class="form-group">
+                <label for="delivery-schedule">Preferred Delivery Schedule</label>
+                <select id="delivery-schedule" name="delivery-schedule">
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                    <!-- Add more options as necessary -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="product-quality">Most Important Product Features</label>
+                <input type="text" id="product-quality" name="product-quality" placeholder="Enter product features">
+            </div>
+            <div class="form-group">
+                <label for="pricing">Preferred Price Range</label>
+                <input type="text" id="pricing" name="pricing" placeholder="Enter preferred price range">
+            </div>
+            <div class="form-group">
+                <label for="delivery-instructions">Special Delivery Instructions</label>
+                <input type="text" id="delivery-instructions" name="delivery-instructions" placeholder="Enter any delivery instructions">
+            </div>
+            <button id="submit-button" type="button">Submit Survey</button>
+        </form>
+    </div>
+    <script src="./scripts/survey.js"></script>
+    <script>
+        document.getElementById('submit-button').addEventListener('click', () => {
+            alert('Survey submitted. Thank you!');
+        });
+    </script>
+</body>
+</html>

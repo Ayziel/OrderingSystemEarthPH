@@ -281,20 +281,12 @@ document.querySelectorAll('.quantity-controls button').forEach(button => {
 
 
 // Get survey modal and related elements
-var surveyModal = document.getElementById("surveyModal");
-var surveyBtn = document.getElementById("surveyBtn");
-var closeSurveyBtn = document.getElementsByClassName("close-survey")[0];
-var submitSurveyBtn = document.getElementById("submitSurveyBtn");
+
 
 // Open the survey modal when the button is clicked
-surveyBtn.onclick = function() {
-    surveyModal.style.display = "flex";
-}
+
 
 // Close the survey modal when the close (x) is clicked
-closeSurveyBtn.onclick = function() {
-    surveyModal.style.display = "none";
-}
 
 // Close the modal if user clicks outside the modal content
 window.onclick = function(event) {
@@ -302,9 +294,6 @@ window.onclick = function(event) {
         surveyModal.style.display = "none";
     }
 }
-
-
-
 
 // Print the receipt
 function printOrder() {

@@ -28,5 +28,5 @@ document.getElementById('confirm-button').addEventListener('click', () => {
     localStorage.setItem('orderData', JSON.stringify(orderData));
 
     // Redirect to the next page
-    window.location.href = 'http://127.0.0.1:5501/EarthPhFrontEndWeb/Pages/OrderForm/Order-Info.html'; // Replace with your desired link
+    window.location.href = 'https://earthph.sdevtech.com.ph/OrderForm/Order-Info.html'; // Replace with your desired link
 });
