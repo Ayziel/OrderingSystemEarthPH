@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/agentInfo.css">
+    <title>Filtered Data Form</title>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Filtered Data Form</h1>
+        <form>
+            <div class="form-group">
+                <label for="agent-name">Agent Name</label>
+                <select id="agent-name" name="agent-name">
+                    <option value="agent1">Agent 1</option>
+                    <option value="agent2">Agent 2</option>
+                    <option value="agent3">Agent 3</option>
+                    <!-- Add more options as necessary -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="team-leader-name">Team Leader Name</label>
+                <select id="team-leader-name" name="team-leader-name">
+                    <option value="leader1">Leader 1</option>
+                    <option value="leader2">Leader 2</option>
+                    <option value="leader3">Leader 3</option>
+                    <!-- Add more options as necessary -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="area">Area</label>
+                <input type="text" id="area" name="area" placeholder="Enter area">
+            </div>
+            <div class="form-group">
+                <label for="order-date">Order Date</label>
+                <input type="date" id="order-date" name="order-date" readonly>
+            </div>
+            <div class="form-group">
+                <label for="store-name">Store Name</label>
+                <input type="text" id="store-name" name="store-name" placeholder="Enter store name">
+            </div>
+            <div class="form-group">
+                <label for="house-street">House Number and Street</label>
+                <input type="text" id="house-street" name="house-street" placeholder="Enter house number and street">
+            </div>
+            <div class="form-group">
+                <label for="barangay">Barangay</label>
+                <input type="text" id="barangay" name="barangay" placeholder="Enter barangay">
+            </div>
+            <div class="form-group">
+                <label for="store-code">Store Code</label>
+                <input type="text" id="store-code" name="store-code" placeholder="Enter store code">
+            </div>
+            <div class="form-group">
+                <label for="tin">TIN</label>
+                <input type="text" id="tin" name="tin" placeholder="Enter TIN">
+            </div>
+            <button id="confirm-button" type="button">Confirm</button>
+        </form>
+    </div>
+    <script src="./scripts/order.js"></script>
+    <script>
+        document.getElementById('confirm-button').addEventListener('click', () => {
+            // Placeholder for handling data and creating the second HTML file.
+            alert('Data confirmed. Process the filtered data as required.');
+        });
+    </script>
+</body>
+</html>

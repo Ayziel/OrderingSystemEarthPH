@@ -47,7 +47,7 @@ document.getElementById('submitOrderBtn').addEventListener('click', async functi
     }
 
     try {
-        const response = await fetch('http://localhost:5001/orders/createOrder', {
+        const response = await fetch('https://earthph.sdevtech.com.ph/orders/createOrder', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

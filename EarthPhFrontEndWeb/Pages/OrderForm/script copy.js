@@ -19,27 +19,21 @@ const sizeSelect = document.querySelector('.product-size-select');
 const checkbox = document.querySelector('.product-checkbox');
 const productTotal = document.querySelector('.product-total');
 
-submitOrderBtn.addEventListener('click', async () => {
-    submitLog();
-});
-
-
 function submitLog() {
     console.log("clicked");
 
     // Collect other form data as before
-    // console.log("Agent Name: " + document.getElementById("agent-name").value);
-    // console.log("Team Leader: " + document.getElementById("team-leader").value);
-    // console.log("Area: " + document.getElementById("area").value);
-    // console.log("Order Date: " + document.getElementById("order-date").value);
-    // console.log("Store Name: " + document.getElementById("store-name").value);
-    // console.log("House Number and Street: " + document.getElementById("house-address").value);
-    // console.log("Town and Province: " + document.getElementById("town-province").value);
-    // console.log("Store Code: " + document.getElementById("store-code").value);
-    // console.log("TIN: " + document.getElementById("tin").value);
-    // console.log("Discount Percentage: " + document.getElementById("discount").value);
+    console.log("Agent Name: " + document.getElementById("agent-name").value);
+    console.log("Team Leader: " + document.getElementById("team-leader").value);
+    console.log("Area: " + document.getElementById("area").value);
+    console.log("Order Date: " + document.getElementById("order-date").value);
+    console.log("Store Name: " + document.getElementById("store-name").value);
+    console.log("House Number and Street: " + document.getElementById("house-address").value);
+    console.log("Town and Province: " + document.getElementById("town-province").value);
+    console.log("Store Code: " + document.getElementById("store-code").value);
+    console.log("TIN: " + document.getElementById("tin").value);
     console.log("List Price of Orders: " + document.getElementById("list-price").value);
-
+    console.log("Discount Percentage: " + document.getElementById("discount").value);
     console.log("Total Number of Items Bought: " + document.getElementById("total-items").value);
     console.log("Total Amount: " + document.getElementById("total-amount").value);
     console.log("Mode of Payment: " + document.getElementById("payment-mode").value);
@@ -75,18 +69,17 @@ function submitLog() {
 
     // Log the full order data (including products)
     const orderData = {
-        // agentName: document.getElementById("agent-name").value,
-        // teamLeaderName: document.getElementById("team-leader").value,
-        // area: document.getElementById("area").value,
-        // orderDate: document.getElementById("order-date").value,
-        // storeName: document.getElementById("store-name").value,
-        // houseAddress: document.getElementById("house-address").value,
-        // townProvince: document.getElementById("town-province").value,
-        // storeCode: document.getElementById("store-code").value,
-        // tin: document.getElementById("tin").value,
-        // discount: document.getElementById("discount").value,
-
+        agentName: document.getElementById("agent-name").value,
+        teamLeaderName: document.getElementById("team-leader").value,
+        area: document.getElementById("area").value,
+        orderDate: document.getElementById("order-date").value,
+        storeName: document.getElementById("store-name").value,
+        houseAddress: document.getElementById("house-address").value,
+        townProvince: document.getElementById("town-province").value,
+        storeCode: document.getElementById("store-code").value,
+        tin: document.getElementById("tin").value,
         listPrice: document.getElementById("list-price").value,
+        discount: document.getElementById("discount").value,
         totalItems: document.getElementById("total-items").value,
         totalAmount: document.getElementById("total-amount").value,
         paymentMode: document.getElementById("payment-mode").value,
@@ -202,6 +195,12 @@ checkboxes.forEach(function(checkbox) {
     checkbox.addEventListener('change', updateSelectedCount);
 });
 
+// Set the current date in the Order Date input field
+window.onload = function() {
+    const orderDateInput = document.getElementById("order-date");
+    const today = new Date().toISOString().split("T")[0]; 
+    orderDateInput.value = today; 
+};
 
 submitProductsBtn.onclick = function() {
     let productDetailsContainer = document.getElementById("product-details");
@@ -244,18 +243,18 @@ submitProductsBtn.onclick = function() {
     listPriceInput.value = `₱${totalPrice.toFixed(2)}`;
 
     // Calculate discounted total (default to totalPrice if no discount is applied)
-    // let discount = parseFloat(discountInput.value) || 0;
-    // let discountedTotal = totalPrice - (totalPrice * (discount / 100));
+    let discount = parseFloat(discountInput.value) || 0;
+    let discountedTotal = totalPrice - (totalPrice * (discount / 100));
 
-    // // Display discounted total
-    // totalAmountInput.value = `₱${discountedTotal.toFixed(2)}`;
+    // Display discounted total
+    totalAmountInput.value = `₱${discountedTotal.toFixed(2)}`;
 
     // Apply discount if the user changes the discount input
-//     discountInput.oninput = function() {
-//         let discount = parseFloat(discountInput.value) || 0;
-//         let discountedTotal = totalPrice - (totalPrice * (discount / 100));
-//         totalAmountInput.value = `₱${discountedTotal.toFixed(2)}`;
-// };
+    discountInput.oninput = function() {
+        let discount = parseFloat(discountInput.value) || 0;
+        let discountedTotal = totalPrice - (totalPrice * (discount / 100));
+        totalAmountInput.value = `₱${discountedTotal.toFixed(2)}`;
+};
 
     // After adding products, close the modal
     modal.style.display = "none";
@@ -279,6 +278,49 @@ document.querySelectorAll('.quantity-controls button').forEach(button => {
     });
 });
 
+// Barangay list for "San Fernando, Pampanga"
+document.getElementById('town-province').addEventListener('change', function() {
+    var barangayDropdown = document.getElementById('barangay');
+    var selectedTown = this.value;
+
+    // Clear existing barangay options
+    barangayDropdown.innerHTML = '<option value="" selected disabled>Select Barangay</option>';
+
+    // Enable the barangay dropdown
+    barangayDropdown.disabled = false;
+
+    // Define barangays for San Fernando Pampanga and Makati
+    var barangays = {
+        'san-fernando-pampanga': [
+            'Alasas', 'Baliti', 'Bulaon', 'Calulut', 'Dela Paz Norte', 'Dela Paz Sur', 
+            'Del Carmen', 'Del Pilar', 'Del Rosario', 'Dolores', 'Juliana', 'Lara', 
+            'Lourdes', 'Magliman', 'Maimpis', 'Malino', 'Malpitic', 'Pandaras', 
+            'Panipuan', 'Pulung Bulu', 'Pulung Cacutud', 'Quebiawan', 'Saguin', 
+            'San Agustin', 'San Felipe', 'San Isidro', 'San Jose', 'San Juan', 
+            'San Nicolas', 'Santa Lucia', 'Santa Teresita', 'Santo Niño', 
+            'Sindalan', 'Telabastagan', 'Sinulatan II'
+        ],
+        'makati': [
+            'Bel-Air', 'Carmona', 'Cembo', 'Comembo', 'Dasmariñas', 'Forbes Park', 
+            'Guadalupe Nuevo', 'Guadalupe Viejo', 'Kasilawan', 'La Paz', 
+            'Magallanes', 'Olympia', 'Poblacion', 'Post Proper Northside', 
+            'Post Proper Southside', 'San Antonio', 'San Isidro', 'San Lorenzo', 
+            'Santa Cruz', 'Singkamas', 'Tejeros', 'Urdaneta', 'Valenzuela', 
+            'Bangkal', 'East Rembo', 'Pio del Pilar', 'Pembo', 'Pitogo', 'Rizal', 
+            'South Cembo', 'West Rembo'
+        ]
+    };
+
+    // Populate barangay dropdown based on selected town
+    if (barangays[selectedTown]) {
+        barangays[selectedTown].forEach(function(brgy) {
+            var option = document.createElement('option');
+            option.value = brgy.toLowerCase().replace(/\s+/g, '-');
+            option.textContent = brgy;
+            barangayDropdown.appendChild(option);
+        });
+    }
+});
 
 // Get survey modal and related elements
 var surveyModal = document.getElementById("surveyModal");
@@ -304,7 +346,40 @@ window.onclick = function(event) {
 }
 
 
+document.getElementById("orderForm").addEventListener("submit", function (e) {
+    e.preventDefault(); // Prevent the default form submission
 
+    
+
+    // Example items for the receipt
+    const items = [
+        { name: "Lorem ipsum", qty: 1, price: 9.2 },
+        { name: "Lorem ipsum dolor sit", qty: 1, price: 19.2 },
+        { name: "Lorem ipsum dolor sit amet", qty: 1, price: 15.0 },
+    ];
+
+    let subTotal = 0;
+    const tbody = document.getElementById("orderDetails");
+    tbody.innerHTML = ""; // Clear previous items
+
+    items.forEach(item => {
+        subTotal += item.price;
+
+        const row = `<tr>
+            <td>${item.name}</td>
+            <td>${item.qty}</td>
+            <td>₱${item.price.toFixed(2)}</td>
+        </tr>`;
+        tbody.innerHTML += row;
+    });
+
+    document.getElementById("subTotal").innerText = subTotal.toFixed(2);
+    document.getElementById("cash").innerText = (subTotal + 92.4).toFixed(2); // Example cash
+
+    // Show the receipt and Print Order button
+    document.getElementById("orderReceipt").style.display = "block";
+    document.getElementById("printOrderBtn").style.display = "block";
+});
 
 // Print the receipt
 function printOrder() {
@@ -316,182 +391,3 @@ function printOrder() {
     printWindow.document.close();
     printWindow.print();
 }
-
-document.getElementById('submitOrderBtn').addEventListener('click', async () => {
-    // Example: Defining 'products' array (replace with your actual data if needed)
-    const products = [
-        {
-            name: 'Product 1',
-            description: 'Description for Product 1',
-            price: 100,
-            quantity: 2,
-            total: 200
-        },
-        {
-            name: 'Product 2',
-            description: 'Description for Product 2',
-            price: 150,
-            quantity: 1,
-            total: 150
-        }
-    ];
-
-    // Retrieve data from localStorage
-    const orderData = JSON.parse(localStorage.getItem('orderData')) || {};
-    console.log('Retrieved Order Data from localStorage:', orderData);
-
-    // Retrieve listPrice
-    let listPrice = document.getElementById('list-price').value;
-    console.log('Raw listPrice value:', listPrice);
-    console.log('Type of listPrice:', typeof listPrice);
-
-    // Check if listPrice is a number or string
-    if (typeof listPrice === 'string') {
-        // If listPrice is a string but a valid number (e.g., "100" or "100.50"), convert it to a number
-        listPrice = parseFloat(listPrice) || 0; // If invalid, set to 0
-    }
-    else if (typeof listPrice === 'number') {
-        // If it's already a number, use it directly
-        listPrice = listPrice;
-    } else {
-        // Default to 0 if the value is neither a string nor a number
-        listPrice = 0;
-    }
-
-    console.log('Processed listPrice:', listPrice);
-
-    // Add additional data from the second site
-    const additionalData = {
-        listPrice: listPrice,
-        totalItems: parseInt(document.getElementById('total-items').value || 0, 10),
-        totalAmount: parseFloat(document.getElementById('total-amount').value || 0),
-        paymentMode: document.getElementById('payment-mode').value,
-        paymentImage: document.getElementById('payment-image').value,
-        remarks: document.getElementById('remarks').value,
-        products: products, // Now the products variable is defined
-    };
-
-    // Merge the data
-    const finalData = { ...orderData, ...additionalData };
-
-    // Log the final data being sent to the database
-    console.log('Data being sent to the database:', finalData);
-
-    try {
-        // Upload the merged data
-        const response = await fetch('https://earthph.sdevtech.com.ph/orders/createOrder', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(finalData) // Send order data as JSON
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-            alert('Order created successfully');
-            localStorage.removeItem('orderData'); // Clear localStorage if upload is successful
-        } else {
-            // Log the error message from the API
-            console.error('Error creating order:', result);
-            alert('Error creating order: ' + result.message || 'Unknown error');
-        }
-    } catch (error) {
-        // Log detailed error in case of request failure
-        console.error('Request error:', error);
-        alert('There was an error with the request.');
-    }
-});
-
-
-
-
-
-
-// Set the current date in the Order Date input field
-// window.onload = function() {
-//     const orderDateInput = document.getElementById("order-date");
-//     const today = new Date().toISOString().split("T")[0]; 
-//     orderDateInput.value = today; 
-// };
-
-
-// Barangay list for "San Fernando, Pampanga"
-// document.getElementById('town-province').addEventListener('change', function() {
-//     var barangayDropdown = document.getElementById('barangay');
-//     var selectedTown = this.value;
-
-//     // Clear existing barangay options
-//     barangayDropdown.innerHTML = '<option value="" selected disabled>Select Barangay</option>';
-
-//     // Enable the barangay dropdown
-//     barangayDropdown.disabled = false;
-
-//     // Define barangays for San Fernando Pampanga and Makati
-//     var barangays = {
-//         'san-fernando-pampanga': [
-//             'Alasas', 'Baliti', 'Bulaon', 'Calulut', 'Dela Paz Norte', 'Dela Paz Sur', 
-//             'Del Carmen', 'Del Pilar', 'Del Rosario', 'Dolores', 'Juliana', 'Lara', 
-//             'Lourdes', 'Magliman', 'Maimpis', 'Malino', 'Malpitic', 'Pandaras', 
-//             'Panipuan', 'Pulung Bulu', 'Pulung Cacutud', 'Quebiawan', 'Saguin', 
-//             'San Agustin', 'San Felipe', 'San Isidro', 'San Jose', 'San Juan', 
-//             'San Nicolas', 'Santa Lucia', 'Santa Teresita', 'Santo Niño', 
-//             'Sindalan', 'Telabastagan', 'Sinulatan II'
-//         ],
-//         'makati': [
-//             'Bel-Air', 'Carmona', 'Cembo', 'Comembo', 'Dasmariñas', 'Forbes Park', 
-//             'Guadalupe Nuevo', 'Guadalupe Viejo', 'Kasilawan', 'La Paz', 
-//             'Magallanes', 'Olympia', 'Poblacion', 'Post Proper Northside', 
-//             'Post Proper Southside', 'San Antonio', 'San Isidro', 'San Lorenzo', 
-//             'Santa Cruz', 'Singkamas', 'Tejeros', 'Urdaneta', 'Valenzuela', 
-//             'Bangkal', 'East Rembo', 'Pio del Pilar', 'Pembo', 'Pitogo', 'Rizal', 
-//             'South Cembo', 'West Rembo'
-//         ]
-//     };
-
-//     // Populate barangay dropdown based on selected town
-//     if (barangays[selectedTown]) {
-//         barangays[selectedTown].forEach(function(brgy) {
-//             var option = document.createElement('option');
-//             option.value = brgy.toLowerCase().replace(/\s+/g, '-');
-//             option.textContent = brgy;
-//             barangayDropdown.appendChild(option);
-//         });
-//     }
-// });
-
-// document.getElementById("orderForm").addEventListener("submit", function (e) {
-//     e.preventDefault(); // Prevent the default form submission
-
-    
-
-//     // Example items for the receipt
-//     const items = [
-//         { name: "Lorem ipsum", qty: 1, price: 9.2 },
-//         { name: "Lorem ipsum dolor sit", qty: 1, price: 19.2 },
-//         { name: "Lorem ipsum dolor sit amet", qty: 1, price: 15.0 },
-//     ];
-
-//     let subTotal = 0;
-//     const tbody = document.getElementById("orderDetails");
-//     tbody.innerHTML = ""; // Clear previous items
-
-//     items.forEach(item => {
-//         subTotal += item.price;
-
-//         const row = `<tr>
-//             <td>${item.name}</td>
-//             <td>${item.qty}</td>
-//             <td>₱${item.price.toFixed(2)}</td>
-//         </tr>`;
-//         tbody.innerHTML += row;
-//     });
-
-//     document.getElementById("subTotal").innerText = subTotal.toFixed(2);
-//     document.getElementById("cash").innerText = (subTotal + 92.4).toFixed(2); // Example cash
-
-//     // Show the receipt and Print Order button
-//     document.getElementById("orderReceipt").style.display = "block";
-//     document.getElementById("printOrderBtn").style.display = "block";
-// });
