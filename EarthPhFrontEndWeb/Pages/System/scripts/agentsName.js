@@ -3,6 +3,7 @@ const usertoken = localStorage.getItem('authToken');
 console.log("userRole", userRole);
 console.log("usertoken", usertoken);
 // Fetch the users data from the server
+
 fetch('https://earthph.sdevtech.com.ph/users/getUsers')
     .then(response => {
         if (!response.ok) {

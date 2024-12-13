@@ -11,6 +11,7 @@ var discountInput = document.getElementById('discount');
 var totalAmountInput = document.getElementById('total-amount');
 var proofOfPaymentContainer = document.querySelector('.proof-of-payment-container'); // Corrected selector
 var modeOfPayment = document.getElementById('payment-mode');
+let products = [];
 
 let submitOrderBtn = document.getElementById('submitOrderBtn');
 // Function to open the modal when "Add Item" is clicked
@@ -48,7 +49,7 @@ function submitLog() {
 
     // Collect product data from dynamically generated product details
     let productDetailsContainer = document.getElementById("product-details");
-    let products = [];
+
 
     // Get all the product details
     let productDetails = productDetailsContainer.querySelectorAll(".product-detail");
@@ -242,7 +243,7 @@ submitProductsBtn.onclick = function() {
     // Display the total number of items and total price
     totalItemsInput.value = totalItemCount;
     listPriceInput.value = `₱${totalPrice.toFixed(2)}`;
-
+    totalAmountInput.value = `₱${totalPrice.toFixed(2)}`;
     // Calculate discounted total (default to totalPrice if no discount is applied)
     // let discount = parseFloat(discountInput.value) || 0;
     // let discountedTotal = totalPrice - (totalPrice * (discount / 100));
@@ -308,50 +309,15 @@ function printOrder() {
 
 document.getElementById('submitOrderBtn').addEventListener('click', async () => {
     // Example: Defining 'products' array (replace with your actual data if needed)
-    const products = [
-        {
-            name: 'Product 1',
-            description: 'Description for Product 1',
-            price: 100,
-            quantity: 2,
-            total: 200
-        },
-        {
-            name: 'Product 2',
-            description: 'Description for Product 2',
-            price: 150,
-            quantity: 1,
-            total: 150
-        }
-    ];
 
     // Retrieve data from localStorage
     const orderData = JSON.parse(localStorage.getItem('orderData')) || {};
     console.log('Retrieved Order Data from localStorage:', orderData);
 
-    // Retrieve listPrice
-    let listPrice = document.getElementById('list-price').value;
-    console.log('Raw listPrice value:', listPrice);
-    console.log('Type of listPrice:', typeof listPrice);
-
-    // Check if listPrice is a number or string
-    if (typeof listPrice === 'string') {
-        // If listPrice is a string but a valid number (e.g., "100" or "100.50"), convert it to a number
-        listPrice = parseFloat(listPrice) || 0; // If invalid, set to 0
-    }
-    else if (typeof listPrice === 'number') {
-        // If it's already a number, use it directly
-        listPrice = listPrice;
-    } else {
-        // Default to 0 if the value is neither a string nor a number
-        listPrice = 0;
-    }
-
-    console.log('Processed listPrice:', listPrice);
 
     // Add additional data from the second site
     const additionalData = {
-        listPrice: listPrice,
+        listPrice: listPriceInput,
         totalItems: parseInt(document.getElementById('total-items').value || 0, 10),
         totalAmount: parseFloat(document.getElementById('total-amount').value || 0),
         paymentMode: document.getElementById('payment-mode').value,

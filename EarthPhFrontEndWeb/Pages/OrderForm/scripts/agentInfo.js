@@ -30,3 +30,48 @@ document.getElementById('confirm-button').addEventListener('click', () => {
     // Redirect to the next page
     window.location.href = 'https://earthph.sdevtech.com.ph/OrderForm/Order-Info.html'; // Replace with your desired link
 });
+
+async function fetchAndPopulateDropdowns() {
+    try {
+        const response = await fetch('https://earthph.sdevtech.com.ph/users/getUsers');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const users = data.users;
+
+        // Populate agents
+        const agents = users.filter(user => user.role === 'agent');
+        const agentSelect = document.getElementById('agent-name');
+        agentSelect.innerHTML = '';
+        agents.forEach(agent => {
+            const option = document.createElement('option');
+            option.value = agent._id;
+            option.textContent = `${agent.firstName} ${agent.lastName}`;
+            agentSelect.appendChild(option);
+        });
+
+        // Populate team leaders
+        const teamLeaders = users.filter(user => user.role === 'teamLeader');
+        const teamLeaderSelect = document.getElementById('team-leader-name');
+        teamLeaderSelect.innerHTML = '';
+        teamLeaders.forEach(teamLeader => {
+            const option = document.createElement('option');
+            option.value = teamLeader._id;
+            option.textContent = `${teamLeader.firstName} ${teamLeader.lastName}`;
+            teamLeaderSelect.appendChild(option);
+        });
+
+        console.log('Dropdowns populated successfully!');
+    } catch (error) {
+        console.error('Error fetching and populating dropdowns:', error);
+    }
+}
+
+// Call the function to populate both dropdowns
+fetchAndPopulateDropdowns();
+
+
+// Call the function to populate agents
+fetchAndPopulateAgents();
