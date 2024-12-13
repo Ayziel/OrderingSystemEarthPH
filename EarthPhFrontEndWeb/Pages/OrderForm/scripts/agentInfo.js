@@ -93,3 +93,13 @@ const orderData = {
 
 // Log the data being saved
 console.log('Order Data to save:', orderData);
+
+function logoutUser() {
+    // Remove the token and other user-related data from localStorage
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userID');
+    localStorage.removeItem('userRole');
+    console.log('User logged out.');
+    // Redirect to the login page
+    window.location.href = 'https://earthph.sdevtech.com.ph/System/login.html'; // Adjust path as needed
+}

@@ -16,4 +16,3 @@ document.querySelector(".close-receipt").onclick = function() {
 }
 
 // Handle the submit action for receipt upload
-
