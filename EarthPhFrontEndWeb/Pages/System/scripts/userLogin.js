@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('https://earthph.sdevtech.com.ph/users/getUsers');
             const data = await response.json();
             const users = data.users;
-
+            
             // Find the user with the provided username
             const user = users.find(u => u.userName === userName);
 
@@ -36,14 +36,24 @@ document.addEventListener('DOMContentLoaded', () => {
             // Check if the entered password matches the user's password
             if (user.password === password) { // In production, this should be hashed comparison
                 alert('Login successful');
-                
+
                 // Store the user ID or token in localStorage/sessionStorage
                 localStorage.setItem('authToken', 'user-jwt-token'); // Store user JWT token
-                localStorage.setItem('userID', user.id); // Store user ID (or token)
+                localStorage.setItem('userName', user.userName);
+                localStorage.setItem('userFullName', user.firstName + " " + user.lastName);
+                localStorage.setItem('userTeam', user.team);
+                localStorage.setItem('userID', user._id); // Store user ID (or token)
                 localStorage.setItem('userRole', user.role); // Optionally store the role
 
-                // Redirect to the dashboard or another page
-                window.location.href = 'https://earthph.sdevtech.com.ph/System/index.html'; // Adjust path if necessary
+                // Detect if the user is on a mobile device
+                const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
+
+                // Redirect based on device type
+                if (isMobile) {
+                    window.location.href = 'https://earthph.sdevtech.com.ph/OrderForm/Agent-Info.html'; // Mobile version URL
+                } else {
+                    window.location.href = 'https://earthph.sdevtech.com.ph/System/index.html'; // Desktop version URL
+                }
             } else {
                 alert('Incorrect password.');
             }

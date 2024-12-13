@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     console.log("token", token);
     if (!token) {
-        window.location.href = '/System/log-in.html';  // Redirect to login page if no token
+        window.location.href = 'https://earthph.sdevtech.com.ph/System/login.html';  // Redirect to login page if no token
     }
 });
 
@@ -307,8 +307,8 @@ function chart() {
 
 function getBorderColor(index) {
     const colors = [
-        'rgba(0, 123, 255, 1)', // Blue
         'rgba(255, 99, 132, 1)', // Red
+        'rgba(0, 123, 255, 1)', // Blue
         'rgba(75, 192, 192, 1)', // Green
         'rgba(153, 102, 255, 1)', // Purple
         'rgba(255, 159, 64, 1)',  // Orange
@@ -317,11 +317,11 @@ function getBorderColor(index) {
     return colors[index % colors.length]; // Cycle through colors
 }
 
-// Function to generate a light background color (can be customized)
+// Function to generate a light background color (can be cnustomized)
 function getBackgroundColor(index) {
     const colors = [
-        'rgba(0, 123, 255, 0.2)', 
         'rgba(255, 99, 132, 0.2)', 
+        'rgba(0, 123, 255, 0.2)', 
         'rgba(75, 192, 192, 0.2)', 
         'rgba(153, 102, 255, 0.2)', 
         'rgba(255, 159, 64, 0.2)', 

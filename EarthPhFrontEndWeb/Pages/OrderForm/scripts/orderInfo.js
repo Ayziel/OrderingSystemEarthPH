@@ -16,8 +16,4 @@ document.querySelector(".close-receipt").onclick = function() {
 }
 
 // Handle the submit action for receipt upload
-document.getElementById("submitReceiptBtn").onclick = function() {
-    // Capture the input data and handle the submission logic here
-    console.log("Receipt submitted!");
-  
-}
+

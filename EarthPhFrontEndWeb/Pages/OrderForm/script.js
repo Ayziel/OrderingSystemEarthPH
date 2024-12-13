@@ -1,4 +1,11 @@
 // Get modal and related elements
+const contactNo = document.getElementById('contactNo');
+const issueDate = document.getElementById('issueDate');
+const itemPurchased = document.getElementById('itemPurchased');
+const totalAmount = document.getElementById('totalAmount');
+const paymentMethod = document.getElementById('paymentMethod');
+const status = document.getElementById('status');
+
 var modal = document.getElementById("productModal");
 var addItemBtn = document.getElementById("addItemBtn");
 var closeBtn = document.getElementsByClassName("close")[0];
@@ -11,6 +18,7 @@ var discountInput = document.getElementById('discount');
 var totalAmountInput = document.getElementById('total-amount');
 var proofOfPaymentContainer = document.querySelector('.proof-of-payment-container'); // Corrected selector
 var modeOfPayment = document.getElementById('payment-mode');
+
 let products = [];
 
 let submitOrderBtn = document.getElementById('submitOrderBtn');
@@ -26,27 +34,6 @@ submitOrderBtn.addEventListener('click', async () => {
 
 
 function submitLog() {
-    console.log("clicked");
-
-    // Collect other form data as before
-    // console.log("Agent Name: " + document.getElementById("agent-name").value);
-    // console.log("Team Leader: " + document.getElementById("team-leader").value);
-    // console.log("Area: " + document.getElementById("area").value);
-    // console.log("Order Date: " + document.getElementById("order-date").value);
-    // console.log("Store Name: " + document.getElementById("store-name").value);
-    // console.log("House Number and Street: " + document.getElementById("house-address").value);
-    // console.log("Town and Province: " + document.getElementById("town-province").value);
-    // console.log("Store Code: " + document.getElementById("store-code").value);
-    // console.log("TIN: " + document.getElementById("tin").value);
-    // console.log("Discount Percentage: " + document.getElementById("discount").value);
-    console.log("List Price of Orders: " + document.getElementById("list-price").value);
-
-    console.log("Total Number of Items Bought: " + document.getElementById("total-items").value);
-    console.log("Total Amount: " + document.getElementById("total-amount").value);
-    console.log("Mode of Payment: " + document.getElementById("payment-mode").value);
-    console.log("Proof of Payment Image: " + document.getElementById("payment-image").value);
-    console.log("Remarks: " + document.getElementById("remarks").value);
-
     // Collect product data from dynamically generated product details
     let productDetailsContainer = document.getElementById("product-details");
 
@@ -297,15 +284,6 @@ window.onclick = function(event) {
 }
 
 // Print the receipt
-function printOrder() {
-    const printContents = document.getElementById("orderReceipt").innerHTML;
-    const printWindow = window.open("", "_blank");
-    printWindow.document.write("<html><head><title>Print Order</title></head><body>");
-    printWindow.document.write(printContents);
-    printWindow.document.write("</body></html>");
-    printWindow.document.close();
-    printWindow.print();
-}
 
 document.getElementById('submitOrderBtn').addEventListener('click', async () => {
     // Example: Defining 'products' array (replace with your actual data if needed)
@@ -313,7 +291,6 @@ document.getElementById('submitOrderBtn').addEventListener('click', async () => 
     // Retrieve data from localStorage
     const orderData = JSON.parse(localStorage.getItem('orderData')) || {};
     console.log('Retrieved Order Data from localStorage:', orderData);
-
 
     // Add additional data from the second site
     const additionalData = {
@@ -326,6 +303,14 @@ document.getElementById('submitOrderBtn').addEventListener('click', async () => 
         products: products, // Now the products variable is defined
     };
 
+    // Populate the modal fields with the dynamic values
+    document.getElementById('contactNo').textContent = "098454887";
+    document.getElementById('issueDate').textContent = new Date().toISOString().split('T')[0];
+    document.getElementById('itemPurchased').textContent = parseInt(document.getElementById('total-items').value || 0, 10); // Replace with actual product name
+    document.getElementById('totalAmount').textContent = totalAmountInput.value;
+    document.getElementById('paymentMethod').textContent = document.getElementById('payment-mode').value;
+    document.getElementById('status').textContent = "Paid"; // Adjust as needed
+    console.log("totalamount", totalAmountInput.value)
     // Merge the data
     const finalData = { ...orderData, ...additionalData };
 
@@ -360,93 +345,3 @@ document.getElementById('submitOrderBtn').addEventListener('click', async () => 
 });
 
 
-
-
-
-
-// Set the current date in the Order Date input field
-// window.onload = function() {
-//     const orderDateInput = document.getElementById("order-date");
-//     const today = new Date().toISOString().split("T")[0]; 
-//     orderDateInput.value = today; 
-// };
-
-
-// Barangay list for "San Fernando, Pampanga"
-// document.getElementById('town-province').addEventListener('change', function() {
-//     var barangayDropdown = document.getElementById('barangay');
-//     var selectedTown = this.value;
-
-//     // Clear existing barangay options
-//     barangayDropdown.innerHTML = '<option value="" selected disabled>Select Barangay</option>';
-
-//     // Enable the barangay dropdown
-//     barangayDropdown.disabled = false;
-
-//     // Define barangays for San Fernando Pampanga and Makati
-//     var barangays = {
-//         'san-fernando-pampanga': [
-//             'Alasas', 'Baliti', 'Bulaon', 'Calulut', 'Dela Paz Norte', 'Dela Paz Sur', 
-//             'Del Carmen', 'Del Pilar', 'Del Rosario', 'Dolores', 'Juliana', 'Lara', 
-//             'Lourdes', 'Magliman', 'Maimpis', 'Malino', 'Malpitic', 'Pandaras', 
-//             'Panipuan', 'Pulung Bulu', 'Pulung Cacutud', 'Quebiawan', 'Saguin', 
-//             'San Agustin', 'San Felipe', 'San Isidro', 'San Jose', 'San Juan', 
-//             'San Nicolas', 'Santa Lucia', 'Santa Teresita', 'Santo Niño', 
-//             'Sindalan', 'Telabastagan', 'Sinulatan II'
-//         ],
-//         'makati': [
-//             'Bel-Air', 'Carmona', 'Cembo', 'Comembo', 'Dasmariñas', 'Forbes Park', 
-//             'Guadalupe Nuevo', 'Guadalupe Viejo', 'Kasilawan', 'La Paz', 
-//             'Magallanes', 'Olympia', 'Poblacion', 'Post Proper Northside', 
-//             'Post Proper Southside', 'San Antonio', 'San Isidro', 'San Lorenzo', 
-//             'Santa Cruz', 'Singkamas', 'Tejeros', 'Urdaneta', 'Valenzuela', 
-//             'Bangkal', 'East Rembo', 'Pio del Pilar', 'Pembo', 'Pitogo', 'Rizal', 
-//             'South Cembo', 'West Rembo'
-//         ]
-//     };
-
-//     // Populate barangay dropdown based on selected town
-//     if (barangays[selectedTown]) {
-//         barangays[selectedTown].forEach(function(brgy) {
-//             var option = document.createElement('option');
-//             option.value = brgy.toLowerCase().replace(/\s+/g, '-');
-//             option.textContent = brgy;
-//             barangayDropdown.appendChild(option);
-//         });
-//     }
-// });
-
-// document.getElementById("orderForm").addEventListener("submit", function (e) {
-//     e.preventDefault(); // Prevent the default form submission
-
-    
-
-//     // Example items for the receipt
-//     const items = [
-//         { name: "Lorem ipsum", qty: 1, price: 9.2 },
-//         { name: "Lorem ipsum dolor sit", qty: 1, price: 19.2 },
-//         { name: "Lorem ipsum dolor sit amet", qty: 1, price: 15.0 },
-//     ];
-
-//     let subTotal = 0;
-//     const tbody = document.getElementById("orderDetails");
-//     tbody.innerHTML = ""; // Clear previous items
-
-//     items.forEach(item => {
-//         subTotal += item.price;
-
-//         const row = `<tr>
-//             <td>${item.name}</td>
-//             <td>${item.qty}</td>
-//             <td>₱${item.price.toFixed(2)}</td>
-//         </tr>`;
-//         tbody.innerHTML += row;
-//     });
-
-//     document.getElementById("subTotal").innerText = subTotal.toFixed(2);
-//     document.getElementById("cash").innerText = (subTotal + 92.4).toFixed(2); // Example cash
-
-//     // Show the receipt and Print Order button
-//     document.getElementById("orderReceipt").style.display = "block";
-//     document.getElementById("printOrderBtn").style.display = "block";
-// });

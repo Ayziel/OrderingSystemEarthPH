@@ -302,9 +302,6 @@
       
       <!-- Submit Survey Button -->
       <button type="button" id="submitSurveyBtn">Submit Survey</button>
-
-
-      
     </form>
   </div>
 </div>
@@ -325,27 +322,26 @@
             <!-- Receipt Details Placeholder -->
             <div class="receipt-details-receipt">
                 <p><strong>Elliss:</strong></p>
-                <p>Contact No: +0921388200</p>
+                <p>Contact No: <span id="contactNo">+0921388200</span></p>
                 <br>
                 <p><strong>RECEIPT</strong></p>
                 <hr>
-                <p><strong>IssueDate:</strong> 2023-08-15</p>
-                <p><strong>Item Purchased:</strong> Product XYZ</p>
-                <p><strong>Total Amount:</strong> PHP 1,500.00</p>
-                <p><strong>Payment Method:</strong> Credit Card</p>
-                <p><strong>Status:</strong> Paid</p>
+                <p><strong>IssueDate:</strong> <span id="issueDate">2023-08-15</span></p>
+                <p><strong>Item Purchased:</strong> <span id="itemPurchased">Product XYZ</span></p>
+                <p><strong>Total Amount:</strong> <span id="totalAmount">PHP 1,500.00</span></p>
+                <p><strong>Payment Method:</strong> <span id="paymentMethod">Credit Card</span></p>
+                <p><strong>Status:</strong> <span id="status">Paid</span></p>
             </div>
-            
+        
             <!-- Print Receipt Button -->
             <button id="printReceiptBtn">Print Receipt</button>
         
             <!-- Close Button -->
             <button class="close-receipt">Close</button>
         </div>
+        
     </div>
     
-    
-  
   <script src="./scripts/orderInfo.js"></script>
     <script src="script.js"></script>   
 
