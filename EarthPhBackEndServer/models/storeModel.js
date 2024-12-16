@@ -5,6 +5,14 @@ const storeSchema = new mongoose.Schema({
     type: String,
     required: true // Store name is required
   },
+  firstName: {
+    type: String,
+    required: true // First name of the contact person is required
+  },
+  lastName: {
+    type: String,
+    required: true // Last name of the contact person is required
+  },
   address: {
     type: String,
     required: true // Address is required
@@ -17,12 +25,10 @@ const storeSchema = new mongoose.Schema({
     type: String,
     required: false // Optional email field
   },
-  products: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product' // Reference to products
-    }
-  ],
+  status: {
+    type: String,
+    required: false // Optional status field
+  },
   createdAt: {
     type: Date,
     default: Date.now // Automatically set creation date

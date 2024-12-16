@@ -1,0 +1,31 @@
+/* Form layout */
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;  /* Space between columns */
+    margin-bottom: 20px;
+  }
+  
+  .column {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  
+  .input-box {
+    margin-bottom: 16px;
+  }
+  
+  .input-box select, .input-box input {
+    position: relative;
+    height: 50px;
+    width: 100%; /* Adjust width to make it span the column */
+    outline: none;
+    font-size: 1rem;
+    color: #707070;
+    margin-top: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0 15px;
+  }
+  

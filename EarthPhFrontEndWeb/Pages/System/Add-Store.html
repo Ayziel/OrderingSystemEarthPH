@@ -6,7 +6,8 @@
 
     <!----======== CSS ======== -->
     <link rel="stylesheet" href="./styles/style.css">
-    <link rel="stylesheet" href="./styles/navbar.css">
+     <link rel="stylesheet" href="./styles/navbar.css">
+     <link rel="stylesheet" href="./styles/addStore.css">
     <!----===== Icons ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
@@ -36,7 +37,7 @@
         <!-- duplicate or remove this li tag if you want to add or remove navlink with submenu -->
         <!-- start -->
         <li class="item">
-          <a href="https://earthph.sdevtech.com.ph/System/index.html" class="nav_link">
+          <a href="#" class="nav_link">
             <span class="navlink_icon">
               <i class="bx bx-grid-alt"></i>
             </span>
@@ -47,7 +48,7 @@
         <!-- duplicate this li tag if you want to add or remove  navlink with submenu -->
         <!-- start -->
         <li class="item">
-          <div href="#" class="nav_link submenu_item">
+          <div href="https://earthph.sdevtech.com.ph/System/index.html" class="nav_link submenu_item">
             <span class="navlink_icon">
               </i><i class='bx bx-cart-alt'></i>
             </span>
@@ -101,6 +102,7 @@
           <ul class="menu_items submenu">
             <a href="https://earthph.sdevtech.com.ph/System/Add-Agent.html" class="nav_link sublink">Add Agent</a>
             <a href="https://earthph.sdevtech.com.ph/System/Add-Product.html" class="nav_link sublink">Add Products</a>
+            <a href="https://earthph.sdevtech.com.ph/System/Add-Store.html" class="nav_link sublink">Add Store</a>
           </ul>
         </li>
         <!-- end -->
@@ -121,84 +123,79 @@
   </nav>
 
     <section class="dashboard">
-      <div class="dash-content">
-          <div class="activity">
-              <div class="title">
-                  <span class="text"><i class='bx bxs-add-to-queue'></i>
-                      Add Product
-                  </span>
-              </div>
-      
-              <form action="#" class="form" enctype="multipart/form-data">
-                  <div class="column">
+        <div class="dash-content">
+            <div class="activity">
+                <div class="title">
+                    <span class="text"><i class='bx bx-store' ></i>
+                        Add Store
+                    </span>
+                </div>
+        
+                <form action="#" class="form" id="userForm">
+                  <div class="form-row">
+                    <div class="column">
                       <div class="input-box">
-                          <label>Product</label>
-                          <input type="text" placeholder="Enter" required />
+                        <label for="storeAddress">Address</label>
+                        <input type="text" id="storeAddress" placeholder="Enter store address" required />
                       </div>
-                  </div>
-                  <div class="column">
                       <div class="input-box">
-                          <label>Product Name</label>
-                          <input type="text" placeholder="Enter product name" required />
+                        <label for="storeName">Store Name</label>
+                        <input type="text" id="storeName" placeholder="Enter store name" required />
                       </div>
+                    </div>
+                
+                    <div class="column">
+                      <div class="input-box">
+                        <label for="role">Status</label>
+                        <select id="role" required class="roles">
+                          <option value="" disabled selected>Select status</option>
+                          <option value="agent">Open</option>
+                          <option value="teamLeader">Close</option>
+                        </select>
+                      </div>
+                      <div class="input-box">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" placeholder="Enter first name" required />
+                      </div>
+                    </div>
                   </div>
+                
+                  <div class="form-row">
+                    <div class="column">
+                      <div class="input-box">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" placeholder="Enter last name" required />
+                      </div>
+                      <div class="input-box">
+                        <label for="phoneNumber">Phone Number</label>
+                        <input type="number" id="phoneNumber" placeholder="Enter phone number" required />
+                      </div>
+                    </div>
+                
+                    <div class="column">
+                      <div class="input-box">
+                        <label for="workPhone">Work Phone</label>
+                        <input type="number" id="workPhone" placeholder="Enter work phone" />
+                      </div>
+                      <div class="input-box">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter email address" required />
+                      </div>
+                    </div>
+                  </div>
+                
+                  <!-- Add or Update Button -->
                   <div class="input-box">
-                      <label>Product Description</label>
-                      <input type="text" placeholder="Enter product description" required />
+                    <button type="submit" class="btn-add-update">Add Store</button>
                   </div>
-                  <div class="column">
-                      <div class="input-box">
-                          <label>Brand</label>
-                          <input type="text" placeholder="Enter brand name" required />
-                      </div>
-                      <div class="input-box">
-                          <label>Product Category</label>
-                          <div class="select-box">
-                              <select required>
-                                  <option hidden>Select Category</option>
-                                  <option value="Alpha">Bath</option>
-                                  <option value="Delta">Kitchen</option>
-                                  <option value="Gamma">Bedroom</option>
-                                  <option value="Betta">Disinfectant</option>
-                              </select>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="column">
-                      <div class="input-box">
-                          <label>Manufacturer</label>
-                          <input type="text" placeholder="Enter manufacturer" required />
-                      </div>
-                  </div>
-                  <div class="column">
-                      <div class="input-box">
-                          <label>Price</label>
-                          <input type="number" placeholder="Enter Price" required />
-                      </div>
-                      <div class="input-box">
-                          <label>Quantity</label>
-                          <input type="number" placeholder="Enter Quantity" required />
-                      </div>
-                  </div>
-                  
-                  <!-- Image upload input -->
-                   <div class="column">
-                      <div class="input-box">
-                          <label for="productImageInput" class="file-upload-btn">
-                              Choose Product Image
-                          </label>
-                          <input type="file" id="productImageInput" name="productImage" accept="image/*" style="display: none;" />
-                      </div>
-                  </div> 
-                  
-                  <button type="submit">Submit</button>
-              </form>
-          </div>
-      </div>
-  </section>
-  
+                </form>
+                
+                
+                
+        </div>
+    </section>
 
-    <script src="./scripts/script.js"></script>
-    <script src="./scripts/addProduct.js"></script>
+    <script src="./scripts/script.js"></script>    
+    <script src="./scripts/addStore.js"></script>  
 </body>
 </html>
