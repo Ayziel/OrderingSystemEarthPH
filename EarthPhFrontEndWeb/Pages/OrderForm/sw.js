@@ -1,16 +1,17 @@
 const CACHE_NAME = "order-management-cache-v1";
 const urlsToCache = [
-  "./Agent-info.html",
-  "./Order-info.html",
-  "./Product-Preference.html",
-  "./styles/agentInfo.css",
-  "./styles/orderInfo.css",
-  "./styles/productPreference.css",
-  "./script.js",
-  "./scripts/orderInfo.js",
-  "./scripts/agentInfo.js",
+  "/OrderForm/Agent-info.html",  // Full paths for the service worker
+  "/OrderForm/Order-info.html",
+  "/OrderForm/Product-Preference.html",
+  "/OrderForm/styles/agentInfo.css",
+  "/OrderForm/styles/orderInfo.css",
+  "/OrderForm/styles/productPreference.css",
+  "/OrderForm/script.js",
+  "/OrderForm/scripts/orderInfo.js",
+  "/OrderForm/scripts/agentInfo.js",
   // Add other JS and CSS files here
 ];
+
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
