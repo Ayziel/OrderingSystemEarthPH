@@ -3,9 +3,10 @@
 // Function to fetch the stores data
 async function getStores() {
     try {
-        const response = await fetch('https://earthph.sdevtech.com.ph/users/getStores');
+        const response = await fetch('https://earthph.sdevtech.com.ph/stores/getStores');
         if (response.ok) {
-            const storesData = await response.json();  // assuming the data is in JSON format
+            const storesData = await response.json();
+            console.log(storesData); // Add this line to log the response
             populateStoresTable(storesData);
         } else {
             console.error('Error fetching stores data:', response.status);
@@ -14,6 +15,7 @@ async function getStores() {
         console.error('Error fetching stores data:', error);
     }
 }
+
 
 // Function to populate the table with stores data
 function populateStoresTable(stores) {
@@ -24,19 +26,19 @@ function populateStoresTable(stores) {
     stores.forEach(store => {
         const row = document.createElement('tr');
         
-        // Create table cells for address, store name, and status
-        const addressCell = document.createElement('td');
-        addressCell.textContent = store.address || 'N/A';
+        // Create table cells for name, address, and status
+        const nameCell = document.createElement('td');
+        nameCell.textContent = store.name || 'N/A';  // store.name corresponds to the field in your data
         
-        const storeNameCell = document.createElement('td');
-        storeNameCell.textContent = store.storeName || 'N/A';
+        const addressCell = document.createElement('td');
+        addressCell.textContent = store.address || 'N/A';  // store.address corresponds to the field in your data
         
         const statusCell = document.createElement('td');
-        statusCell.textContent = store.status || 'N/A';
+        statusCell.textContent = store.status || 'N/A';  // store.status corresponds to the field in your data
         
         // Append cells to the row
+        row.appendChild(nameCell);
         row.appendChild(addressCell);
-        row.appendChild(storeNameCell);
         row.appendChild(statusCell);
         
         // Append the row to the table body
