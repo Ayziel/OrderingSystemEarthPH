@@ -6,11 +6,13 @@
 
     <!----======== CSS ======== -->
     <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/agentlist.css">
      
     <!----===== Icons ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="./styles/navbar.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 
     <title>EarthPH</title>
 </head>
@@ -163,7 +165,28 @@
       </div>
       
       
-      
+          <!-- Modal -->
+    <!-- Modal -->
+<!-- Modal -->
+<div id="userModal" class="modal">
+  <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>User Details</h2>
+      <table>
+          <tbody>
+              <tr><td>First Name:</td><td id="modal-firstName"></td></tr>
+              <tr><td>Last Name:</td><td id="modal-lastName"></td></tr>
+              <tr><td>Phone Number:</td><td id="modal-phoneNumber"></td></tr>
+              <tr><td>Email:</td><td id="modal-email"></td></tr>
+              <tr><td>Team:</td><td id="modal-team"></td></tr>
+              <tr><td>Role:</td><td id="modal-role"></td></tr>
+          </tbody>
+      </table>
+  </div>
+</div>
+
+
+
       
     </section>
 
