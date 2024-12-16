@@ -8,6 +8,21 @@
     <!-- Linking the CSS file -->
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/orderInfo.css">
+    <link rel="manifest" href="./manifest.json">
+
+    <script>
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker
+            .register("/OrderForm/sw.js")
+            .then((registration) => {
+              console.log("Service Worker registered with scope:", registration.scope);
+            })
+            .catch((error) => {
+              console.error("Service Worker registration failed:", error);
+            });
+        }
+      </script>
+      
 </head>
 <body>
     <div class="form-container">
