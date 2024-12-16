@@ -8,6 +8,7 @@
     <!----======== CSS ======== -->
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/navbar.css">
+    <link rel="stylesheet" href="./styles/agentPerformance.css">
     <link href="./styles/dashboard/css/style.css" rel="stylesheet">
     <link href="./styles/dashboard/css/helper.css" rel="stylesheet">
      <!-- Bootstrap Core CSS -->
@@ -274,8 +275,32 @@
                 <!-- End PAge Content -->
             </div>
             <!-- End Container fluid  -->
+            <div class="table-container">
+              <h2>Agent Performance</h2>
+              <table>
+                  <thead>
+                      <tr>
+                          <th></th>
+                          <th>Name</th>
+                          <th>Team</th>
+                          <th>Sales</th>
+                          <th>Overall Performance</th>
+                      </tr>
+                  </thead>
+                  <tbody id="agent-performance">
+                      <!-- Agent performance rows will be auto-populated here -->
+                  </tbody>
+              </table>
+          </div>
+          
+          
+          
+              
+
+            </div>
         </div>
         <!-- End Page wrapper  -->
+         
     </div>
     <!-- End Wrapper -->
     <!--Menu sidebar -->
@@ -285,6 +310,5 @@
 
     <script src="./scripts/script.js"></script>
     <script src="./scripts/dashboard.js"></script>
-
 </body>
 </html>
