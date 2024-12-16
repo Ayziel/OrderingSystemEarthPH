@@ -8,5 +8,7 @@ router.get('/getProduct', productController.getProduct);
 // Route to create a new product
 router.post('/createProduct', productController.createProduct);
 
-module.exports = router;
+// Route to update a product
+router.put('/updateProduct', productController.updateProduct);  // Add this line for the PUT request
 
+module.exports = router;
