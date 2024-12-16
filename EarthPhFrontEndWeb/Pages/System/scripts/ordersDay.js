@@ -70,37 +70,92 @@ function populateOrders(orders) {
 
 
 document.getElementById('export-btn').addEventListener('click', exportToExcel);
-
 function exportToExcel() {
-    const ordersBody = document.querySelector('.orders-body'); // Target the orders table body
-    if (!ordersBody) {
-        console.log('No orders data found!');
-        return;
-    }
+    // Mocked database for demonstration (replace with your real database fetch logic)
+    const ordersData = [
+        {
+            _id: "675f84f0d5910ae36aece7fa",
+            agentName: "sdevName SdevSurname",
+            teamLeaderName: "Aljhon Franco",
+            area: "TANAY RIZAL",
+            orderDate: "2024-12-16T00:00:00.000+00:00",
+            storeName: "Inasal",
+            houseAddress: "# 54, Lapu Lapu",
+            townProvince: "lourdess",
+            storeCode: "code2d",
+            tin: "54768d",
+            listPrice: 1000,
+            discount: 0,
+            totalItems: 3,
+            totalAmount: 1500,
+            paymentMode: "credit",
+            paymentImage: "",
+            remarks: "",
+            products: [
+                {
+                    name: "Aerosol Multi-Insect Killer",
+                    description: "Advanced® Aerosol Multi-Insect Killer knocks out and kills mosquitoes,…",
+                    price: 215,
+                    quantity: 1,
+                    total: 215,
+                    _id: "675f84f0d5910ae36aece7fb"
+                },
+                {
+                    name: "Aerosol Mosquito Killer",
+                    description: "Advanced® Aerosol Mosquito Killer has a breakthrough formula with Fast…",
+                    price: 95,
+                    quantity: 1,
+                    total: 95,
+                    _id: "675f84f0d5910ae36aece7fc"
+                },
+                {
+                    name: "Pest Catch Sheet",
+                    description: "Banzai® Pest Catch Sheet contains a super-strong adhesive that is sure…",
+                    price: 120,
+                    quantity: 1,
+                    total: 120,
+                    _id: "675f84f0d5910ae36aece7fd"
+                }
+            ],
+            __v: 0
+        }
+    ];
 
     const rows = [];
-    const headers = ['No.', 'Store Name', 'Agent Name', 'Order Date', 'Area', 'Total Amount']; // Define table headers
+    const headers = [
+        "No.",
+        "Agent Name",
+        "Store Name",
+        "Order Date",
+        "Area",
+        "Total Amount",
+        "Payment Mode",
+        "Products"
+    ];
     rows.push(headers);
 
-    const orderRows = ordersBody.querySelectorAll('tr'); // Get all rows of orders
-
-    orderRows.forEach(row => {
-        const rowData = [];
-        row.querySelectorAll('td').forEach(cell => {
-            rowData.push(cell.textContent.trim()); // Get the text from each cell
-        });
-        rows.push(rowData); // Add row data to rows array
+    ordersData.forEach((order, index) => {
+        const rowData = [
+            index + 1,
+            order.agentName,
+            order.storeName,
+            new Date(order.orderDate).toLocaleString(), // Format date
+            order.area,
+            order.totalAmount,
+            order.paymentMode,
+            order.products.map(product => `${product.name} (Qty: ${product.quantity}, Price: ${product.price})`).join("; ") // Format product details
+        ];
+        rows.push(rowData);
     });
 
     // Create a workbook and sheet
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet(rows);
-    XLSX.utils.book_append_sheet(wb, ws, "Today's Orders");
+    XLSX.utils.book_append_sheet(wb, ws, "Orders Export");
 
     // Trigger the download of the Excel file
-    XLSX.writeFile(wb, 'Orders_Today.xlsx');
+    XLSX.writeFile(wb, 'Orders_Export.xlsx');
 }
-
 
 
 const modal = document.getElementById('orderModal');
@@ -111,52 +166,91 @@ function openModal(order) {
     const modal = document.getElementById('order-modal');
     const modalContent = modal.querySelector('.modal-content');
 
-    // Populate modal with order data
+    // Create table rows for order details
+    const orderDetailsHTML = `
+        <h3>Order Details</h3>
+        <table>
+            <tr>
+                <th>Store Name</th>
+                <td>${order.storeName || 'No store name'}</td>
+            </tr>
+            <tr>
+                <th>Agent Name</th>
+                <td>${order.agentName || 'No agent name'}</td>
+            </tr>
+            <tr>
+                <th>Team Leader</th>
+                <td>${order.teamLeaderName || 'No team leader'}</td>
+            </tr>
+            <tr>
+                <th>Order Date</th>
+                <td>${order.orderDate
+                    ? new Date(order.orderDate).toLocaleDateString('en-US', { timeZone: 'Asia/Manila' })
+                    : 'No date'}</td>
+            </tr>
+            <tr>
+                <th>Area</th>
+                <td>${order.area || 'No area'}</td>
+            </tr>
+            <tr>
+                <th>House Address</th>
+                <td>${order.houseAddress || 'No house address'}</td>
+            </tr>
+            <tr>
+                <th>Town/Province</th>
+                <td>${order.townProvince || 'No town/province'}</td>
+            </tr>
+            <tr>
+                <th>Total Items</th>
+                <td>${order.totalItems || 0}</td>
+            </tr>
+            <tr>
+                <th>Total Amount</th>
+                <td>${order.totalAmount ? `₱ ${order.totalAmount.toFixed(2)}` : 'No amount'}</td>
+            </tr>
+            <tr>
+                <th>Remarks</th>
+                <td>${order.remarks || 'No remarks'}</td>
+            </tr>
+        </table>
+    `;
+
+    // Add the product details as a table if products exist
     let productsHTML = '';
     if (order.products && order.products.length > 0) {
         productsHTML = `
             <h4>Products:</h4>
-            <ul>
-                ${order.products
-                    .map(
-                        product => `
-                        <li>
-                            <strong>${product.name}:</strong> 
-                            <br>
-                            Price: ₱${product.price.toFixed(2)}<br>
-                            Quantity: ${product.quantity}<br>
-                            Total: ₱${product.total.toFixed(2)}
-                        </li>
-                    `
-                    )
-                    .join('')}
-            </ul>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${order.products
+                        .map(
+                            product => `
+                            <tr>
+                                <td>${product.name}</td>
+                                <td>₱${product.price.toFixed(2)}</td>
+                                <td>${product.quantity}</td>
+                                <td>₱${product.total.toFixed(2)}</td>
+                            </tr>
+                        `
+                        )
+                        .join('')}
+                </tbody>
+            </table>
         `;
     } else {
         productsHTML = `<p>No products available.</p>`;
     }
 
-    modalContent.innerHTML = `
-        <h3>Order Details</h3>
-        <p><strong>Store Name:</strong> ${order.storeName || 'No store name'}</p>
-        <p><strong>Agent Name:</strong> ${order.agentName || 'No agent name'}</p>
-        <p><strong>Team Leader:</strong> ${order.teamLeaderName || 'No team leader'}</p>
-        <p><strong>Order Date:</strong> ${
-            order.orderDate
-                ? new Date(order.orderDate).toLocaleDateString('en-US', { timeZone: 'Asia/Manila' })
-                : 'No date'
-        }</p>
-        <p><strong>Area:</strong> ${order.area || 'No area'}</p>
-        <p><strong>House Address:</strong> ${order.houseAddress || 'No house address'}</p>
-        <p><strong>Town/Province:</strong> ${order.townProvince || 'No town/province'}</p>
-        <p><strong>Total Items:</strong> ${order.totalItems || 0}</p>
-        <p><strong>Total Amount:</strong> ${
-            order.totalAmount ? `₱ ${order.totalAmount.toFixed(2)}` : 'No amount'
-        }</p>
-        <p><strong>Remarks:</strong> ${order.remarks || 'No remarks'}</p>
-        ${productsHTML}
-        <button id="close-modal">Close</button>
-    `;
+    // Combine order details and products into the modal content
+    modalContent.innerHTML = orderDetailsHTML + productsHTML + '<button id="close-modal">Close</button>';
 
     // Show the modal
     modal.style.display = 'block';
@@ -166,4 +260,5 @@ function openModal(order) {
         modal.style.display = 'none';
     });
 }
+
 
