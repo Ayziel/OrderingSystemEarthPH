@@ -100,4 +100,31 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'https://earthph.sdevtech.com.ph/System/login.html';  // Adjust path accordingly
     }
   });
+
+  
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the icon that opens the modal
+var helpIcon = document.getElementById("help-icon");
+
+// Get the <span> element that closes the modal
+var closeModal = document.getElementById("close-modal");
+
+// When the user clicks on the icon, open the modal
+helpIcon.onclick = function() {
+    modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+closeModal.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
   

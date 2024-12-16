@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { getStores, createStore } = require('../controllers/storeController');
+const { getStores, createOrUpdateStore } = require('../controller/storeController');
 
 // Route to get all stores
 router.get('/getStores', getStores);
 
-// Route to create a new store
-router.post('/createStore', createStore);
+// Route to create or update a store
+router.post('/createOrUpdateStore', createOrUpdateStore);
 
 module.exports = router;
