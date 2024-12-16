@@ -100,3 +100,4 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'https://earthph.sdevtech.com.ph/System/login.html';  // Adjust path accordingly
     }
   });
+  
