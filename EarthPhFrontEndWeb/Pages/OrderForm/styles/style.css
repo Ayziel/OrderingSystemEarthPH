@@ -267,6 +267,18 @@ button:hover {
     background-color: #0056b3;
 }
 
+.icon-container {
+    font-size: 24px; /* Adjust the size of the icon */
+    color: #000; /* Change the color of the icon */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    margin-top: -10px;
+    margin-left: 570px; /* Space between icon and text */
+}
+
+.icon-container:hover {
+    color: #007bff; /* Change color on hover */
+}
+
 /* Adjustments for smaller screens */
 @media (max-width: 600px) {
     .modal-content {
