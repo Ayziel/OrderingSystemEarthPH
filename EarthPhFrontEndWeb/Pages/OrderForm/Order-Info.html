@@ -8,10 +8,147 @@
     <!-- Linking the CSS file -->
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/orderInfo.css">
+    <link rel="stylesheet" href="./styles/agentInfo.css">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
 </head>
 <body>
     <div class="form-container">
-        <h2>New Order</h2>
+        <div class="header-container">
+            <h1>New Order</h1>
+            <div class="icon-container" id="help-icon">
+                <i class='bx bx-help-circle'></i>
+            </div>
+        </div>
+
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="close-modal">&times;</span>
+                <h2>User Manual for Agent Order Form</h2>
+                    <div>
+                        <h3>Introduction</h3>
+                        <p>The Agent Order Form is a web-based tool used for recording order 
+                            details submitted by agents. It ensures accurate and efficient collection 
+                            of key information about the store, agent, and order specifics.</p>
+                        
+                    </div>
+                    <br>
+                    <div>
+                        <h3>Accessing the Form</h3>
+                        <ul>
+                            <li>Open your web browser.</li>
+                            <li>Go to Agent Order Form.</li>
+                            <li>The form will load, displaying multiple 
+                                input fields for agent, store, and order information.</li>
+                        </ul>
+                        <br>
+                    </div>
+                    <br>
+                    <div>
+                        <h3>Field Descriptions and Instructions</h3>
+                        <h4>Agent Name</h4>
+                        <ul>
+                            <li><strong>What it is:</strong> The name of the agent filling out the form.</li>
+                            <li><strong>How to fill:</strong> Type the agent’s full name in the provided field.</li>
+                        </ul>
+                        <br>
+                        <h4>Team Leader Name</h4>
+                        <ul>
+                            <li><strong>What it is:</strong> The name of the agent's team leader.</li>
+                            <li><strong>How to fill:</strong> The name of the agent's team leader.</li>
+                        </ul>
+                        <br>
+                        <h4>Area</h4>
+                        <ul>
+                            <li><strong>What it is:</strong> The geographic location where the store is located.</li>
+                            <li><strong>How to fill:</strong> Specify the area name or location.</li>
+                        </ul>
+                        <br>
+                        <h4>Order Date</h4>
+                        <ul>
+                            <li><strong>What it is:</strong> The date when the order is being placed.</li>
+                            <li><strong>How to fill:</strong> Select the current date or type it in the format (MM/DD/YYYY).</li>
+                        </ul>
+                        <br>
+                        <h4>Store Name</h4>
+                        <ul>
+                            <li><strong>What it is:</strong> The name of the store placing the order.</li>
+                            <li><strong>How to fill:</strong> Enter the store's official name.</li>
+                        </ul>
+                        <br>
+                        <h4>House Number and Street</h4>
+                        <ul>
+                            <li><strong>What it is:</strong> The store’s complete address details, including house/building number and street name.</li>
+                            <li><strong>How to fill:</strong> Input the house number and street name accurately.</li>
+                        </ul>
+                        <br>
+                        <h4>Barangay</h4>
+                        <ul>
+                            <li><strong>What it is:</strong> The barangay where the store is located.</li>
+                            <li><strong>How to fill:</strong> Enter the barangay name.</li>
+                        </ul>
+                        <br>
+                        <h4>Store Code</h4>
+                        <ul>
+                            <li><strong>What it is:</strong> A unique code assigned to the store.</li>
+                            <li><strong>How to fill:</strong> Input the store’s official code. If unsure, contact the team leader.</li>
+                        </ul>
+                        <br>
+                        <h4>TIN (Tax Identification Number)</h4>
+                        <ul>
+                            <li><strong>What it is:</strong> The tax identification number assigned to the store.</li>
+                            <li><strong>How to fill:</strong> Input the TIN number accurately.</li>
+                        </ul>
+                        <br>
+                        <br>
+                    </div>
+                    <div>
+                        <h3>Navigating the Form</h3>
+                        <p>Once all required fields are filled, click the "Next" button to proceed. If any required fields 
+                            are missing, an error message will prompt you to complete them.</p>
+                        <br>
+                    </div>
+                    <div>
+                        <h3>Common Issues and Troubleshooting</h3>
+                        <ul>
+                            <li><strong>Form Not Loading:</strong> Check your internet connection and reload the page.</li>
+                            <li><strong>Input Errors</strong> Ensure all required fields are completed properly.</li>
+                            <li><strong>Incorrect Format for Dates:</strong> Use the MM/DD/YYYY format for date entries.</li>
+                        </ul>
+                        <br>
+                    </div>
+                    <br>
+                    <div>
+                        <h3>Tips for Accurate Submission</h3>
+                        <ul>
+                            <li>Double-checkc all input details before clicking "Next".</li>
+                            <li>Ensure the TIN and store code are correct as these are essential for tracking purposes.</li>
+                        </ul>
+                        <br>
+                    </div>
+                    <br>
+                    <div>
+                        <h3>Frequently Asked Questions (FAQs)</h3>
+                        <ul>
+                            <p><strong>Q1:</strong> What if I don't know the store’s TIN?A1: Contact the team leader or store owner for the correct TIN.</p>
+                            <p><strong>Q2:</strong> Can I edit the form after submission?A2: No, ensure all details are accurate before clicking "Next".</p>
+                            <p><strong>Q3:</strong> What happens if I enter the wrong date?A3: Return to the Order Date field 
+                                and enter the correct date before proceeding.</p>
+                        </ul>
+                        <br>
+                    </div>
+                    <br>
+                    <div>
+                        <h3>Contact for Support</h3>
+                        <p>If you encounter issues that cannot be resolved, please contact the support team at 
+                            <strong>support@example.com</strong> or reach out to your team leader for assistance.</p>
+                        <br>
+                    </div>
+                    
+                    
+                    
+            </div>
+        </div>
 
         <form action="#" enctype="multipart/form-data">
 
