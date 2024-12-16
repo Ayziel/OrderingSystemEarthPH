@@ -29,22 +29,23 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Function to dynamically populate product data
+// Function to dynamically populate product data
 function populateProducts(products) {
-    const productList = document.getElementById('product-list'); // Table body
+    const productList = document.getElementById('product-list');
     const modal = document.getElementById('modal-product');
     const closeModal = modal.querySelector('.close-product');
-    
+
     // Modal content elements
     const modalProductName = document.getElementById('modal-product-name');
     const modalProductDescription = document.getElementById('modal-product-description');
     const modalProductBrand = document.getElementById('modal-product-brand');
     const modalProductPrice = document.getElementById('modal-product-price');
-    
-    const saveButton = document.getElementById('save-product-btn');
+    const editProductButton = document.getElementById('edit-product');
+    const saveProductButton = document.getElementById('save-product');
 
     productList.innerHTML = ''; // Clear existing rows before populating
 
-    let globalCounter = 1; // Global counter for SKUs
+    let globalCounter = 1;
 
     products.forEach(product => {
         const row = document.createElement('tr');
@@ -55,75 +56,80 @@ function populateProducts(products) {
             <td>${truncateText(product.productDescription || 'No description', 50)}</td>
             <td>${truncateText(product.brand || 'No brand', 30)}</td>
             <td>₱ ${product.price ? product.price.toFixed(2) : '0.00'}</td>
-            <td><button class="edit-product-btn" data-id="${product._id}">Edit</button></td>
         `;
 
-        // Add click event to open the product-specific modal with details
         row.addEventListener('click', () => {
+            // When the product is clicked, populate the modal with its details
             modalProductName.textContent = product.productName || 'N/A';
             modalProductDescription.textContent = product.productDescription || 'No description';
             modalProductBrand.textContent = product.brand || 'No brand';
             modalProductPrice.textContent = `₱ ${product.price ? product.price.toFixed(2) : '0.00'}`;
+
             modal.style.display = 'block'; // Show modal
+
+            // Enable editing when the "Edit" button is clicked
+            editProductButton.onclick = () => {
+                modalProductName.contentEditable = true;
+                modalProductDescription.contentEditable = true;
+                modalProductBrand.contentEditable = true;
+                modalProductPrice.contentEditable = true;
+                editProductButton.style.display = 'none';  // Hide the edit button after clicking
+                saveProductButton.style.display = 'inline';  // Show the save button
+            };
+
+            // Save the changes when the "Save" button is clicked
+            saveProductButton.onclick = async () => {
+                // Get the edited values
+                const updatedProduct = {
+                    productSKU: product.productSKU,  // Ensure the product SKU is passed along
+                    productName: modalProductName.textContent,
+                    productDescription: modalProductDescription.textContent,
+                    brand: modalProductBrand.textContent,
+                    price: parseFloat(modalProductPrice.textContent.replace('₱', '').trim())
+                };
+
+                try {
+                    const response = await fetch('https://earthph.sdevtech.com.ph/products/updateProduct', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${usertoken}`  // Send token for authentication
+                        },
+                        body: JSON.stringify(updatedProduct)  // Send the updated product data
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        console.log('Product updated:', data);
+                        modal.style.display = 'none';  // Close modal on successful update
+                    } else {
+                        console.error('Error updating product:', data.message);
+                    }
+                } catch (error) {
+                    console.error('Error updating product:', error);
+                }
+            };
         });
 
         productList.appendChild(row);
     });
 
-    // Open the modal to edit product details
-    const editButtons = document.querySelectorAll('.edit-product-btn');
-    editButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            const productId = e.target.getAttribute('data-id');
-            const product = products.find(p => p._id === productId);
-
-            // Make modal fields editable
-            modalProductName.innerHTML = `<input type="text" value="${product.productName || ''}" id="edit-product-name">`;
-            modalProductDescription.innerHTML = `<textarea id="edit-product-description">${product.productDescription || ''}</textarea>`;
-            modalProductBrand.innerHTML = `<input type="text" value="${product.brand || ''}" id="edit-product-brand">`;
-            modalProductPrice.innerHTML = `<input type="number" value="${product.price || 0}" id="edit-product-price">`;
-            
-            // Show the save button
-            saveButton.style.display = 'inline-block';
-
-            // Save button click event
-            saveButton.onclick = () => {
-                const updatedProduct = {
-                    productName: document.getElementById('edit-product-name').value,
-                    productDescription: document.getElementById('edit-product-description').value,
-                    brand: document.getElementById('edit-product-brand').value,
-                    price: parseFloat(document.getElementById('edit-product-price').value),
-                };
-
-                // Update the product in the database
-                fetch(`https://earthph.sdevtech.com.ph/products/updateProduct/${productId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${usertoken}`,
-                    },
-                    body: JSON.stringify(updatedProduct),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Product updated:', data);
-                    modal.style.display = 'none'; // Close modal
-                    location.reload(); // Reload the page to reflect changes
-                })
-                .catch(error => console.error('Error updating product:', error));
-            };
-        });
-    });
-
-    // Close modal when the close button is clicked
     closeModal.addEventListener('click', () => {
         modal.style.display = 'none';
     });
 
-    // Close modal when clicking outside the modal content
     window.addEventListener('click', event => {
         if (event.target === modal) {
             modal.style.display = 'none';
         }
     });
+}
+
+
+// Example function to update the product data
+function updateProductData(productId, updatedProduct) {
+    // Here, you would typically make an API call to update the product data
+    // For now, we're just logging the updated product
+    console.log(`Updating product ${productId}:`, updatedProduct);
 }
