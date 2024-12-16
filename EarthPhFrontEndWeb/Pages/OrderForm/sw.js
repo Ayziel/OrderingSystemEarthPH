@@ -1,8 +1,8 @@
 const CACHE_NAME = "order-management-cache-v1";
 const urlsToCache = [
-  "Pages/OrderForm/Agent-info.html",
-  "Pages/OrderForm/styles/agentInfo.css",
-  "Pages/OrderForm/scripts/agentInfo.js",
+  "./Agent-info.html",
+  "./styles/agentInfo.css",
+  "./scripts/agentInfo.js",
 ];
 
 self.addEventListener("install", (event) => {
