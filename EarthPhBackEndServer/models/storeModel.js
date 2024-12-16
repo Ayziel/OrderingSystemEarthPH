@@ -18,7 +18,7 @@ const storeSchema = new mongoose.Schema({
     required: true // Address is required
   },
   phone: {
-    type: String,
+    type: Number,
     required: false // Optional phone field
   },
   email: {

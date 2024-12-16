@@ -17,7 +17,7 @@ async function getStores(req, res) {
 async function createOrUpdateStore(req, res) {
   console.log('Request Body:', req.body);
 
-  const { storeId, name, firstName, lastName, address, phone, email, status } = req.body;
+  const { storeId, storeName, firstName, lastName, storeAddress, phoneNumber, workPhone, email, status } = req.body;
 
   // If storeId is provided, it means we're updating an existing store
   try {
@@ -30,11 +30,11 @@ async function createOrUpdateStore(req, res) {
       }
 
       // Update store fields
-      store.name = name || store.name;
+      store.name = storeName || store.name;
       store.firstName = firstName || store.firstName;
       store.lastName = lastName || store.lastName;
-      store.address = address || store.address;
-      store.phone = phone || store.phone;
+      store.address = storeAddress || store.address;
+      store.phone = phoneNumber || store.phone;
       store.email = email || store.email;
       store.status = status || store.status;
 
@@ -44,11 +44,11 @@ async function createOrUpdateStore(req, res) {
 
     // If storeId is not provided, create a new store
     store = new StoreModel({
-      name,
+      name: storeName,
       firstName,
       lastName,
-      address,
-      phone,
+      address: storeAddress,
+      phone: phoneNumber,
       email,
       status
     });
@@ -60,5 +60,6 @@ async function createOrUpdateStore(req, res) {
     res.status(500).json({ message: 'Error creating or updating store', error: err });
   }
 }
+
 
 module.exports = { getStores, createOrUpdateStore };

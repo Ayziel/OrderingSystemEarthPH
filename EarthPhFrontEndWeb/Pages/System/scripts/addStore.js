@@ -16,18 +16,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const firstName = document.getElementById('firstName').value;
         const lastName = document.getElementById('lastName').value;
         const phoneNumber = document.getElementById('phoneNumber').value;
-        const workPhone = document.getElementById('workPhone').value;
         const email = document.getElementById('email').value;
 
+        // Check if any required fields are empty
         if (!storeAddress || !storeName || !status || !firstName || !lastName || !phoneNumber || !email) {
             alert("Please fill in all fields.");
             return;
         }
 
-        // Create a data object to send in the request
-        const storeData = { storeAddress, storeName, status, firstName, lastName, phoneNumber, workPhone, email };
+        // Convert phone numbers to numbers (ensure they're treated as numeric values)
+        const parsedPhoneNumber = parseInt(phoneNumber, 10);
+
+        // Create a data object to send in the request (removed workPhone)
+        const storeData = {
+            storeAddress,
+            storeName,
+            status,
+            firstName,
+            lastName,
+            phoneNumber: parsedPhoneNumber,  // Use parsed phone number here
+            email
+          };
+          
         
-        // Log the data being sent
+        
+        // Log the data being sent for debugging
         console.log('Request Body:', storeData);
 
         try {
@@ -48,7 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Error creating store: ' + result.message);
             }
         } catch (error) {
-            console.error('Error:', error);
+            if (error.response) {
+                console.error('API Error Response:', error.response);
+            } else {
+                console.error('Error:', error);
+            }
             alert('There was an error with the request.');
         }
     });
