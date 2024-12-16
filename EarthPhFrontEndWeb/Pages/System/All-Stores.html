@@ -6,7 +6,8 @@
 
     <!----======== CSS ======== -->
     <link rel="stylesheet" href="./styles/style.css">
-     
+    <link rel="stylesheet" href="./styles/allStores.css">
+      
     <!----===== Icons ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
@@ -154,17 +155,39 @@
             </tbody>
           </table>
 
-          <script src="./scripts/allStores.js"></script>
+     
 
           </div>
       </div>
   </section>
+
+
+  <!-- Modal for displaying store details -->
+  <div id="storeModal" style="display: none;">
+    <div class="modal-content">
+        <button id="closeModal" class="close">X</button>
+        <h2>Store Details</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Field</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody id="modalTableBody">
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
   
   
   
   
 
     <script src="./scripts/script.js"></script>
-    <script src="./scripts/storesBarangay.js"></script>
+    <script src="./scripts/allStores.js"></script>
 </body>
 </html>
