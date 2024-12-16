@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Request Body:', storeData);
 
         try {
-            const response = await fetch('https://earthph.sdevtech.com.ph/stores/createStore', {
+            const response = await fetch('https://earthph.sdevtech.com.ph/stores/createOrUpdateStore', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
