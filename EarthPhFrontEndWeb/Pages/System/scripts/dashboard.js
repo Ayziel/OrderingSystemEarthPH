@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     console.log("token", token);
     if (!token) {
-        window.location.href = 'https://earthph.sdevtech.com.ph/System/login.html';  // Redirect to login page if no token
+        window.location.href = 'https://earthhomecareph.astute.services/System/login.html';  // Redirect to login page if no token
     }
 });
 
@@ -307,12 +307,13 @@ function chart() {
 
 function getBorderColor(index) {
     const colors = [
-        'rgba(255, 99, 132, 1)', // Red
-        'rgba(0, 123, 255, 1)', // Blue
-        'rgba(75, 192, 192, 1)', // Green
+        'rgb(220, 53, 69)', // Red
+        'rgb(23, 162, 184)',   // Light blue
+        'rgb(40, 167, 69)', // Green
         'rgba(153, 102, 255, 1)', // Purple
-        'rgba(255, 159, 64, 1)',  // Orange
-        'rgba(54, 162, 235, 1)'   // Light blue
+        'rgb(255, 193, 7)',  // Orange
+        'rgb(0, 123, 255)', // Blue
+     
     ];
     return colors[index % colors.length]; // Cycle through colors
 }
@@ -321,11 +322,12 @@ function getBorderColor(index) {
 function getBackgroundColor(index) {
     const colors = [
         'rgba(255, 99, 132, 0.2)', 
-        'rgba(0, 123, 255, 0.2)', 
+        'rgba(54, 162, 235, 0.2)',
         'rgba(75, 192, 192, 0.2)', 
         'rgba(153, 102, 255, 0.2)', 
-        'rgba(255, 159, 64, 0.2)', 
-        'rgba(54, 162, 235, 0.2)'
+        'rgba(255, 159, 64, 0.2)',
+        'rgba(0, 123, 255, 0.2)'
+
     ];
     return colors[index % colors.length]; // Cycle through colors
 }
@@ -519,3 +521,70 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Call updateUI with the correct value
+
+
+
+
+// Fetch agent performance data
+fetch('https://earthph.sdevtech.com.ph/users/getUsers')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        const users = data.users;
+
+        // Filter users with role 'agent'
+        const agents = users.filter(user => user.role === "agent");
+
+        // Clear previous data in the table
+        document.getElementById('agent-performance').innerHTML = '';
+
+        // Populate agent performance table
+        agents.forEach(agent => {
+            const row = document.createElement('tr');
+
+            // Image (Random Picsum image)
+            const imageCell = document.createElement('td');
+            const img = document.createElement('img');
+            const randomImageId = Math.floor(Math.random() * 1000) + 1;  // Generate a random image ID
+            img.src = `https://picsum.photos/40/40?random=${randomImageId}`;  // Fetch a random 40x40 image
+            img.classList.add('agent-image');
+            imageCell.appendChild(img);
+            row.appendChild(imageCell);
+
+            // Agent Name
+            const nameCell = document.createElement('td');
+            const nameWrapper = document.createElement('div');
+            nameWrapper.classList.add('agent-name');
+            nameWrapper.textContent = `${agent.firstName} ${agent.lastName}`;
+            nameCell.appendChild(nameWrapper);
+            row.appendChild(nameCell);
+
+            // Team
+            const teamCell = document.createElement('td');
+            teamCell.textContent = agent.team;
+            row.appendChild(teamCell);
+
+            // Sales (Random placeholder for now: between 1000 - 5000)
+            const sales = Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000;
+            const salesCell = document.createElement('td');
+            salesCell.textContent = sales;
+            row.appendChild(salesCell);
+
+            // Overall Performance (Random placeholder for now)
+            const performanceCell = document.createElement('td');
+            const performance = ["Excellent", "Good", "Average"][Math.floor(Math.random() * 3)];  // Random performance label
+            performanceCell.textContent = performance;
+            row.appendChild(performanceCell);
+
+            // Append row to table
+            document.getElementById('agent-performance').appendChild(row);
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching agent performance data:', error);
+        alert('Failed to fetch agent performance data. Please check your server.');
+    });

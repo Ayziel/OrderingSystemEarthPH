@@ -59,7 +59,7 @@ if (window.innerWidth < 768) {
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('authToken');
   if (!token) {
-      window.location.href = 'https://earthph.sdevtech.com.ph/System/login.html';  // Adjust path accordingly
+      window.location.href = 'https://earthhomecareph.astute.services/System/login.html';  // Adjust path accordingly
   }
 });
 
@@ -74,6 +74,6 @@ function logoutUser() {
     localStorage.removeItem('userRole');
     console.log('User logged out.');
     // Redirect to the login page
-    window.location.href = 'https://earthph.sdevtech.com.ph/System/login.html'; // Adjust path as needed
+    window.location.href = 'https://earthhomecareph.astute.services/System/login.html'; // Adjust path as needed
 }
 

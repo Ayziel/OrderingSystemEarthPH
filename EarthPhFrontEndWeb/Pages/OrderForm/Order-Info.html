@@ -8,8 +8,23 @@
     <!-- Linking the CSS file -->
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/orderInfo.css">
-    <link rel="stylesheet" href="./styles/agentInfo.css">
+    <link rel="manifest" href="./manifest.json">
     <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+
+
+    <script>
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker
+            .register("/OrderForm/sw.js")
+            .then((registration) => {
+              console.log("Service Worker registered with scope:", registration.scope);
+            })
+            .catch((error) => {
+              console.error("Service Worker registration failed:", error);
+            });
+        }
+      </script>
+      
 </head>
 <body>
     <div class="form-container">
@@ -476,8 +491,8 @@
             <!-- Close Button -->
             <button class="close-receipt">Close</button>
         </div>
-        
     </div>
+    
     
   <script src="./scripts/orderInfo.js"></script>
     <script src="script.js"></script>   

@@ -12,7 +12,7 @@ document.getElementById("printReceiptBtn").onclick = function() {
 // Close the receipt modal when the 'Close' button is clicked
 document.querySelector(".close-receipt").onclick = function() {
     document.getElementById("receiptModal").style.display = "none";
-    window.location.href = 'https://earthph.sdevtech.com.ph/OrderForm/Product-Preference.html'; // Replace with your desired link
+    window.location.href = 'https://earthhomecareph.astute.services/OrderForm/Product-Preference.html'; // Replace with your desired link
 }
 
 // Handle the submit action for receipt upload
