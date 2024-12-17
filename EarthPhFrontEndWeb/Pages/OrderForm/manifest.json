@@ -1,9 +1,0 @@
-{
-    "name": "Product Preference Survey",
-    "short_name": "Survey",
-    "start_url": "/product-preference.html",
-    "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#4CAF50"
-  }
-  

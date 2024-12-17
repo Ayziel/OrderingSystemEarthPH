@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     console.log("token", token);
     if (!token) {
-        window.location.href = 'https://earthph.sdevtech.com.ph/System/login.html';  // Redirect to login page if no token
+        window.location.href = 'https://earthhomecareph.astute.services/System/login.html';  // Redirect to login page if no token
     }
 });
 

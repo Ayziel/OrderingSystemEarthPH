@@ -50,9 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Redirect based on device type
                 if (isMobile) {
-                    window.location.href = 'https://earthph.sdevtech.com.ph/OrderForm/Agent-Info.html'; // Mobile version URL
+                    window.location.href = 'https://earthhomecareph.astute.services/OrderForm/Agent-Info.html'; // Mobile version URL
                 } else {
-                    window.location.href = 'https://earthph.sdevtech.com.ph/System/index.html'; // Desktop version URL
+                    window.location.href = 'https://earthhomecareph.astute.services/System/index.html'; // Desktop version URL
                 }
             } else {
                 alert('Incorrect password.');
