@@ -506,7 +506,7 @@ document.getElementById('updateChart').addEventListener('click', function() {
 //#endregion
 
 function updateUI(totalSales, sales) {
-    document.getElementById("overAllProfit").innerText = totalSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    document.getElementById("overAllProfit").innerText = '₱ ' + totalSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     document.getElementById("sales").innerText = sales;
     document.getElementById("stores").innerText = 0; // Placeholder if stores isn't yet dynamic
     document.getElementById("customers").innerText = agents; // Reference the global variable directly
