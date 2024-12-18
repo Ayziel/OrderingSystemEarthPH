@@ -248,29 +248,6 @@ button:hover {
     border-color: #007BFF;
 }
 
-#productModal {
-    display: none; /* Initially hidden */
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto; /* Center the modal */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 90%; /* Could be more or less, depending on screen size */
-    max-height: 80%; /* Limit the height */
-    overflow-y: auto; /* Enable vertical scrolling */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: Add shadow for better visibility */
-}
-
 /* Submit Button */
 #submitSurveyBtn {
     display: block;
