@@ -121,7 +121,7 @@
   </nav>
 
 <!-- Product Table -->
-<div class="dash-content" style="margin-left: 200px; margin-top: 180px; padding: 0px 100px;">
+<div class="dash-content" style="margin-left: 200px; margin-top: 180px; padding: 0px 100px;"> 
   <div class="activity">
       <div class="title">
           <span class="text">All Products</span>
@@ -136,6 +136,7 @@
                   <th>Description</th>
                   <th>Brand</th>
                   <th>Price</th>
+                  <th>Discount</th> <!-- Added discount column -->
               </tr>
           </thead>
           <tbody id="product-list">
@@ -146,6 +147,7 @@
 </div>
 
 <!-- Modal Specific to Product -->
+<!-- Modal Specific to Product -->
 <div id="modal-product" class="modal-product">
   <div class="modal-product-content">
       <span class="close-product">&times;</span>
@@ -154,16 +156,12 @@
       <p><strong>Description:</strong> <span id="modal-product-description"></span></p>
       <p><strong>Brand:</strong> <span id="modal-product-brand"></span></p>
       <p><strong>Price:</strong> <span id="modal-product-price"></span></p>
+      <p><strong>Discount:</strong> <input type="number" id="modal-product-discount" min="0" max="100" step="1" value="0"> %</p>
       <button id="edit-product">Edit</button>
       <button id="save-product">Save</button>
   </div>
 </div>
 
-    
-  
-  
-  
-    
 
     <script src="./scripts/script.js"></script>
     <script src="./scripts/productList.js"></script>

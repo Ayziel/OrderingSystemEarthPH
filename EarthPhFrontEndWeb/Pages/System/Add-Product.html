@@ -6,6 +6,7 @@
 
     <!----======== CSS ======== -->
     <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/addProduct.css">
     <link rel="stylesheet" href="./styles/navbar.css">
     <!----===== Icons ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
@@ -119,90 +120,114 @@
     </div>
   </nav>
 
-    <section class="dashboard">
-      <div class="dash-content">
-          <div class="activity">
-              <div class="title">
-                  <span class="text"><i class='bx bxs-add-to-queue'></i>
-                      Add Product
-                  </span>
-              </div>
-      
-              <form action="#" class="form" enctype="multipart/form-data">
-                  <div class="column">
-                      <div class="input-box">
-                          <label>Product</label>
-                          <input type="text" placeholder="Enter" required />
-                      </div>
-                  </div>
-                  <div class="column">
-                      <div class="input-box">
-                          <label>Product Name</label>
-                          <input type="text" placeholder="Enter product name" required />
-                      </div>
-                  </div>
-                  <div class="input-box">
-                      <label>Product Description</label>
-                      <input type="text" placeholder="Enter product description" required />
-                  </div>
-                  <div class="column">
-                      <div class="input-box">
-                          <label>Brand</label>
-                          <input type="text" placeholder="Enter brand name" required />
-                      </div>
-                      <div class="input-box">
-                          <label>Product Category</label>
-                          <div class="select-box">
-                              <select required>
-                                  <option hidden>Select Category</option>
-                                  <option value="Alpha">Bath</option>
-                                  <option value="Delta">Kitchen</option>
-                                  <option value="Gamma">Bedroom</option>
-                                  <option value="Betta">Disinfectant</option>
-                              </select>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="column">
-                      <div class="input-box">
-                          <label>Manufacturer</label>
-                          <input type="text" placeholder="Enter manufacturer" required />
-                      </div>
-                  </div>
-                  <div class="column">
-                      <div class="input-box">
-                          <label>Price</label>
-                          <input type="number" placeholder="Enter Price" required />
-                      </div>
-                      <div class="input-box">
-                          <label>Quantity</label>
-                          <input type="number" placeholder="Enter Quantity" required />
-                      </div>
-                  </div>
-                  <div class="column">
+  <section class="dashboard">
+    <div class="dash-content">
+        <div class="activity">
+            <div class="title">
+                <span class="text"><i class='bx bxs-add-to-queue'></i>
+                    Add Product
+                </span>
+            </div>
+    
+            <form action="#" class="form" enctype="multipart/form-data">
+                <div class="column">
                     <div class="input-box">
-                        <label>Discount Percentage</label>
-                        <input type="number" placeholder="Enter Value" required />
-                    </div>
-                    <div class="input-box">
+                        <label>Product</label>
+                        <input type="text" placeholder="Enter" required />
                     </div>
                 </div>
-                  
-                  <!-- Image upload input -->
-                   <div class="column">
-                      <div class="input-box">
-                          <label for="productImageInput" class="file-upload-btn">
-                              Choose Product Image
-                          </label>
-                          <input type="file" id="productImageInput" name="productImage" accept="image/*" style="display: none;" />
+                <div class="column">
+                    <div class="input-box">
+                        <label>Product Name</label>
+                        <input type="text" placeholder="Enter product name" required />
+                    </div>
+                </div>
+                <div class="input-box">
+                    <label>Product Description</label>
+                    <input type="text" placeholder="Enter product description" required />
+                </div>
+                <div class="column">
+                    <div class="input-box">
+                        <label>Brand</label>
+                        <input type="text" placeholder="Enter brand name" required />
+                    </div>
+                    <div class="input-box">
+                        <label>Product Category</label>
+                        <div class="select-box">
+                            <select required>
+                                <option hidden>Select Category</option>
+                                <option value="Alpha">Bath</option>
+                                <option value="Delta">Kitchen</option>
+                                <option value="Gamma">Bedroom</option>
+                                <option value="Betta">Disinfectant</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="input-box">
+                        <label>Manufacturer</label>
+                        <input type="text" placeholder="Enter manufacturer" required />
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="input-box">
+                        <label>Price</label>
+                        <input type="number" placeholder="Enter Price" required />
+                    </div>
+                    <div class="input-box">
+                        <label>Quantity</label>
+                        <input type="number" placeholder="Enter Quantity" required />
+                    </div>
+                </div>
+                <div class="column">
+                  <div class="input-box">
+                      <label>Discount Percentage</label>
+                      <div style="display: flex; gap: 10px;">
+                          <input 
+                              type="number" 
+                              id="discountInput" 
+                              placeholder="Enter Custom Value" 
+                              onchange="syncInputWithDropdown()" 
+                              required 
+                              style="flex: 1;" />
+                          <select 
+                              id="discountDropdown" 
+                              class="discount"
+                              onchange="syncDiscountWithInput()" 
+                              required 
+                              style="width: auto;">
+                              <option hidden>Select Discount</option>
+                              <option value="5">5%</option>
+                              <option value="10">10%</option>
+                              <option value="15">15%</option>
+                              <option value="20">20%</option>
+                              <option value="30">30%</option>
+                              <option value="50">50%</option>
+                              <option value="80">80%</option>
+                              <option value="100">100%</option>
+                          </select>
                       </div>
-                  </div> 
-                  
-                  <button type="submit">Submit</button>
-              </form>
-          </div>
-      </div>
+                  </div>
+                </div>
+                
+                
+                <!-- Image upload input -->
+                <div class="column">
+                    <div class="input-box">
+                        <label for="productImageInput" class="file-upload-btn">
+                            Choose Product Image
+                        </label>
+                        <input type="file" id="productImageInput" name="productImage" accept="image/*" style="display: none;" />
+                    </div>
+                </div> 
+                
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
   </section>
+  
   
 
     <script src="./scripts/script.js"></script>

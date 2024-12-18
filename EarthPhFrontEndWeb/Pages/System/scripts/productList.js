@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Function to dynamically populate product data
-// Function to dynamically populate product data
 function populateProducts(products) {
     const productList = document.getElementById('product-list');
     const modal = document.getElementById('modal-product');
@@ -40,6 +39,7 @@ function populateProducts(products) {
     const modalProductDescription = document.getElementById('modal-product-description');
     const modalProductBrand = document.getElementById('modal-product-brand');
     const modalProductPrice = document.getElementById('modal-product-price');
+    const modalProductDiscount = document.getElementById('modal-product-discount'); // Added discount modal field
     const editProductButton = document.getElementById('edit-product');
     const saveProductButton = document.getElementById('save-product');
 
@@ -50,12 +50,14 @@ function populateProducts(products) {
     products.forEach(product => {
         const row = document.createElement('tr');
 
+        const priceWithDiscount = product.discount ? (product.price - (product.price * product.discount / 100)) : product.price;
+
         row.innerHTML = `
             <td>${globalCounter++}</td>
             <td>${truncateText(product.productName || 'N/A', 30)}</td>
             <td>${truncateText(product.productDescription || 'No description', 50)}</td>
             <td>${truncateText(product.brand || 'No brand', 30)}</td>
-            <td>₱ ${product.price ? product.price.toFixed(2) : '0.00'}</td>
+            <td>₱ ${priceWithDiscount ? priceWithDiscount.toFixed(2) : '0.00'}</td> <!-- Show price after discount -->
         `;
 
         row.addEventListener('click', () => {
@@ -63,7 +65,8 @@ function populateProducts(products) {
             modalProductName.textContent = product.productName || 'N/A';
             modalProductDescription.textContent = product.productDescription || 'No description';
             modalProductBrand.textContent = product.brand || 'No brand';
-            modalProductPrice.textContent = `₱ ${product.price ? product.price.toFixed(2) : '0.00'}`;
+            modalProductPrice.textContent = `₱ ${priceWithDiscount ? priceWithDiscount.toFixed(2) : '0.00'}`; // Show discounted price in modal
+            modalProductDiscount.value = product.discount || ''; // Display discount in modal input field
 
             modal.style.display = 'block'; // Show modal
 
@@ -73,6 +76,7 @@ function populateProducts(products) {
                 modalProductDescription.contentEditable = true;
                 modalProductBrand.contentEditable = true;
                 modalProductPrice.contentEditable = true;
+                modalProductDiscount.disabled = false; // Allow editing of discount
                 editProductButton.style.display = 'none';  // Hide the edit button after clicking
                 saveProductButton.style.display = 'inline';  // Show the save button
             };
@@ -85,7 +89,8 @@ function populateProducts(products) {
                     productName: modalProductName.textContent,
                     productDescription: modalProductDescription.textContent,
                     brand: modalProductBrand.textContent,
-                    price: parseFloat(modalProductPrice.textContent.replace('₱', '').trim())
+                    price: parseFloat(modalProductPrice.textContent.replace('₱', '').trim()),
+                    discount: parseFloat(modalProductDiscount.value) || 0 // Get the discount value
                 };
 
                 try {
@@ -125,7 +130,6 @@ function populateProducts(products) {
         }
     });
 }
-
 
 // Example function to update the product data
 function updateProductData(productId, updatedProduct) {

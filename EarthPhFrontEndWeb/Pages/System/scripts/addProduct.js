@@ -77,3 +77,23 @@ function convertToBase64(file) {
         reader.onerror = error => reject(error);
     });
 }
+
+
+function syncDiscountWithInput() {
+    const discountDropdown = document.getElementById('discountDropdown');
+    const discountInput = document.getElementById('discountInput');
+  
+    // Update input box with the selected percentage value
+    if (discountDropdown.value !== '') {
+        discountInput.value = (discountDropdown.value) ;
+    }
+  }
+  
+  function syncInputWithDropdown() {
+    const discountDropdown = document.getElementById('discountDropdown');
+    const discountInput = document.getElementById('discountInput');
+  
+    // If a custom value is entered, reset the dropdown to a blank option
+    discountDropdown.value = '';
+  }
+  
