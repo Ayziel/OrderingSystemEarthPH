@@ -584,7 +584,3 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
             document.getElementById('agent-performance').appendChild(row);
         });
     })
-    .catch(error => {
-        console.error('Error fetching agent performance data:', error);
-        alert('Failed to fetch agent performance data. Please check your server.');
-    });
