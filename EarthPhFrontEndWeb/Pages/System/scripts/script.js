@@ -1,345 +1,125 @@
-// Get modal and related elements
-const contactNo = document.getElementById('contactNo');
-const issueDate = document.getElementById('issueDate');
-const itemPurchased = document.getElementById('itemPurchased');
-const totalAmount = document.getElementById('totalAmount');
-const paymentMethod = document.getElementById('paymentMethod');
-const status = document.getElementById('status');
+const body = document.querySelector("body");
+const darkLight = document.querySelector("#darkLight");
+const sidebar = document.querySelector(".sidebar");
+const submenuItems = document.querySelectorAll(".submenu_item");
+const sidebarOpen = document.querySelector("#sidebarOpen");
+const sidebarClose = document.querySelector(".collapse_sidebar");
+const sidebarExpand = document.querySelector(".expand_sidebar");
 
-var modal = document.getElementById("productModal");
-var addItemBtn = document.getElementById("addItemBtn");
-var closeBtn = document.getElementsByClassName("close")[0];
-var submitProductsBtn = document.getElementById("submitProductsBtn");
-var selectedCount = document.getElementById('selectedCount');
-var productCountDisplay = document.getElementById('productCount');
-var listPriceInput = document.getElementById('list-price');
-var totalItemsInput = document.getElementById('total-items');
-var discountInput = document.getElementById('discount');
-var totalAmountInput = document.getElementById('total-amount');
-var proofOfPaymentContainer = document.querySelector('.proof-of-payment-container'); // Corrected selector
-var modeOfPayment = document.getElementById('payment-mode');
+sidebarOpen.addEventListener("click", () => sidebar.classList.toggle("close"));
 
-let products = [];
+sidebarClose.addEventListener("click", () => {
+  sidebar.classList.add("close", "hoverable");
+});
+sidebarExpand.addEventListener("click", () => {
+  sidebar.classList.remove("close", "hoverable");
+});
 
-let submitOrderBtn = document.getElementById('submitOrderBtn');
-// Function to open the modal when "Add Item" is clicked
+sidebar.addEventListener("mouseenter", () => {
+  if (sidebar.classList.contains("hoverable")) {
+    sidebar.classList.remove("close");
+  }
+});
+sidebar.addEventListener("mouseleave", () => {
+  if (sidebar.classList.contains("hoverable")) {
+    sidebar.classList.add("close");
+  }
+});
 
-const sizeSelect = document.querySelector('.product-size-select');
-const checkbox = document.querySelector('.product-checkbox');
-const productTotal = document.querySelector('.product-total');
+darkLight.addEventListener("click", () => {
+  body.classList.toggle("dark");
+  if (body.classList.contains("dark")) {
+    document.setI
+    darkLight.classList.replace("bx-sun", "bx-moon");
+  } else {
+    darkLight.classList.replace("bx-moon", "bx-sun");
+  }
+});
 
-submitOrderBtn.addEventListener('click', async () => {
-    submitLog();
+submenuItems.forEach((item, index) => {
+  item.addEventListener("click", () => {
+    item.classList.toggle("show_submenu");
+    submenuItems.forEach((item2, index2) => {
+      if (index !== index2) {
+        item2.classList.remove("show_submenu");
+      }
+    });
+  });
 });
 
 
-function submitLog() {
-    // Collect product data from dynamically generated product details
-    let productDetailsContainer = document.getElementById("product-details");
+
+//this controls log in log out script
+if (window.innerWidth < 768) {
+  sidebar.classList.add("close");
+} else {
+  sidebar.classList.remove("close");
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem('authToken');
+  if (!token) {
+      window.location.href = 'https://earthhomecareph.astute.services/System/login.html';  // Adjust path accordingly
+  }
+});
 
 
-    // Get all the product details
-    let productDetails = productDetailsContainer.querySelectorAll(".product-detail");
+const logout = document.getElementById('logoutBtn');
+logout.addEventListener('click', logoutUser);
 
-    productDetails.forEach(function(product) {
-        let name = product.querySelector("p:nth-child(1)").textContent.replace("Product Name: ", "");
-        let description = product.querySelector("p:nth-child(2)").textContent.replace("Description: ", "");
-        let price = parseFloat(product.querySelector("p:nth-child(3)").textContent.replace("Price: ₱", ""));
-        let quantity = parseInt(product.querySelector("p:nth-child(4)").textContent.replace("Quantity: ", ""));
-        let total = parseFloat(product.querySelector("p:nth-child(5)").textContent.replace("Total: ₱", ""));
+function logoutUser() {
+    // Remove the token and other user-related data from localStorage
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userID');
+    localStorage.removeItem('userRole');
+    console.log('User logged out.');
+    // Redirect to the login page
+    window.location.href = 'https://earthhomecareph.astute.services/System/login.html'; // Adjust path as needed
+}
 
-        // Push each product's details to the array
-        products.push({
-            name: name,
-            description: description,
-            price: price,
-            quantity: quantity,
-            total: total
-        });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem('authToken');
+  const userRole = localStorage.getItem('userRole'); // Assume userRole is stored in localStorage
+
+  if (!token) {
+    // Redirect to login if no token
+    window.location.href = 'https://earthhomecareph.astute.services/System/login.html';
+  }
+
+  const sidebarMenu = document.querySelector('.menu_items');
+  const tableContainer = document.querySelector('.table-container'); // Select the table container
+
+  if (userRole === 'agent') {
+    // Hide all menu items except Dashboard and Agents
+    sidebarMenu.querySelectorAll('.item').forEach(item => {
+      const navlinkText = item.querySelector('.navlink')?.textContent.trim();
+      if (navlinkText !== 'Dashboard' && navlinkText !== 'Agents') {
+        item.style.display = 'none'; // Hide other menu items
+      }
     });
 
-    // Log all the collected product data
-    console.log("Products: ", products);
-
-    // Log the full order data (including products)
-    const orderData = {
-        // agentName: document.getElementById("agent-name").value,
-        // teamLeaderName: document.getElementById("team-leader").value,
-        // area: document.getElementById("area").value,
-        // orderDate: document.getElementById("order-date").value,
-        // storeName: document.getElementById("store-name").value,
-        // houseAddress: document.getElementById("house-address").value,
-        // townProvince: document.getElementById("town-province").value,
-        // storeCode: document.getElementById("store-code").value,
-        // tin: document.getElementById("tin").value,
-        // discount: document.getElementById("discount").value,
-
-        listPrice: document.getElementById("list-price").value,
-        totalItems: document.getElementById("total-items").value,
-        totalAmount: document.getElementById("total-amount").value,
-        paymentMode: document.getElementById("payment-mode").value,
-        paymentImage: document.getElementById("payment-image").value,
-        remarks: document.getElementById("remarks").value,
-        products: products // Include the products array
-    };
-
-    // Log the entire order data
-    console.log("Order Data: ", orderData);
-}
-
-
-// Function to update data-price and total display
-// Select all size selects and attach event listeners
-function updateProductPrice(selectElement) {
-    // Get the SKU from the selected size dropdown
-    const sku = selectElement.getAttribute('data-sku');
-    
-    // Get the selected option's data-price
-    const selectedOption = selectElement.options[selectElement.selectedIndex];
-    const newPrice = selectedOption.getAttribute('data-price');
-    
-    // Find the associated checkbox and update its data-price attribute
-    const checkbox = document.querySelector(`.product-checkbox[data-sku="${sku}"]`);
-    if (checkbox) {
-        checkbox.setAttribute('data-price', newPrice);
+    // Remove the entire Agent Performance section for agents
+    if (tableContainer) {
+      tableContainer.remove(); // Remove the container for agents
     }
-}
+  }
 
-// Attach event listeners to all product size selects
-document.querySelectorAll('.product-size-select').forEach(select => {
-    select.addEventListener('change', (event) => updateProductPrice(event.target));
-});
+  // Additional logic for teamLeader role
+  if (userRole === 'teamLeader') {
+    // Show Agent Performance section for teamLeader
+    if (tableContainer) {
+      tableContainer.style.display = 'block'; // Ensure it remains visible for team leaders
+    }
 
-// Select quantity inputs and attach event listeners
-document.querySelectorAll('.product-quantity').forEach(input => {
-    input.addEventListener('input', function() {
-        let productControls = this.closest('.product-controls');
-        let sizeSelect = productControls.querySelector('.product-size-select');
-        let selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
-        let price = parseFloat(selectedOption.getAttribute('data-price'));
-        let quantity = parseInt(this.value) || 1;
-
-        // Calculate total based on price and quantity
-        let total = price * quantity;
-        let productTotalDisplay = productControls.querySelector('.product-total');
-        productTotalDisplay.textContent = `Total: $${total.toFixed(2)}`;
+    // Hide other sections that are not relevant to team leaders
+    sidebarMenu.querySelectorAll('.item').forEach(item => {
+      const navlinkText = item.querySelector('.navlink')?.textContent.trim();
+      if (navlinkText !== 'Dashboard' && navlinkText !== 'Agents' && navlinkText !== 'Team Performance') {
+        item.style.display = 'none'; // Hide sections that shouldn't be shown
+      }
     });
+  }
 });
 
 
-// Select the input element
-const quantityInput = document.querySelector('.product-quantity');
-
-// Function to update the price
-function updatePrice() {
-    const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
-    const newPrice = selectedOption.getAttribute('data-price');
-
-    // Update the data-price of the checkbox
-    checkbox.setAttribute('data-price', newPrice);
-
-    // Get the updated quantity value
-    const quantity = quantityInput.value;
-    const total = newPrice * quantity;
-    productTotal = total;
-}
-sizeSelect.addEventListener('change', updatePrice);
-
-
-modeOfPayment.addEventListener('change', function() {
-    if (modeOfPayment.value == 'cash') {
-        proofOfPaymentContainer.style.display = 'none'; 
-    } else {
-        proofOfPaymentContainer.style.display = 'block';
-    }
-});
-
-addItemBtn.onclick = function() {
-    modal.style.display = "flex"; 
-    updateSelectedCount(); 
-}
-
-// Function to close the modal when the close (x) is clicked
-closeBtn.onclick = function() {
-    modal.style.display = "none";
-}
-
-// Function to close modal if user clicks outside of the modal content
-window.onclick = function(event) {
-    // Close the modal only if the click is outside of the modal content
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
-
-// Function to update the count of selected products
-function updateSelectedCount() {
-    let count = 0;
-    var checkboxes = document.querySelectorAll(".product-checkbox");
-    checkboxes.forEach(function(checkbox) {
-        if (checkbox.checked) {
-            count++;
-        }
-    });
-    selectedCount.textContent = `Selected Products: ${count}`;
-}
-
-// Add event listeners to checkboxes to update count on change
-var checkboxes = document.querySelectorAll(".product-checkbox");
-checkboxes.forEach(function(checkbox) {
-    checkbox.addEventListener('change', updateSelectedCount);
-});
-
-
-submitProductsBtn.onclick = function() {
-    let productDetailsContainer = document.getElementById("product-details");
-    productDetailsContainer.innerHTML = ''; 
-    let totalPrice = 0; // To calculate total price
-    let totalItemCount = 0; // To calculate total number of items
-    
-    // Get all checked products
-    var checkboxes = document.querySelectorAll(".product-checkbox:checked");
-    let productCount = checkboxes.length; 
-    productCountDisplay.textContent = productCount;
-
-    checkboxes.forEach(function(checkbox) {
-        let sku = checkbox.getAttribute("data-sku");
-        let name = checkbox.getAttribute("data-name");
-        let description = checkbox.getAttribute("data-description");
-        let price = parseFloat(checkbox.getAttribute("data-price"));
-        let quantityInput = document.querySelector(`.product-quantity[data-sku="${sku}"]`);
-        let quantity = parseInt(quantityInput.value); // Get the selected quantity
-        
-        totalItemCount += quantity; // Add quantity to total item count
-        totalPrice += price * quantity; // Calculate total price based on quantity and price
-
-        // Create a product detail block to show in the main form
-        let productDetail = `
-            <div class="product-detail">
-                <p><strong>Product Name:</strong> ${name}</p>
-                <p><strong>Description:</strong> ${description}</p>
-                <p><strong>Price:</strong> ₱${price.toFixed(2)}</p>
-                <p><strong>Quantity:</strong> ${quantity}</p>
-                <p><strong>Total:</strong> ₱${(price * quantity).toFixed(2)}</p>
-            </div>
-            <div class="product-divider-popup"></div>
-        `;
-        productDetailsContainer.innerHTML += productDetail; 
-    });
-
-    // Display the total number of items and total price
-    totalItemsInput.value = totalItemCount;
-    listPriceInput.value = `₱${totalPrice.toFixed(2)}`;
-    totalAmountInput.value = `₱${totalPrice.toFixed(2)}`;
-    // Calculate discounted total (default to totalPrice if no discount is applied)
-    // let discount = parseFloat(discountInput.value) || 0;
-    // let discountedTotal = totalPrice - (totalPrice * (discount / 100));
-
-    // // Display discounted total
-    // totalAmountInput.value = `₱${discountedTotal.toFixed(2)}`;
-
-    // Apply discount if the user changes the discount input
-//     discountInput.oninput = function() {
-//         let discount = parseFloat(discountInput.value) || 0;
-//         let discountedTotal = totalPrice - (totalPrice * (discount / 100));
-//         totalAmountInput.value = `₱${discountedTotal.toFixed(2)}`;
-// };
-
-    // After adding products, close the modal
-    modal.style.display = "none";
-}
-
-// Handle quantity changes separately from modal close logic
-document.querySelectorAll('.quantity-controls button').forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.preventDefault(); // Prevent default behavior (e.g., form submission or other default actions)
-        e.stopPropagation(); // Prevent modal close
-
-        let input = this.parentElement.querySelector('input');
-        let currentValue = parseInt(input.value);
-
-        // Increase or decrease quantity based on button type
-        if (this.textContent.trim() === '+') {
-            input.value = currentValue + 1;
-        } else if (this.textContent.trim() === '-' && currentValue > 1) {
-            input.value = currentValue - 1;
-        }
-    });
-});
-
-
-// Get survey modal and related elements
-
-
-// Open the survey modal when the button is clicked
-
-
-// Close the survey modal when the close (x) is clicked
-
-// Close the modal if user clicks outside the modal content
-window.onclick = function(event) {
-    if (event.target == surveyModal) {
-        surveyModal.style.display = "none";
-    }
-}
-
-// Print the receipt
-
-document.getElementById('submitOrderBtn').addEventListener('click', async () => {
-    // Example: Defining 'products' array (replace with your actual data if needed)
-
-    // Retrieve data from localStorage
-    const orderData = JSON.parse(localStorage.getItem('orderData')) || {};
-    console.log('Retrieved Order Data from localStorage:', orderData);
-
-    // Add additional data from the second site
-    const additionalData = {
-        listPrice: listPriceInput,
-        totalItems: parseInt(document.getElementById('total-items').value || 0, 10),
-        totalAmount: parseFloat(document.getElementById('total-amount').value || 0),
-        paymentMode: document.getElementById('payment-mode').value,
-        paymentImage: document.getElementById('payment-image').value,
-        remarks: document.getElementById('remarks').value,
-        products: products, // Now the products variable is defined
-    };
-
-    // Populate the modal fields with the dynamic values
-    document.getElementById('contactNo').textContent = "098454887";
-    document.getElementById('issueDate').textContent = new Date().toISOString().split('T')[0];
-    document.getElementById('itemPurchased').textContent = parseInt(document.getElementById('total-items').value || 0, 10); // Replace with actual product name
-    document.getElementById('totalAmount').textContent = totalAmountInput.value;
-    document.getElementById('paymentMethod').textContent = document.getElementById('payment-mode').value;
-    document.getElementById('status').textContent = "Paid"; // Adjust as needed
-    console.log("totalamount", totalAmountInput.value)
-    // Merge the data
-    const finalData = { ...orderData, ...additionalData };
-
-    // Log the final data being sent to the database
-    console.log('Data being sent to the database:', finalData);
-
-    try {
-        // Upload the merged data
-        const response = await fetch('https://earthph.sdevtech.com.ph/orders/createOrder', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(finalData) // Send order data as JSON
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-            alert('Order created successfully');
-            localStorage.removeItem('orderData'); // Clear localStorage if upload is successful
-        } else {
-            // Log the error message from the API
-            console.error('Error creating order:', result);
-            alert('Error creating order: ' + result.message || 'Unknown error');
-        }
-    } catch (error) {
-        // Log detailed error in case of request failure
-        console.error('Request error:', error);
-        alert('There was an error with the request.');
-    }
-});
