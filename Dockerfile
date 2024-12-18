@@ -18,3 +18,5 @@ EXPOSE 5001
 
 # Command to start the app
 CMD ["npm", "start"]
+
+RUN npm install dotenv
