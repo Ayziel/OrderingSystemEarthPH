@@ -27,12 +27,6 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
             nameCell.textContent = `${user.firstName} ${user.lastName}`;
             row.appendChild(nameCell);
 
-            // Age (randomized between 25 and 35)
-            const age = Math.floor(Math.random() * (35 - 25 + 1)) + 25;
-            const ageCell = document.createElement('td');
-            ageCell.textContent = age;
-            row.appendChild(ageCell);
-
             // Team Leader based on the team
             let teamLeader = '';
             switch (user.team) {

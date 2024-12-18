@@ -77,3 +77,49 @@ function logoutUser() {
     window.location.href = 'https://earthhomecareph.astute.services/System/login.html'; // Adjust path as needed
 }
 
+
+document.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem('authToken');
+  const userRole = localStorage.getItem('userRole'); // Assume userRole is stored in localStorage
+
+  if (!token) {
+    // Redirect to login if no token
+    window.location.href = 'https://earthhomecareph.astute.services/System/login.html';
+  }
+
+  const sidebarMenu = document.querySelector('.menu_items');
+  const tableContainer = document.querySelector('.table-container'); // Select the table container
+
+  if (userRole === 'agent') {
+    // Hide all menu items except Dashboard and Agents
+    sidebarMenu.querySelectorAll('.item').forEach(item => {
+      const navlinkText = item.querySelector('.navlink')?.textContent.trim();
+      if (navlinkText !== 'Dashboard' && navlinkText !== 'Agents') {
+        item.style.display = 'none'; // Hide other menu items
+      }
+    });
+
+    // Remove the entire Agent Performance section for agents
+    if (tableContainer) {
+      tableContainer.remove(); // Remove the container for agents
+    }
+  }
+
+  // Additional logic for teamLeader role
+  if (userRole === 'teamLeader') {
+    // Show Agent Performance section for teamLeader
+    if (tableContainer) {
+      tableContainer.style.display = 'block'; // Ensure it remains visible for team leaders
+    }
+
+    // Hide other sections that are not relevant to team leaders
+    sidebarMenu.querySelectorAll('.item').forEach(item => {
+      const navlinkText = item.querySelector('.navlink')?.textContent.trim();
+      if (navlinkText !== 'Dashboard' && navlinkText !== 'Agents' && navlinkText !== 'Team Performance') {
+        item.style.display = 'none'; // Hide sections that shouldn't be shown
+      }
+    });
+  }
+});
+
+
