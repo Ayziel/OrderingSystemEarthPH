@@ -1,349 +1,306 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Form</title>
-    
-    <!-- Linking the CSS file -->
-    <link rel="stylesheet" href="./styles/style.css">
-    <link rel="stylesheet" href="./styles/orderInfo.css">
-</head>
-<body>
-    <div class="form-container">
-        <h2>New Order</h2>
-
-        <form action="#" enctype="multipart/form-data">
-
-            <!-- Agent & Store Information -->
-            
-
-            <!-- Add Item Pop-up Button -->
-            <h3>Add Item</h3>
-            <button type="button" id="addItemBtn">Add Item</button>
-
-            <!-- Modal (Hidden initially) -->
-<div id="productModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h3>Select Products</h3>
-
-        <div class="product-list">
-            <!-- Product 1 -->
-            <div class="product-container">
-                <div class="product-row ">
-                    <label>
-                        <input type="checkbox" class="product-checkbox" data-sku="sku001" data-name="Aerosol Multi-Insect Killer" data-description="Advanced® Aerosol Multi-Insect Killer knocks out and kills mosquitoes, flies and cockroaches." data-price="215">
-                        <strong>Advanced® Aerosol Multi-Insect Killer</strong>
-                    </label>
-                </div>
-                <div class="product-row product-divider-popup">
-                    <img  src="earthproducts/multi-insect-killer.png" alt="Product Image">
-                    <p class="product-description">Advanced® Aerosol Multi-Insect Killer knocks out and kills mosquitoes, flies and cockroaches.</p>
-                    <div class="product-controls">
-                        <div class="quantity-controls">
-                            <button class="minus-btn" id="minus-btn" data-sku="sku001">-</button>
-                            <input type="text" class="product-quantity" data-sku="sku001" value="1" readonly>
-                            <button class="plus-btn" id="plus-btn" data-sku="sku001">+</button>
-                        </div>
-                        <div class="product-size-total">
-                            <select id="product-size-select" class="product-size-select" data-sku="sku001">
-                                <option value="215" data-price="215">$215 - 300mL</option>
-                                <option value="308" data-price="308">$308 - 500ML</option>
-                                <option value="360" data-price="360">$360 - 600ML</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>            
-            
-            <div class="divider"></div> <!-- Divider for Product 1 -->
-            
-
-            <!-- Product 2 -->
-            <div class="product-container product-label">
-                <div class="product-row ">
-                    <label>
-                        <input type="checkbox" class="product-checkbox" data-sku="sku002" data-name="Aerosol Mosquito Killer" data-description="Advanced® Aerosol Mosquito Killer has a breakthrough formula with Fast Dual Knockdown. " data-price="95">
-                        Advanced® Aerosol Mosquito Killer
-                    </label>
-                </div>
-                <div class="product-row product-divider-popup">
-                    <img  src="earthproducts/mosquito-killer.png" alt="Product Image">
-                    <p class="product-description">Advanced® Aerosol Mosquito Killer has a breakthrough formula with Fast Dual Knockdown. </p>
-                    <div class="product-controls">
-                        <div class="quantity-controls">
-                            <button class="minus-btn" id="minus-btn" data-sku="sku002">-</button>
-                            <input type="text" class="product-quantity" data-sku="sku002" value="1" readonly>
-                            <button class="plus-btn" id="plus-btn" data-sku="sku002">+</button>
-                        </div>
-                        <div class="product-size-total">
-                            <select id="product-size-select" class="product-size-select" data-sku="sku002">
-                                <option value="95" data-price="95">$95- 300mL</option>
-                                <option value="150" data-price="150">$150 - 500ML</option>
-                                <option value="300" data-price="300">$300 - 600ML</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>            
-
-            <div class="divider"></div> <!-- Divider for Product 2 -->
-
-            <!-- Product 3 -->
-              <div class="product-container product-label">
-
-                <div class="product-row ">
-                    <label>
-                        <input type="checkbox" class="product-checkbox" data-sku="sku003" data-name="Tracking Powder" data-description="Advanced® Tracking Powder is a versatile rat formulation that can be used as pure powder or mixed with food as bait." data-price="55">
-                        Advanced® Tracking Powder
-                    </label>
-                </div>
-                <div class="product-row product-divider-popup">
-                    <img  src="earthproducts/advanced-tracking-powder.png" alt="Product Image">
-                    <p class="product-description">Advanced® Tracking Powder is a versatile rat formulation that can be used as pure powder or mixed with food as bait.</p>
-                    <div class="product-controls">
-                        <div class="quantity-controls">
-                            <button class="minus-btn" id="minus-btn" data-sku="sku003">-</button>
-                            <input type="text" class="product-quantity" data-sku="sku003" value="1" readonly>
-                            <button class="plus-btn" id="plus-btn" data-sku="sku003">+</button>
-                        </div>
-                        <div class="product-size-total">
-                            <select id="product-size-select" class="product-size-select" data-sku="sku003">
-                                <option value="213" data-price="213">$55 - 300mL</option>
-                                <option value="308" data-price="308">$90 - 500ML</option>
-                                <option value="360" data-price="360">$120 - 600ML</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>            
-            
-            <div class="divider"></div> <!-- Divider for Product 3 -->
-
-            <!-- Product 4 -->
-            <div class="product-container  product-label">
-                <div class="product-row ">
-                    <label>
-                        <input type="checkbox" class="product-checkbox" data-sku="sku004" data-name="Ready-Made Bait" data-description="Racumin® Ready-Made Bait with Coumatetralyl has an effective killing action against rats." data-price="130">
-                        Racumin® Ready-Made-Bait
-                    </label>
-                </div>
-                <div class="product-row product-divider-popup">
-                    <img  src="earthproducts/racumin-rmb-50g.png" alt="Product Image">
-                    <p class="product-description">Racumin® Ready-Made Bait with Coumatetralyl has an effective killing action against rats.</p>
-                    <div class="product-controls">
-                        <div class="quantity-controls">
-                            <button class="minus-btn" id="minus-btn" data-sku="sku004">-</button>
-                            <input type="text" class="product-quantity" data-sku="sku004" value="1" readonly>
-                            <button class="plus-btn" id="plus-btn" data-sku="sku004">+</button>
-                        </div>
-                        <div class="product-size-total">
-                            <select id="product-size-select" class="product-size-select" data-sku="sku004">
-                                <option value="130" data-price="130">$130 - 300mL</option>
-                                <option value="200" data-price="200">$200 - 500ML</option>
-                                <option value="230" data-price="230">$230 - 600ML</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>            
-
-            <div class="divider"></div> <!-- Divider for Product 4 -->
-
-            <!-- Product 5 -->
-    
-            <div class="product-container  product-label">
-                <div class="product-row ">
-                    <label>
-                        <input type="checkbox" class="product-checkbox" data-sku="sku005" data-name="Pest Catch Sheet" data-description="Banzai® Pest Catch Sheet contains a super-strong adhesive that is sure to catch flies and even mice. It is safe, non-toxic and easy to use. Made in Japan." data-price="120">
-                        Banzai® Pest Catch Sheet
-                    </label>
-                </div>
-                <div class="product-row product-divider-popup">
-                    <img  src="earthproducts/banzai-1.png" alt="Product Image">
-                    <p class="product-description">Banzai® Pest Catch Sheet contains a super-strong adhesive that is sure to catch flies and even mice. It is safe, non-toxic and easy to use. Made in Japan.</p>
-                    <div class="product-controls">
-                        <div class="quantity-controls">
-                            <button class="minus-btn" id="minus-btn" data-sku="sku005">-</button>
-                            <input type="text" class="product-quantity" data-sku="sku005" value="1" readonly>
-                            <button class="plus-btn" id="plus-btn" data-sku="sku005">+</button>
-                        </div>
-                        <div class="product-size-total">
-                            <select id="product-size-select" class="product-size-select" data-sku="sku005">
-                                <option value="120" data-price="120">$120 - 300mL</option>
-                                <option value="308" data-price="308">$308 - 500ML</option>
-                                <option value="360" data-price="360">$360 - 600ML</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>            
-
-            <div class="divider"></div> <!-- Divider for Product 5 -->
-        </div>
-
-        <button type="button" id="submitProductsBtn">Add Selected Products</button>
-    </div>
-</div>
-
-
-            <!-- Final Selected Products Count -->
-            <div id="finalSelectedCount" class="form-group">
-                <p><strong>Number of items:</strong> <span id="productCount">0</span></p>
-            </div>
-
-            <!-- This section will be populated with chosen product details -->
-            <div id="product-details"></div>
-
-            <!-- Order Computation -->
-            <h3>Order Computation</h3>
-            <div class="form-group">
-                <label for="list-price">List Price of Orders:</label>
-                <input type="text" id="list-price" name="list-price" readonly>
-            </div>
-
-            <div class="form-group">
-                <label for="total-items">Total Number of Items Bought:</label>
-                <input type="text" id="total-items" name="total-items" readonly>
-            </div>
-
-            <div class="form-group">
-                <label for="total-amount">Total Amount:</label>
-                <input type="text" id="total-amount" name="total-amount" readonly>
-            </div>
-
-            <!-- Payment Information -->
-            <h3>Payment Information</h3>
-            <div class="form-group">
-                <label for="payment-mode">Mode of Payment:</label>
-                <select id="payment-mode" name="payment-mode">
-                    <option value="" selected disabled>Select Payment Mode</option>
-                    <option value="cash">Cash</option>
-                    <option value="credit">Credit Card</option>
-                </select>
-            </div>
-            
-            <div class="form-group proof-of-payment-container">
-                <label for="payment-image">Proof of Payment Image:</label>
-                <input type="file" id="payment-image" name="payment-image" accept="image/*">
-            </div>
-
-            <div class="form-group">
-                <label for="remarks">Remarks:</label>
-                <textarea id="remarks" name="remarks" placeholder="Enter Remarks"></textarea>
-            </div>
-
-            <!-- Survey Button -->
-
-<!-- Survey Modal -->
-<div id="surveyModal" class="modal">
-  <div class="modal-content">
-    <span class="close-survey">&times;</span>
-    <h2>Product Preferences Survey</h2>
-    <p>Please select the brand you use or prefer for each category.</p>
-    
-    <!-- Survey Questions -->
-    <form id="surveyForm">
-      <div class="survey-question">
-        <label>1. Insect Control</label>
-        <select name="insectControl">
-          <option value="Advanced">Advanced</option>
-          <option value="Bayer">Bayer</option>
-          <option value="Baygon">Baygon</option>
-          <option value="Target">Target</option>
-          <option value="AgroShield">AgroShield</option>
-        </select>
-      </div>
-      
-      <div class="survey-question">
-        <label>2. Rodent Control</label>
-        <select name="rodentControl">
-          <option value="Bayer">Bayer</option>
-          <option value="Racumin">Racumin</option>
-          <option value="Rascal">Rascal</option>
-          <option value="Fresh Cab">Fresh Cab</option>
-          <option value="Natural Safe">Natural Safe</option>
-        </select>
-      </div>
-      
-      <div class="survey-question">
-        <label>3. Linen and Fabric Spray</label>
-        <select name="fabricSpray">
-          <option value="Natucair">Natucair</option>
-          <option value="Vunguard Fresh Room and Linen Disinfectant Spray">Vunguard Fresh Room and Linen Disinfectant Spray</option>
-          <option value="Bench Linen and Room Sprays">Bench Linen and Room Sprays</option>
-          <option value="Natucair Fabric and Linen Spray">Natucair Fabric and Linen Spray</option>
-          <option value="Mandaue Foam Linen and Room Sprays">Mandaue Foam Linen and Room Sprays</option>
-        </select>
-      </div>
-      
-      <div class="survey-question">
-        <label>4. Air Con Cleaner</label>
-        <select name="airConCleaner">
-          <option value="EarthPH">EarthPH</option>
-          <option value="FreshFoam AC Cleaner Spray">FreshFoam AC Cleaner Spray</option>
-          <option value="Coil-Brite R1 Aircon Coil Cleaner">Coil-Brite R1 Aircon Coil Cleaner</option>
-          <option value="3M AC Cleaner & Anti-Mic Foam">3M AC Cleaner & Anti-Mic Foam</option>
-          <option value="Bitop A/C Foam Cleaner">Bitop A/C Foam Cleaner</option>
-        </select>
-      </div>
-      
-      <div class="survey-question">
-        <label>5. Pet Care</label>
-        <select name="petCare">
-          <option value="Bayopet">Bayopet</option>
-          <option value="Royal Canin">Royal Canin</option>
-          <option value="TropiClean">TropiClean</option>
-          <option value="Happy Life">Happy Life</option>
-          <option value="Zee Dog">Zee Dog</option>
-        </select>
-      </div>
-      
-      <!-- Submit Survey Button -->
-      <button type="button" id="submitSurveyBtn">Submit Survey</button>
-    </form>
-  </div>
-</div>
-            <!-- Submit Button -->
-            <div class="form-group">
-                <button id="submitOrderBtn" type="submit" >Submit Order</button>
-            </div>
-
-        </form>
-
-        </div>
-
-    <!-- Receipt Modal -->
-    <div id="receiptModal" class="modal-receipt">
-        <!-- Modal Content -->
-        <div class="modal-content-receipt">
-            <h2>Receipt</h2>
-            <!-- Receipt Details Placeholder -->
-            <div class="receipt-details-receipt">
-                <p><strong>Elliss:</strong></p>
-                <p>Contact No: <span id="contactNo">+0921388200</span></p>
-                <br>
-                <p><strong>RECEIPT</strong></p>
-                <hr>
-                <p><strong>IssueDate:</strong> <span id="issueDate">2023-08-15</span></p>
-                <p><strong>Item Purchased:</strong> <span id="itemPurchased">Product XYZ</span></p>
-                <p><strong>Total Amount:</strong> <span id="totalAmount">PHP 1,500.00</span></p>
-                <p><strong>Payment Method:</strong> <span id="paymentMethod">Credit Card</span></p>
-                <p><strong>Status:</strong> <span id="status">Paid</span></p>
-            </div>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Order Form</title>
         
-            <!-- Print Receipt Button -->
-            <button id="printReceiptBtn">Print Receipt</button>
-        
-            <!-- Close Button -->
-            <button class="close-receipt">Close</button>
-        </div>
-        
-    </div>
-    
-  <script src="./scripts/orderInfo.js"></script>
-    <script src="script.js"></script>   
+        <!-- Linking the CSS file -->
+        <link rel="stylesheet" href="./styles/style.css">
+        <link rel="stylesheet" href="./styles/orderInfo.css">
+    </head>
+    <body>
+        <div class="form-container">
+            <h2>New Order</h2>
+            <form action="#" enctype="multipart/form-data">
+                <!-- Add Item Pop-up Button -->
+                <h3>Add Item</h3>
+                <button type="button" id="addItemBtn">Add Item</button>
+                <!-- Modal (Hidden initially) -->
+                <div id="productModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h3>Select Products</h3>
+                        <div class="product-list">
+                        <!-- Product 1 -->
+                        <div class="product-container">
+                            <div class="product-row ">
+                                <label>
+                                    <input type="checkbox" class="product-checkbox" data-sku="sku001" data-name="Aerosol Multi-Insect Killer"  data-price="215">
+                                    <strong>Advanced® Aerosol Multi-Insect Killer</strong>
+                                </label>
+                            </div>
+                            <div class="product-row product-divider-popup">
+                                <img  src="earthproducts/multi-insect-killer.png" alt="Product Image">
+                                <div class="product-controls">
+                                    <div class="quantity-controls">
+                                        <button class="minus-btn" id="minus-btn" data-sku="sku001">-</button>
+                                        <input type="text" class="product-quantity" data-sku="sku001" value="1" readonly>
+                                        <button class="plus-btn" id="plus-btn" data-sku="sku001">+</button>
+                                    </div>
+                                    <div class="product-size-total">
+                                        <select id="product-size-select" class="product-size-select" data-sku="sku001">
+                                            <option value="215" data-price="215">$215 - 300mL</option>
+                                            <option value="308" data-price="308">$308 - 500ML</option>
+                                            <option value="360" data-price="360">$360 - 600ML</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-</body>
+                        <!-- Product 2 -->
+                        <div class="product-container product-label">
+                            <div class="product-row ">
+                                <label>
+                                    <input type="checkbox" class="product-checkbox" data-sku="sku002" data-name="Aerosol Mosquito Killer"  data-price="95">
+                                    Advanced® Aerosol Mosquito Killer
+                                </label>
+                            </div>
+                            <div class="product-row product-divider-popup">
+                                <img  src="earthproducts/mosquito-killer.png" alt="Product Image">
+                                <div class="product-controls">
+                                    <div class="quantity-controls">
+                                        <button class="minus-btn" id="minus-btn" data-sku="sku002">-</button>
+                                        <input type="text" class="product-quantity" data-sku="sku002" value="1" readonly>
+                                        <button class="plus-btn" id="plus-btn" data-sku="sku002">+</button>
+                                    </div>
+                                    <div class="product-size-total">
+                                        <select id="product-size-select" class="product-size-select" data-sku="sku002">
+                                            <option value="95" data-price="95">$95- 300mL</option>
+                                            <option value="150" data-price="150">$150 - 500ML</option>
+                                            <option value="300" data-price="300">$300 - 600ML</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product 3 -->
+                        <div class="product-container product-label">
+                            <div class="product-row ">
+                                <label>
+                                    <input type="checkbox" class="product-checkbox" data-sku="sku003" data-name="Tracking Powder" data-price="55">
+                                    Advanced® Tracking Powder
+                                </label>
+                            </div>
+                            <div class="product-row product-divider-popup">
+                                <img  src="earthproducts/advanced-tracking-powder.png" alt="Product Image">
+                                <div class="product-controls">
+                                    <div class="quantity-controls">
+                                        <button class="minus-btn" id="minus-btn" data-sku="sku003">-</button>
+                                        <input type="text" class="product-quantity" data-sku="sku003" value="1" readonly>
+                                        <button class="plus-btn" id="plus-btn" data-sku="sku003">+</button>
+                                    </div>
+                                    <div class="product-size-total">
+                                        <select id="product-size-select" class="product-size-select" data-sku="sku003">
+                                            <option value="213" data-price="213">$55 - 300mL</option>
+                                            <option value="308" data-price="308">$90 - 500ML</option>
+                                            <option value="360" data-price="360">$120 - 600ML</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product 4 -->
+                        <div class="product-container  product-label">
+                            <div class="product-row ">
+                                <label>
+                                    <input type="checkbox" class="product-checkbox" data-sku="sku004" data-name="Ready-Made Bait"  data-price="130">
+                                    Racumin® Ready-Made-Bait
+                                </label>
+                            </div>
+                            <div class="product-row product-divider-popup">
+                                <img  src="earthproducts/racumin-rmb-50g.png" alt="Product Image">
+                                <div class="product-controls">
+                                    <div class="quantity-controls">
+                                        <button class="minus-btn" id="minus-btn" data-sku="sku004">-</button>
+                                        <input type="text" class="product-quantity" data-sku="sku004" value="1" readonly>
+                                        <button class="plus-btn" id="plus-btn" data-sku="sku004">+</button>
+                                    </div>
+                                    <div class="product-size-total">
+                                        <select id="product-size-select" class="product-size-select" data-sku="sku004">
+                                            <option value="130" data-price="130">$130 - 300mL</option>
+                                            <option value="200" data-price="200">$200 - 500ML</option>
+                                            <option value="230" data-price="230">$230 - 600ML</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product 5 -->
+                        <div class="product-container  product-label">
+                            <div class="product-row ">
+                                <label>
+                                    <input type="checkbox" class="product-checkbox" data-sku="sku005" data-name="Pest Catch Sheet"  data-price="120">
+                                    Banzai® Pest Catch Sheet
+                                </label>
+                            </div>
+                            <div class="product-row product-divider-popup">
+                                <img  src="earthproducts/banzai-1.png" alt="Product Image">
+                                <div class="product-controls">
+                                    <div class="quantity-controls">
+                                        <button class="minus-btn" id="minus-btn" data-sku="sku005">-</button>
+                                        <input type="text" class="product-quantity" data-sku="sku005" value="1" readonly>
+                                        <button class="plus-btn" id="plus-btn" data-sku="sku005">+</button>
+                                    </div>
+                                    <div class="product-size-total">
+                                        <select id="product-size-select" class="product-size-select" data-sku="sku005">
+                                            <option value="120" data-price="120">$120 - 300mL</option>
+                                            <option value="308" data-price="308">$308 - 500ML</option>
+                                            <option value="360" data-price="360">$360 - 600ML</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                        <button type="button" id="submitProductsBtn">Add Selected Products</button>
+                    </div>
+                </div>
+                <!-- Final Selected Products Count -->
+                <div id="finalSelectedCount" class="form-group" style="display: none;">
+                    <p><strong>Number of items:</strong> <span id="productCount">0</span></p>
+                </div>
+                <!-- This section will be populated with chosen product details -->
+                <div id="product-details"></div>
+                <!-- Order Computation -->
+                <h3>Order Computation</h3>
+                <div class="form-group">
+                    <label for="list-price">List Price of Orders:</label>
+                    <input type="text" id="list-price" name="list-price" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="total-items">Total Number of Items Bought:</label>
+                    <input type="text" id="total-items" name="total-items" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="total-amount">Total Amount:</label>
+                    <input type="text" id="total-amount" name="total-amount" readonly>
+                </div>
+                <!-- Payment Information -->
+                <h3>Payment Information</h3>
+                <div class="form-group">
+                    <label for="payment-mode">Mode of Payment:</label>
+                    <select id="payment-mode" name="payment-mode">
+                        <option value="" selected disabled>Select Payment Mode</option>
+                        <option value="cash">Cash</option>
+                        <option value="credit">Credit Card</option>
+                    </select>
+                </div>
+                <div class="form-group proof-of-payment-container">
+                    <label for="payment-image">Proof of Payment Image:</label>
+                    <input type="file" id="payment-image" name="payment-image" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="remarks">Remarks:</label>
+                    <textarea id="remarks" name="remarks" placeholder="Enter Remarks"></textarea>
+                </div>
+                <!-- Survey Button -->
+                <!-- Survey Modal -->
+                <div id="surveyModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-survey">&times;</span>
+                    <h2>Product Preferences Survey</h2>
+                    <p>Please select the brand you use or prefer for each category.</p>
+                    
+                    <!-- Survey Questions -->
+                    <form id="surveyForm">
+                    <div class="survey-question">
+                        <label>1. Insect Control</label>
+                        <select name="insectControl">
+                        <option value="Advanced">Advanced</option>
+                        <option value="Bayer">Bayer</option>
+                        <option value="Baygon">Baygon</option>
+                        <option value="Target">Target</option>
+                        <option value="AgroShield">AgroShield</option>
+                        </select>
+                    </div>
+                    
+                    <div class="survey-question">
+                        <label>2. Rodent Control</label>
+                        <select name="rodentControl">
+                        <option value="Bayer">Bayer</option>
+                        <option value="Racumin">Racumin</option>
+                        <option value="Rascal">Rascal</option>
+                        <option value="Fresh Cab">Fresh Cab</option>
+                        <option value="Natural Safe">Natural Safe</option>
+                        </select>
+                    </div>
+                    
+                    <div class="survey-question">
+                        <label>3. Linen and Fabric Spray</label>
+                        <select name="fabricSpray">
+                        <option value="Natucair">Natucair</option>
+                        <option value="Vunguard Fresh Room and Linen Disinfectant Spray">Vunguard Fresh Room and Linen Disinfectant Spray</option>
+                        <option value="Bench Linen and Room Sprays">Bench Linen and Room Sprays</option>
+                        <option value="Natucair Fabric and Linen Spray">Natucair Fabric and Linen Spray</option>
+                        <option value="Mandaue Foam Linen and Room Sprays">Mandaue Foam Linen and Room Sprays</option>
+                        </select>
+                    </div>
+                    
+                    <div class="survey-question">
+                        <label>4. Air Con Cleaner</label>
+                        <select name="airConCleaner">
+                        <option value="EarthPH">EarthPH</option>
+                        <option value="FreshFoam AC Cleaner Spray">FreshFoam AC Cleaner Spray</option>
+                        <option value="Coil-Brite R1 Aircon Coil Cleaner">Coil-Brite R1 Aircon Coil Cleaner</option>
+                        <option value="3M AC Cleaner & Anti-Mic Foam">3M AC Cleaner & Anti-Mic Foam</option>
+                        <option value="Bitop A/C Foam Cleaner">Bitop A/C Foam Cleaner</option>
+                        </select>
+                    </div>
+                    
+                    <div class="survey-question">
+                        <label>5. Pet Care</label>
+                        <select name="petCare">
+                        <option value="Bayopet">Bayopet</option>
+                        <option value="Royal Canin">Royal Canin</option>
+                        <option value="TropiClean">TropiClean</option>
+                        <option value="Happy Life">Happy Life</option>
+                        <option value="Zee Dog">Zee Dog</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Submit Survey Button -->
+                    <button type="button" id="submitSurveyBtn">Submit Survey</button>
+                    </form>
+                </div>
+                </div>
+                <!-- Submit Button -->
+                <div class="form-group">
+                    <button id="submitOrderBtn" type="submit" >Submit Order</button>
+                </div>
+            </form>
+        </div>
+        <!-- Receipt Modal -->
+        <div id="receiptModal" class="modal-receipt">
+            <!-- Modal Content -->
+            <div class="modal-content-receipt">
+                <h2>Receipt</h2>
+                <!-- Receipt Details Placeholder -->
+                <div class="receipt-details-receipt">
+                    <p>Contact No: <span id="contactNo">+0921388200</span></p>
+                    <br>
+                    <p><strong>RECEIPT</strong></p>
+                    <hr>
+                    <p><strong>IssueDate:</strong> <span id="issueDate">2023-08-15</span></p>
+                    <p><strong>Item Purchased:</strong> <span id="itemPurchased">Product XYZ</span></p>
+                    <p><strong>Total Amount:</strong> <span id="totalAmount">PHP 1,500.00</span></p>
+                    <p><strong>Payment Method:</strong> <span id="paymentMethod">Credit Card</span></p>
+                    <p><strong>Status:</strong> <span id="status">Paid</span></p>
+                </div>
+                <!-- Print Receipt Button -->
+                <button id="printReceiptBtn">Print Receipt</button>
+                <!-- Close Button -->
+                <button class="close-receipt">Close</button>
+            </div>
+        </div>
+        <script src="./scripts/orderInfo.js"></script>
+        <script src="./script.js"></script>   
+
+    </body>
 </html>

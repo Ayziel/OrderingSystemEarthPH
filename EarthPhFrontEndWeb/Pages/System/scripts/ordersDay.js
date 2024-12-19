@@ -43,19 +43,23 @@ function populateOrders(orders) {
     orders.forEach(order => {
         const row = document.createElement('tr');
 
-        // Populate row with order data
+        // Populate row with order data and add the button for 'Status' after the totalAmount
         row.innerHTML = `
-            <td>${globalCounter++}</td>
-            <td>${order.storeName || 'No store name'}</td>
-            <td>${order.agentName || 'No agent name'}</td>
-            <td>${order.orderDate
-                ? new Date(order.orderDate).toLocaleDateString('en-US', { timeZone: 'Asia/Manila' })
-                : 'No date'}</td>
-            <td>${order.area || 'No location'}</td>
-            <td>${order.totalAmount
-                ? `₱ ${order.totalAmount.toFixed(2)}`
-                : 'No amount'}</td>
-        `;
+        <td>${globalCounter++}</td>
+        <td>${order.storeName || 'No store name'}</td>
+        <td>${order.agentName || 'No agent name'}</td>
+        <td>${order.orderDate ? new Date(order.orderDate).toLocaleDateString('en-US', { timeZone: 'Asia/Manila' }) : 'No date'}</td>
+        <td>${order.area || 'No location'}</td>
+        <td>${order.totalAmount ? '₱ ' + order.totalAmount.toFixed(2) : 'No amount'}</td>
+        <td>
+            <select class="status-dropdown" data-order-id="${order._id}">
+                <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
+                <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                <option value="received" ${order.status === 'received' ? 'selected' : ''}>Received</option>
+            </select>
+        </td>
+    `;
 
         // Add click event listener to row
         row.addEventListener('click', () => {
@@ -64,12 +68,21 @@ function populateOrders(orders) {
 
         ordersBody.appendChild(row);
     });
+
+    // Add event listener for the status button click (if needed)
+    const statusButtons = document.querySelectorAll('.status-btn');
+    statusButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            const orderId = e.target.dataset.orderId;
+            console.log(`Updating status for order with ID: ${orderId}`);
+            // You can add logic to update the order status here
+        });
+    });
 }
 
 
-
-
 document.getElementById('export-btn').addEventListener('click', exportToExcel);
+
 function exportToExcel() {
     // Mocked database for demonstration (replace with your real database fetch logic)
     const ordersData = [
@@ -156,7 +169,6 @@ function exportToExcel() {
     // Trigger the download of the Excel file
     XLSX.writeFile(wb, 'Orders_Export.xlsx');
 }
-
 
 const modal = document.getElementById('orderModal');
 const closeModal = modal.querySelector('.close');
@@ -260,5 +272,4 @@ function openModal(order) {
         modal.style.display = 'none';
     });
 }
-
 

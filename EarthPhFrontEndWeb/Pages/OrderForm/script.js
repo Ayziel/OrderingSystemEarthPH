@@ -32,7 +32,7 @@ submitOrderBtn.addEventListener('click', async () => {
     submitLog();
 });
 
-
+console.log("SCRIPT");
 function submitLog() {
     // Collect product data from dynamically generated product details
     let productDetailsContainer = document.getElementById("product-details");
@@ -43,7 +43,6 @@ function submitLog() {
 
     productDetails.forEach(function(product) {
         let name = product.querySelector("p:nth-child(1)").textContent.replace("Product Name: ", "");
-        let description = product.querySelector("p:nth-child(2)").textContent.replace("Description: ", "");
         let price = parseFloat(product.querySelector("p:nth-child(3)").textContent.replace("Price: ₱", ""));
         let quantity = parseInt(product.querySelector("p:nth-child(4)").textContent.replace("Quantity: ", ""));
         let total = parseFloat(product.querySelector("p:nth-child(5)").textContent.replace("Total: ₱", ""));
@@ -51,7 +50,6 @@ function submitLog() {
         // Push each product's details to the array
         products.push({
             name: name,
-            description: description,
             price: price,
             quantity: quantity,
             total: total
@@ -173,21 +171,54 @@ window.onclick = function(event) {
 }
 
 // Function to update the count of selected products
-function updateSelectedCount() {
-    let count = 0;
-    var checkboxes = document.querySelectorAll(".product-checkbox");
+submitProductsBtn.onclick = function() {
+    let productDetailsContainer = document.getElementById("product-details");
+    productDetailsContainer.innerHTML = ''; 
+    let totalPrice = 0; // To calculate total price
+    let totalItemCount = 0; // To calculate total number of items
+    
+    // Get all checked products
+    var checkboxes = document.querySelectorAll(".product-checkbox:checked");
+    let productCount = checkboxes.length; 
+    productCountDisplay.textContent = productCount;
+
     checkboxes.forEach(function(checkbox) {
-        if (checkbox.checked) {
-            count++;
-        }
+        let sku = checkbox.getAttribute("data-sku");
+        let name = checkbox.getAttribute("data-name");
+        let price = parseFloat(checkbox.getAttribute("data-price"));
+        let quantityInput = document.querySelector(`.product-quantity[data-sku="${sku}"]`);
+        let quantity = parseInt(quantityInput.value); // Get the selected quantity
+        
+        totalItemCount += quantity; // Add quantity to total item count
+        totalPrice += price * quantity; // Calculate total price based on quantity and price
+
+        // Create a product detail block to show in the main form
+        let productDetail = `
+            <div class="product-detail">
+                <p><strong>Product Name:</strong> ${name}</p>
+                <p><strong>Price:</strong> ₱${price.toFixed(2)}</p>
+                <p><strong>Quantity:</strong> ${quantity}</p>
+                <p><strong>Total:</strong> ₱${(price * quantity).toFixed(2)}</p>
+            </div>
+            <div class="product-divider-popup"></div>
+        `;
+        productDetailsContainer.innerHTML += productDetail; 
     });
-    selectedCount.textContent = `Selected Products: ${count}`;
-}
+
+    // Display the total number of items and total price
+    totalItemsInput.value = totalItemCount;
+    listPriceInput.value = `₱${totalPrice.toFixed(2)}`;
+    totalAmountInput.value = `₱${totalPrice.toFixed(2)}`;
+
+    // After adding products, close the modal
+    modal.style.display = "none";
+};
+
 
 // Add event listeners to checkboxes to update count on change
 var checkboxes = document.querySelectorAll(".product-checkbox");
 checkboxes.forEach(function(checkbox) {
-    checkbox.addEventListener('change', updateSelectedCount);
+    checkbox.addEventListener('change', updateSelectedCoount);
 });
 
 
@@ -205,7 +236,7 @@ submitProductsBtn.onclick = function() {
     checkboxes.forEach(function(checkbox) {
         let sku = checkbox.getAttribute("data-sku");
         let name = checkbox.getAttribute("data-name");
-        let description = checkbox.getAttribute("data-description");
+        // let description = checkbox.getAttribute("data-description");
         let price = parseFloat(checkbox.getAttribute("data-price"));
         let quantityInput = document.querySelector(`.product-quantity[data-sku="${sku}"]`);
         let quantity = parseInt(quantityInput.value); // Get the selected quantity
@@ -214,13 +245,14 @@ submitProductsBtn.onclick = function() {
         totalPrice += price * quantity; // Calculate total price based on quantity and price
 
         // Create a product detail block to show in the main form
+        //<p><strong>Description:</strong> ${description}</p>
         let productDetail = `
             <div class="product-detail">
                 <p><strong>Product Name:</strong> ${name}</p>
-                <p><strong>Description:</strong> ${description}</p>
                 <p><strong>Price:</strong> ₱${price.toFixed(2)}</p>
                 <p><strong>Quantity:</strong> ${quantity}</p>
                 <p><strong>Total:</strong> ₱${(price * quantity).toFixed(2)}</p>
+                <p><strong>TEST NOW</strong></p>
             </div>
             <div class="product-divider-popup"></div>
         `;
@@ -306,7 +338,7 @@ document.getElementById('submitOrderBtn').addEventListener('click', async () => 
     // Populate the modal fields with the dynamic values
     document.getElementById('contactNo').textContent = "098454887";
     document.getElementById('issueDate').textContent = new Date().toISOString().split('T')[0];
-    document.getElementById('itemPurchased').textContent = parseInt(document.getElementById('total-items').value || 0, 10); // Replace with actual product name
+    // document.getElementById('itemPurchased').textContent = parseInt(document.getElementById('total-items').value || 0, 10); // Replace with actual product name
     document.getElementById('totalAmount').textContent = totalAmountInput.value;
     document.getElementById('paymentMethod').textContent = document.getElementById('payment-mode').value;
     document.getElementById('status').textContent = "Paid"; // Adjust as needed
@@ -345,3 +377,4 @@ document.getElementById('submitOrderBtn').addEventListener('click', async () => 
 });
 
 
+console.log("SCRIPT");

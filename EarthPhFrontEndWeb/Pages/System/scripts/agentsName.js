@@ -17,9 +17,12 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
         // Clear previous data in the table body
         document.getElementById('agent-data').innerHTML = '';
 
-        // Loop through each user and populate the table rows
-        users.forEach(user => {
-            // Create a new row for each user
+        // Filter users with the role "agent"
+        const agents = users.filter(user => user.role === 'agent');
+
+        // Loop through each agent and populate the table rows
+        agents.forEach(user => {
+            // Create a new row for each agent
             const row = document.createElement('tr');
 
             // Name (combine first and last names)
@@ -55,7 +58,7 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
             row.appendChild(statusCell);
 
             // Add click event to open the modal with the user data
-            row.onclick = function() {
+            row.onclick = function () {
                 openModal(user);
             };
 
@@ -82,12 +85,12 @@ function openModal(user) {
 }
 
 // Close the modal when the close button is clicked
-document.querySelector('.close').onclick = function() {
+document.querySelector('.close').onclick = function () {
     document.getElementById('userModal').style.display = "none";
 }
 
 // Close the modal if the user clicks outside of it
-window.onclick = function(event) {
+window.onclick = function (event) {
     if (event.target === document.getElementById('userModal')) {
         document.getElementById('userModal').style.display = "none";
     }
@@ -105,11 +108,14 @@ function exportUserData() {
         .then(data => {
             const users = data.users;
 
+            // Filter users with the role "agent"
+            const agents = users.filter(user => user.role === 'agent');
+
             // Prepare the headers based on the keys you want to export
             const headers = ["First Name", "Last Name", "Phone Number", "Email", "Team", "Role"];
 
-            // Prepare the data by mapping the users to the format
-            const formattedData = users.map(user => [
+            // Prepare the data by mapping the agents to the format
+            const formattedData = agents.map(user => [
                 user.firstName,
                 user.lastName,
                 user.phoneNumber,

@@ -1,0 +1,33 @@
+
+
+.status-dropdown {
+    width: 100%;
+    height: 40px;
+    font-size: 1rem;
+    padding: 5px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.status-dropdown.pending {
+    background-color: #ff9800;
+    color: white;
+}
+
+.status-dropdown.paid {
+    background-color: #4caf50;
+    color: white;
+}
+
+.status-dropdown.cancelled {
+    background-color: #f44336;
+    color: white;
+}
+
+.status-dropdown.received {
+    background-color: #2196f3;
+    color: white;
+}
+

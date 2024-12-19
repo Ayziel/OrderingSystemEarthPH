@@ -57,7 +57,8 @@ function populateProducts(products) {
             <td>${truncateText(product.productName || 'N/A', 30)}</td>
             <td>${truncateText(product.productDescription || 'No description', 50)}</td>
             <td>${truncateText(product.brand || 'No brand', 30)}</td>
-            <td>₱ ${priceWithDiscount ? priceWithDiscount.toFixed(2) : '0.00'}</td> <!-- Show price after discount -->
+            <td>₱ ${priceWithDiscount ? priceWithDiscount.toFixed(2) : '0.00'}</td>
+            <td>% ${product.discount ? product.discount.toFixed(2) : '0'}</td>
         `;
 
         row.addEventListener('click', () => {
