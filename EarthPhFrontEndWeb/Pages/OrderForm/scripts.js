@@ -32,7 +32,7 @@ submitOrderBtn.addEventListener('click', async () => {
     submitLog();
 });
 
-console.log("SCRIPT");
+
 function submitLog() {
     // Collect product data from dynamically generated product details
     let productDetailsContainer = document.getElementById("product-details");
@@ -154,7 +154,8 @@ modeOfPayment.addEventListener('change', function() {
 
 addItemBtn.onclick = function() {
     modal.style.display = "flex"; 
-    updateSelectedCount(); 
+    console.log("addItem");
+    // updateSelectedCount(); 
 }
 
 // Function to close the modal when the close (x) is clicked
@@ -170,8 +171,9 @@ window.onclick = function(event) {
     }
 }
 
-// Function to update the count of selected products
+
 submitProductsBtn.onclick = function() {
+    console.log("Submit item");
     let productDetailsContainer = document.getElementById("product-details");
     productDetailsContainer.innerHTML = ''; 
     let totalPrice = 0; // To calculate total price
@@ -215,71 +217,12 @@ submitProductsBtn.onclick = function() {
 };
 
 
+
 // Add event listeners to checkboxes to update count on change
 var checkboxes = document.querySelectorAll(".product-checkbox");
 checkboxes.forEach(function(checkbox) {
-    checkbox.addEventListener('change', updateSelectedCoount);
+    // checkbox.addEventListener('change', updateSelectedCount);
 });
-
-
-submitProductsBtn.onclick = function() {
-    let productDetailsContainer = document.getElementById("product-details");
-    productDetailsContainer.innerHTML = ''; 
-    let totalPrice = 0; // To calculate total price
-    let totalItemCount = 0; // To calculate total number of items
-    
-    // Get all checked products
-    var checkboxes = document.querySelectorAll(".product-checkbox:checked");
-    let productCount = checkboxes.length; 
-    productCountDisplay.textContent = productCount;
-
-    checkboxes.forEach(function(checkbox) {
-        let sku = checkbox.getAttribute("data-sku");
-        let name = checkbox.getAttribute("data-name");
-        // let description = checkbox.getAttribute("data-description");
-        let price = parseFloat(checkbox.getAttribute("data-price"));
-        let quantityInput = document.querySelector(`.product-quantity[data-sku="${sku}"]`);
-        let quantity = parseInt(quantityInput.value); // Get the selected quantity
-        
-        totalItemCount += quantity; // Add quantity to total item count
-        totalPrice += price * quantity; // Calculate total price based on quantity and price
-
-        // Create a product detail block to show in the main form
-        //<p><strong>Description:</strong> ${description}</p>
-        let productDetail = `
-            <div class="product-detail">
-                <p><strong>Product Name:</strong> ${name}</p>
-                <p><strong>Price:</strong> ₱${price.toFixed(2)}</p>
-                <p><strong>Quantity:</strong> ${quantity}</p>
-                <p><strong>Total:</strong> ₱${(price * quantity).toFixed(2)}</p>
-                <p><strong>TEST NOW</strong></p>
-            </div>
-            <div class="product-divider-popup"></div>
-        `;
-        productDetailsContainer.innerHTML += productDetail; 
-    });
-
-    // Display the total number of items and total price
-    totalItemsInput.value = totalItemCount;
-    listPriceInput.value = `₱${totalPrice.toFixed(2)}`;
-    totalAmountInput.value = `₱${totalPrice.toFixed(2)}`;
-    // Calculate discounted total (default to totalPrice if no discount is applied)
-    // let discount = parseFloat(discountInput.value) || 0;
-    // let discountedTotal = totalPrice - (totalPrice * (discount / 100));
-
-    // // Display discounted total
-    // totalAmountInput.value = `₱${discountedTotal.toFixed(2)}`;
-
-    // Apply discount if the user changes the discount input
-//     discountInput.oninput = function() {
-//         let discount = parseFloat(discountInput.value) || 0;
-//         let discountedTotal = totalPrice - (totalPrice * (discount / 100));
-//         totalAmountInput.value = `₱${discountedTotal.toFixed(2)}`;
-// };
-
-    // After adding products, close the modal
-    modal.style.display = "none";
-}
 
 // Handle quantity changes separately from modal close logic
 document.querySelectorAll('.quantity-controls button').forEach(button => {

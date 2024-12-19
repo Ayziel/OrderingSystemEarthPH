@@ -76,7 +76,8 @@ document.getElementById('confirm-button').addEventListener('click', () => {
     console.log('All data in localStorage:', localStorage);
 
     // Redirect to the next page
-    window.location.href = 'https://earthhomecareph.astute.services/OrderForm/Order-Info.html'; // Replace with your desired link
+    window.location.href = 'https://earthhomecareph.astute.services/OrderForm/Product-Preference.html';
+
 });
 
 const orderData = {
@@ -97,6 +98,7 @@ console.log('Order Data to save:', orderData);
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     if (!token) {
+
         window.location.href = 'https://earthhomecareph.astute.services/System/login.html';  // Adjust path accordingly
     }
   });
