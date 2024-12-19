@@ -19,7 +19,7 @@ async function createUser(req, res) {
   console.log('Request Body:', req.body); // Log the incoming data
 
   // Destructure the required fields from the request body
-  const { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role } = req.body;
+  const { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address } = req.body;
 
   if (!userName || !password || !role) {
     return res.status(400).json({ message: 'Missing required fields: username, password, or role' });
@@ -41,7 +41,8 @@ async function createUser(req, res) {
     team,
     userName,
     password,
-    role
+    role,
+    address
   });
 
   try {

@@ -3,27 +3,27 @@ const mongoose = require('mongoose');
 const productSchema = new mongoose.Schema({
   productSKU: {
     type: String,
-    required: false,
+    required: true,
   },
   productName: {
     type: String,
-    required: false,
+    required: true,
   },
   productDescription: {
     type: String,
-    required: false,
+    required: true,
   },
   brand: {
     type: String,
-    required: false,
+    required: true,
   },
   productCategory: {
     type: String,
-    required: false,
+    required: true,
   },
   price: {
     type: Number,
-    required: false,
+    required: true,
   },
   discount: {
     type: Number, // Store the discount as a percentage (e.g., 10 for 10%)
@@ -31,11 +31,11 @@ const productSchema = new mongoose.Schema({
   },
   quantity: {
     type: Number,
-    required: false,
+    required: true,
   },
   productImage: {
     type: String, // Store the Base64 string
-    required: false,
+    required: true,
   },
 });
 

@@ -11,7 +11,7 @@ const orderSchema = new mongoose.Schema({
     },
     area: {
         type: String,
-        required: false
+        required: true
     },
     orderDate: {
         type: Date,
@@ -19,23 +19,23 @@ const orderSchema = new mongoose.Schema({
     },
     storeName: {
         type: String,
-        required: false
+        required: true
     },
     houseAddress: {
         type: String,
-        required: false
+        required: true
     },
     townProvince: {
         type: String,
-        required: false
+        required: true
     },
     storeCode: {
         type: String,
-        required: false
+        required: true
     },
     tin: {
         type: String,
-        required: false
+        required: true
     },
     listPrice: {
         type: Number,
@@ -43,7 +43,7 @@ const orderSchema = new mongoose.Schema({
     },
     discount: {
         type: Number,
-        required: false,
+        required: true,
         default: 0
     },
     totalItems: {
@@ -56,15 +56,15 @@ const orderSchema = new mongoose.Schema({
     },
     paymentMode: {
         type: String,
-        required: false
+        required: true
     },
     paymentImage: {
         type: String,
-        required: false
+        required: true
     },
     remarks: {
         type: String,
-        required: false
+        required: true
     },
     products: [{
         name: {

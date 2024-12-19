@@ -15,13 +15,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const phoneNumber = document.getElementById('phoneNumber').value;
         const workPhone = document.getElementById('workPhone').value;
         const email = document.getElementById('email').value;
+        const address = document.getElementById('address').value; // New field
+        const tin = document.getElementById('tin').value;         // New field
         const team = document.getElementById('team').value;
         const userName = document.getElementById('userName').value;
         const password = document.getElementById('password').value;
         const role = document.getElementById('role').value;
         const repeatPassword = document.getElementById('repeat_password').value;
 
-        if (!firstName || !lastName || !phoneNumber || !workPhone || !email || !team || !userName || !password || !repeatPassword || !role) {
+        // Validate fields
+        if (!firstName || !lastName || !phoneNumber || !workPhone || !email || !address || !tin || !team || !userName || !password || !repeatPassword || !role) {
             alert("Please fill in all fields.");
             return;
         }
@@ -32,9 +35,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Create a data object to send in the request
-        const userData = { firstName, lastName, phoneNumber, workPhone, email, team, userName, password, role};
+        const userData = { 
+            firstName, 
+            lastName, 
+            phoneNumber, 
+            workPhone, 
+            email, 
+            address,  // Include address
+            tin,      // Include TIN
+            team, 
+            userName, 
+            password, 
+            role 
+        };
         
         console.log('Request Body:', userData);
+
         try {
             const response = await fetch('https://earthph.sdevtech.com.ph/users/createUser', {
                 method: 'POST',

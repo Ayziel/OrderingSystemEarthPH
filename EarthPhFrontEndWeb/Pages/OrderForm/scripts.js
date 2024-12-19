@@ -28,24 +28,21 @@ const sizeSelect = document.querySelector('.product-size-select');
 const checkbox = document.querySelector('.product-checkbox');
 const productTotal = document.querySelector('.product-total');
 
-submitOrderBtn.addEventListener('click', async () => {
-    submitLog();
-});
+
+
 
 
 function submitLog() {
-    // Collect product data from dynamically generated product details
     let productDetailsContainer = document.getElementById("product-details");
-
-
-    // Get all the product details
+    products = [];  // Clear the previous products before pushing new ones
+    // Get all the product details from the container
     let productDetails = productDetailsContainer.querySelectorAll(".product-detail");
 
     productDetails.forEach(function(product) {
-        let name = product.querySelector("p:nth-child(1)").textContent.replace("Product Name: ", "");
-        let price = parseFloat(product.querySelector("p:nth-child(3)").textContent.replace("Price: ₱", ""));
-        let quantity = parseInt(product.querySelector("p:nth-child(4)").textContent.replace("Quantity: ", ""));
-        let total = parseFloat(product.querySelector("p:nth-child(5)").textContent.replace("Total: ₱", ""));
+        let name = product.querySelector("p:nth-child(1)").textContent.replace("Product Name:", "").trim();
+        let price = parseFloat(product.querySelector("p:nth-child(3)").textContent.replace("Price: ₱", "").trim());
+        let quantity = parseInt(product.querySelector("p:nth-child(4)").textContent.replace("Quantity:", "").trim());
+        let total = parseFloat(product.querySelector("p:nth-child(5)").textContent.replace("Total: ₱", "").trim());
 
         // Push each product's details to the array
         products.push({
@@ -56,39 +53,15 @@ function submitLog() {
         });
     });
 
-    // Log all the collected product data
-    console.log("Products: ", products);
-
-    // Log the full order data (including products)
-    const orderData = {
-        // agentName: document.getElementById("agent-name").value,
-        // teamLeaderName: document.getElementById("team-leader").value,
-        // area: document.getElementById("area").value,
-        // orderDate: document.getElementById("order-date").value,
-        // storeName: document.getElementById("store-name").value,
-        // houseAddress: document.getElementById("house-address").value,
-        // townProvince: document.getElementById("town-province").value,
-        // storeCode: document.getElementById("store-code").value,
-        // tin: document.getElementById("tin").value,
-        // discount: document.getElementById("discount").value,
-
-        listPrice: document.getElementById("list-price").value,
-        totalItems: document.getElementById("total-items").value,
-        totalAmount: document.getElementById("total-amount").value,
-        paymentMode: document.getElementById("payment-mode").value,
-        paymentImage: document.getElementById("payment-image").value,
-        remarks: document.getElementById("remarks").value,
-        products: products // Include the products array
-    };
-
-    // Log the entire order data
-    console.log("Order Data: ", orderData);
+ 
 }
+
 
 
 // Function to update data-price and total display
 // Select all size selects and attach event listeners
 function updateProductPrice(selectElement) {
+    submitLog()
     // Get the SKU from the selected size dropdown
     const sku = selectElement.getAttribute('data-sku');
     
@@ -173,7 +146,7 @@ window.onclick = function(event) {
 
 
 submitProductsBtn.onclick = function() {
-    console.log("Submit item");
+    console.log("Submit items", products);
     let productDetailsContainer = document.getElementById("product-details");
     productDetailsContainer.innerHTML = ''; 
     let totalPrice = 0; // To calculate total price
@@ -262,7 +235,8 @@ window.onclick = function(event) {
 
 document.getElementById('submitOrderBtn').addEventListener('click', async () => {
     // Example: Defining 'products' array (replace with your actual data if needed)
-
+    console.log(products)
+    
     // Retrieve data from localStorage
     const orderData = JSON.parse(localStorage.getItem('orderData')) || {};
     console.log('Retrieved Order Data from localStorage:', orderData);
