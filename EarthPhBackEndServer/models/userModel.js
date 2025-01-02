@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
   },
   middleName: {
     type: String,
-    required: false  // Optional field
+    required: true  // Optional field
   },
   lastName: {
     type: String,
@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
   },
   workPhone: {
     type: String,
-    required: false  // Optional field
+    required: true  // Optional field
   },
   phoneNumber: {
     type: String,
@@ -41,6 +41,10 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     required: true  // Marked as required
+  },
+  address: {
+    type: String,
+    required: true  // Optional field
   }
 });
 

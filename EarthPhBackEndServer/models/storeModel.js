@@ -19,15 +19,15 @@ const storeSchema = new mongoose.Schema({
   },
   phone: {
     type: Number,
-    required: false // Optional phone field
+    required: true // Optional phone field
   },
   email: {
     type: String,
-    required: false // Optional email field
+    required: true // Optional email field
   },
   status: {
     type: String,
-    required: false // Optional status field
+    required: true // Optional status field
   },
   createdAt: {
     type: Date,

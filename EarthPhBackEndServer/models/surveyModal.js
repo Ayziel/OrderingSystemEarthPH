@@ -11,11 +11,11 @@ const storeSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
-    required: false // Optional phone field
+    required: true // Optional phone field
   },
   email: {
     type: String,
-    required: false // Optional email field
+    required: true // Optional email field
   },
   products: [
     {
