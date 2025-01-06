@@ -61,3 +61,13 @@ exports.createOrder = async (req, res) => {
         });
     }
 };
+
+exports.getOrders = async (req, res) => {
+    try {
+        const orders = await Order.find().populate('products');  // Use .populate to fetch the products related to the order
+        res.status(200).json(orders);  // Send the orders data as a response
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error fetching orders' });
+    }
+};
