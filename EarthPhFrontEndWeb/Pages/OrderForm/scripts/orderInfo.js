@@ -180,6 +180,8 @@ logLocalStorageItems();
 
     /*** RECEIPT MODAL ***/
 
+    let receiptModal = document.getElementById("receiptModal");
+    receiptModal.style.display = "none";
     const handleReceiptModal = () => {
         const receiptModal = document.getElementById("receiptModal");
         const closeReceiptBtn = document.querySelector(".close-receipt");

@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
   },
   middleName: {
     type: String,
-    required: true  // Optional field
+    required: false  // Optional field
   },
   lastName: {
     type: String,
@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
   userName: {
     type: String,
     required: true  // Marked as required
+  },
+  tin : { 
+    type: Number,
+    required: false  // Marked as required
   },
   password: {
     type: String,

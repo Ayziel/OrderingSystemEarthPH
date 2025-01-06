@@ -18,31 +18,27 @@ async function getUsers(req, res) {
 async function createUser(req, res) {
   console.log('Request Body:', req.body); // Log the incoming data
 
-  // Destructure the required fields from the request body
-  const { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address } = req.body;
+  // Destructure the required fields from the request body, including tin
+  const { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin } = req.body;
 
+  // Validation for required fields
   if (!userName || !password || !role) {
     return res.status(400).json({ message: 'Missing required fields: username, password, or role' });
   }
-
-    let a = 10;
-  if (a < 5) { 
-    console.log('a is less than 5');
-  }
-
 
   const newUser = new UserModel({
     firstName,
     middleName,
     lastName,
     workPhone,
-    phoneNumber,   // Added phoneNumber field
+    phoneNumber,
     email,
     team,
     userName,
     password,
     role,
-    address
+    address,
+    tin  // Added tin here
   });
 
   try {

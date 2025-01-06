@@ -20,19 +20,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const team = document.getElementById('team').value;
         const userName = document.getElementById('userName').value;
         const password = document.getElementById('password').value;
-        const role = document.getElementById('role').value;
         const repeatPassword = document.getElementById('repeat_password').value;
+        const role = document.getElementById('role').value;
 
         // Validate fields
         if (!firstName || !lastName || !phoneNumber || !workPhone || !email || !address || !tin || !team || !userName || !password || !repeatPassword || !role) {
+            console.log("Form validation failed: Missing required fields");
             alert("Please fill in all fields.");
             return;
         }
+        console.log("Validation passed: All required fields are filled.");
 
         if (password !== repeatPassword) {
+            console.log("Password mismatch: Passwords do not match");
             alert("Passwords do not match. Please try again.");
             return;
         }
+        console.log("Password match: Passwords are the same.");
 
         // Create a data object to send in the request
         const userData = { 
@@ -48,27 +52,41 @@ document.addEventListener('DOMContentLoaded', () => {
             password, 
             role 
         };
-        
+
         console.log('Request Body:', userData);
 
+        // Set headers with auth token if available
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+
+        if (usertoken) {
+            headers['Authorization'] = `Bearer ${usertoken}`;
+            console.log('Authorization header set: ', `Bearer ${usertoken}`);
+        } else {
+            console.log('No auth token found, authorization header not set');
+        }
+
         try {
+            console.log("Sending request to create user...");
             const response = await fetch('https://earthph.sdevtech.com.ph/users/createUser', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: headers,
                 body: JSON.stringify(userData) // Convert the data to JSON
             });
 
             const result = await response.json();
-            
+            console.log("Response from server:", result);
+
             if (response.ok) {
+                console.log('User created successfully');
                 alert('User created successfully');
             } else {
+                console.log('Error creating user:', result.message);
                 alert('Error creating user: ' + result.message);
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error with fetch request:', error);
             alert('There was an error with the request.');
         }
     });
