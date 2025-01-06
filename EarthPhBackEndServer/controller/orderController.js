@@ -1,3 +1,5 @@
+const Order = require('../models/Order'); // Ensure the path is correct
+
 exports.createOrder = async (req, res) => {
     try {
         const orderData = req.body; // This should be the full data object you sent from the frontend
