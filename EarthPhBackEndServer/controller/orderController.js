@@ -13,9 +13,20 @@ exports.createOrder = async (req, res) => {
         }
 
         // Parse listPrice and totalAmount
-        let listPrice = parseFloat(orderData.listPrice.replace('₱', '').replace(',', '')) || 0;
-        let totalAmount = parseFloat(orderData.totalAmount.replace('₱', '').replace(',', '')) || 0;
-        let totalItems = parseInt(orderData.totalItems) || 0;  // Ensure totalItems is an integer
+// Ensure the data is parsed correctly regardless of whether it's a number or string
+                let listPrice = typeof orderData.listPrice === 'string' 
+                    ? parseFloat(orderData.listPrice.replace('₱', '').replace(',', '')) 
+                    : orderData.listPrice || 0;
+
+                let totalAmount = typeof orderData.totalAmount === 'string' 
+                    ? parseFloat(orderData.totalAmount.replace('₱', '').replace(',', '')) 
+                    : orderData.totalAmount || 0;
+
+                let totalItems = parseInt(orderData.totalItems) || 0;  // Ensure totalItems is an integer
+
+                // Log the parsed values for debugging
+                console.log('Parsed values:', listPrice, totalAmount, totalItems);
+
 
         // Handle products array and default description
         const updatedProducts = orderData.products.map(product => ({
