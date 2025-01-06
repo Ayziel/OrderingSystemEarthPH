@@ -1,27 +1,27 @@
-const Order = require('../models/orderModel');
-
-// Create Order
 exports.createOrder = async (req, res) => {
     try {
         const orderData = req.body; // This should be the full data object you sent from the frontend
 
-        // Hardcode listPrice and totalAmount for now
-        let listPrice = 1000.00;  // Example hardcoded value
-        let totalAmount = 1500.00;  // Example hardcoded value
-
-        // Check if orderData.listPrice is a string and has the '₱' symbol
-        if (typeof orderData.listPrice === 'string') {
-            listPrice = parseFloat(orderData.listPrice.replace('₱', '').replace(',', ''));
-        } else if (typeof orderData.listPrice === 'number') {
-            listPrice = orderData.listPrice;  // If it's already a number, use it directly
+        // Validate required fields
+        if (!orderData.agentName || !orderData.teamLeaderName || !orderData.area || !orderData.storeName || !orderData.products) {
+            return res.status(400).json({ message: 'Missing required fields: agentName, teamLeaderName, area, storeName, and products.' });
         }
 
-        // Similarly, handle totalAmount
-        if (typeof orderData.totalAmount === 'string') {
-            totalAmount = parseFloat(orderData.totalAmount.replace('₱', '').replace(',', ''));
-        } else if (typeof orderData.totalAmount === 'number') {
-            totalAmount = orderData.totalAmount;  // If it's already a number, use it directly
+        // Validate paymentImage for 'credit' payment mode
+        if (orderData.paymentMode === 'credit' && (!orderData.paymentImage || orderData.paymentImage === 'noImageYet')) {
+            return res.status(400).json({ message: 'Payment image is required for GCash payment.' });
         }
+
+        // Parse listPrice and totalAmount
+        let listPrice = parseFloat(orderData.listPrice.replace('₱', '').replace(',', '')) || 0;
+        let totalAmount = parseFloat(orderData.totalAmount.replace('₱', '').replace(',', '')) || 0;
+        let totalItems = parseInt(orderData.totalItems) || 0;  // Ensure totalItems is an integer
+
+        // Handle products array and default description
+        const updatedProducts = orderData.products.map(product => ({
+            ...product,
+            description: product.description || 'No description available'  // Add default description if missing
+        }));
 
         // Create a new order instance using the data from the frontend
         const newOrder = new Order({
@@ -36,12 +36,12 @@ exports.createOrder = async (req, res) => {
             tin: orderData.tin,
             listPrice: listPrice,
             discount: parseFloat(orderData.discount) || 0,
-            totalItems: parseInt(orderData.totalItems),
+            totalItems: totalItems,
             totalAmount: totalAmount,
             paymentMode: orderData.paymentMode,
-            paymentImage: orderData.paymentImage,
+            paymentImage: orderData.paymentImage || 'noImageYet',  // Ensure paymentImage is set
             remarks: orderData.remarks,
-            products: orderData.products // Handle products array
+            products: updatedProducts
         });
 
         // Save the order in the database
@@ -59,15 +59,5 @@ exports.createOrder = async (req, res) => {
             message: 'Error creating order',
             error: error.message
         });
-    }
-};
-
-exports.getOrders = async (req, res) => {
-    try {
-        const orders = await Order.find().populate('products');  // Use .populate to fetch the products related to the order
-        res.status(200).json(orders);  // Send the orders data as a response
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error fetching orders' });
     }
 };
