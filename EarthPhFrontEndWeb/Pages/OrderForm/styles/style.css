@@ -136,7 +136,13 @@ button:hover {
 
 .product-size-select {
     margin-top: 25px;
-}
+    text-align: center; /* This centers the text inside the select element */
+    width: 100%; /* Ensure the select element is wide enough */
+    padding: 5px; /* Optional, to add some space around the text */
+    border: 1px solid #ccc; /* Optional, for styling */
+    }
+
+
 
 /* Quantity controls */
 .quantity-controls {

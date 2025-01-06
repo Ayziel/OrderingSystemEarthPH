@@ -307,13 +307,12 @@ function chart() {
 
 function getBorderColor(index) {
     const colors = [
-        'rgb(220, 53, 69)', // Red
         'rgb(23, 162, 184)',   // Light blue
+        'rgb(220, 53, 69)', // Red
         'rgb(40, 167, 69)', // Green
         'rgba(153, 102, 255, 1)', // Purple
         'rgb(255, 193, 7)',  // Orange
         'rgb(0, 123, 255)', // Blue
-     
     ];
     return colors[index % colors.length]; // Cycle through colors
 }
@@ -321,8 +320,8 @@ function getBorderColor(index) {
 // Function to generate a light background color (can be cnustomized)
 function getBackgroundColor(index) {
     const colors = [
-        'rgba(255, 99, 132, 0.2)', 
         'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 99, 132, 0.2)', 
         'rgba(75, 192, 192, 0.2)', 
         'rgba(153, 102, 255, 0.2)', 
         'rgba(255, 159, 64, 0.2)',
@@ -509,7 +508,7 @@ function updateUI(totalSales, sales) {
     document.getElementById("overAllProfit").innerText = '₱ ' + totalSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     document.getElementById("sales").innerText = sales;
     document.getElementById("stores").innerText = 0; // Placeholder if stores isn't yet dynamic
-    document.getElementById("customers").innerText = agents; // Reference the global variable directly
+    // document.getElementById("customers").innerText = agents; // Reference the global variable directly
 
 }
 
