@@ -4,8 +4,8 @@ exports.createOrder = async (req, res) => {
         const orderData = req.body; // This should be the full data object you sent from the frontend
 
         // Validate required fields
-        if (!orderData.agentName || !orderData.teamLeaderName || !orderData.area || !orderData.storeName || !orderData.products) {
-            return res.status(400).json({ message: 'Missing required fields: agentName, teamLeaderName, area, storeName, and products.' });
+        if (!orderData.agentName || !orderData.teamLeaderName || !orderData.area || !orderData.products) {
+            return res.status(400).json({ message: 'Missing required fields: agentName, teamLeaderName, area,  and products.' });
         }
 
         // Validate paymentImage for 'credit' payment mode
@@ -42,9 +42,6 @@ exports.createOrder = async (req, res) => {
             area: orderData.area,
             orderDate: new Date(orderData.orderDate),
             storeName: orderData.storeName,
-            houseAddress: orderData.houseAddress,
-            townProvince: orderData.townProvince,
-            storeCode: orderData.storeCode,
             tin: orderData.tin,
             listPrice: listPrice,
             discount: parseFloat(orderData.discount) || 0,

@@ -21,18 +21,6 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    houseAddress: {
-        type: String,
-        required: true
-    },
-    townProvince: {
-        type: String,
-        required: true
-    },
-    storeCode: {
-        type: String,
-        required: true
-    },
     tin: {
         type: String,
         required: true

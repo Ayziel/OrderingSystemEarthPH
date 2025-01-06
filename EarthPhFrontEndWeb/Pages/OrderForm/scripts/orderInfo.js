@@ -14,6 +14,7 @@ const logLocalStorageItems = () => {
         const key = localStorage.key(i);
         const value = localStorage.getItem(key);
         console.log(`${key}: ${value}`);
+        console.log("test");
     }
 };
 
@@ -294,9 +295,6 @@ logLocalStorageItems();
             area: user.area,
             orderDate: new Date().toISOString(), // Use the current date as orderDate
             storeName: user.storeName,
-            houseAddress: user.houseAddress,
-            townProvince: user.townProvince,
-            storeCode: user.storeCode,
             tin: user.tin,
             listPrice: parseFloat(document.getElementById('listPrice').value),
             totalItems: parseInt(document.getElementById('totalItems').value),
@@ -331,9 +329,6 @@ logLocalStorageItems();
             isFieldMissing(orderData.teamLeaderName, 'teamLeaderName') ||
             isFieldMissing(orderData.area, 'area') ||
             isFieldMissing(orderData.storeName, 'storeName') ||
-            isFieldMissing(orderData.houseAddress, 'houseAddress') ||
-            isFieldMissing(orderData.townProvince, 'townProvince') ||
-            isFieldMissing(orderData.storeCode, 'storeCode') ||
             isFieldMissing(orderData.tin, 'tin') ||
             isFieldMissing(orderData.paymentMode, 'paymentMode') ||
             isFieldMissing(orderData.remarks, 'remarks') ||
