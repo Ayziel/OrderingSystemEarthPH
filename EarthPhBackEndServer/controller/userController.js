@@ -22,9 +22,11 @@ async function createUser(req, res) {
   const { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin } = req.body;
 
   // Validation for required fields
-  if (!userName || !password || !role) {
-    return res.status(400).json({ message: 'Missing required fields: username, password, or role' });
+  if (!userName || !password || !role || !firstName || !lastName || !phoneNumber || !workPhone || !email || !team || !address) {
+    return res.status(400).json({ message: 'Missing required fields' });
   }
+
+  console.log("Validated Fields:", { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin });
 
   const newUser = new UserModel({
     firstName,

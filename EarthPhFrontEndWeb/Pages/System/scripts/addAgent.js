@@ -5,10 +5,10 @@ console.log("usertoken", usertoken);
 
 document.addEventListener('DOMContentLoaded', () => {
     const userForm = document.getElementById('userForm');
-  
+
     userForm.addEventListener('submit', async function(event) {
         event.preventDefault(); // Prevent the form from refreshing the page
-        
+
         // Capture the form data
         const firstName = document.getElementById('firstName').value;
         const lastName = document.getElementById('lastName').value;
@@ -53,7 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
             role 
         };
 
-        console.log('Request Body:', userData);
+        console.log("Captured Form Data:", {
+          firstName, lastName, phoneNumber, workPhone, email, address, tin, team, userName, password, role
+        });
 
         // Set headers with auth token if available
         const headers = {
@@ -77,13 +79,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const result = await response.json();
             console.log("Response from server:", result);
+            console.log("Response status:", response.status);
 
             if (response.ok) {
                 console.log('User created successfully');
                 alert('User created successfully');
             } else {
-                console.log('Error creating user:', result.message);
-                alert('Error creating user: ' + result.message);
+                console.log('Error creating user:', result.message || 'No message');
+                alert('Error creating user: ' + (result.message || 'Unknown error'));
             }
         } catch (error) {
             console.error('Error with fetch request:', error);
