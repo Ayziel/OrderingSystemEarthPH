@@ -1,11 +1,12 @@
 const Order = require('../models/orderModel'); // Ensure the path is correct
+
 exports.createOrder = async (req, res) => {
     try {
         const orderData = req.body; // This should be the full data object you sent from the frontend
 
         // Validate required fields
         if (!orderData.agentName || !orderData.teamLeaderName || !orderData.area || !orderData.products) {
-            return res.status(400).json({ message: 'Missing required fields: agentName, teamLeaderName, area,  and products.' });
+            return res.status(400).json({ message: 'Missing required fields: agentName, teamLeaderName, area, and products.' });
         }
 
         // Validate paymentImage for 'credit' payment mode
@@ -14,26 +15,31 @@ exports.createOrder = async (req, res) => {
         }
 
         // Parse listPrice and totalAmount
-// Ensure the data is parsed correctly regardless of whether it's a number or string
-                let listPrice = typeof orderData.listPrice === 'string' 
-                    ? parseFloat(orderData.listPrice.replace('₱', '').replace(',', '')) 
-                    : orderData.listPrice || 0;
+        let listPrice = typeof orderData.listPrice === 'string' 
+            ? parseFloat(orderData.listPrice.replace('₱', '').replace(',', '')) 
+            : orderData.listPrice || 0;
 
-                let totalAmount = typeof orderData.totalAmount === 'string' 
-                    ? parseFloat(orderData.totalAmount.replace('₱', '').replace(',', '')) 
-                    : orderData.totalAmount || 0;
+        let totalAmount = typeof orderData.totalAmount === 'string' 
+            ? parseFloat(orderData.totalAmount.replace('₱', '').replace(',', '')) 
+            : orderData.totalAmount || 0;
 
-                let totalItems = parseInt(orderData.totalItems) || 0;  // Ensure totalItems is an integer
+        let totalItems = parseInt(orderData.totalItems) || 0;  // Ensure totalItems is an integer
 
-                // Log the parsed values for debugging
-                console.log('Parsed values:', listPrice, totalAmount, totalItems);
-
+        // Log the parsed values for debugging
+        console.log('Parsed values:', listPrice, totalAmount, totalItems);
 
         // Handle products array and default description
-        const updatedProducts = orderData.products.map(product => ({
-            ...product,
-            description: product.description || 'No description available'  // Add default description if missing
-        }));
+        const updatedProducts = orderData.products.map(product => {
+            // Apply discount to the price before calculating the total for each product
+            const discountedPrice = product.price * (1 - (product.discount / 100));  // Discount applied as percentage
+            const total = discountedPrice * product.quantity;
+
+            return {
+                ...product,
+                price: discountedPrice,  // Set the discounted price for the product
+                total: total  // Set the total based on discounted price
+            };
+        });
 
         // Create a new order instance using the data from the frontend
         const newOrder = new Order({

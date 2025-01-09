@@ -48,17 +48,17 @@ logLocalStorageItems();
     const populateProductList = async () => {
         const products = await fetchProducts();
         const productList = document.getElementById("product-list");
-
+    
         if (!productList) {
             console.error("Product list element not found!");
             return;
         }
-
+    
         if (products.length === 0) {
             productList.innerHTML = "<p>No products available.</p>";
             return;
         }
-
+    
         products.forEach(product => {
             const randomImageURL = "https://picsum.photos/100";
             const productHTML = `
@@ -79,14 +79,29 @@ logLocalStorageItems();
                                     <option value="${product.price}" data-price="${product.price}">${product.price}</option>
                                 </select>
                             </div>
+                            <div class="discount-dropdown">
+                                <select id="discount-percentage-${product.productSKU}" class="discount-percentage" data-sku="${product.productSKU}">
+                                    <option value="0">0%</option>
+                                    <option value="5">5%</option>
+                                    <option value="10">10%</option>
+                                    <option value="20">20%</option>
+                                    <option value="30">30%</option>
+                                    <option value="40">40%</option>
+                                    <option value="50">50%</option>
+                                    <option value="60">60%</option>
+                                    <option value="70">70%</option>
+                                    <option value="80">80%</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>`;
             productList.innerHTML += productHTML;
         });
-
+    
         addQuantityButtonListeners();
     };
+    
 
     /*** ORDER COMPUTATION ***/
 
@@ -94,21 +109,27 @@ logLocalStorageItems();
         const products = document.querySelectorAll(".product-container");
         let totalItems = 0;
         let totalAmount = 0;
-
+    
         products.forEach(product => {
             const quantity = parseInt(product.querySelector(".product-quantity").value) || 0;
             const price = parseFloat(product.querySelector(".product-size-select").value);
-
+            const discountPercentage = parseInt(product.querySelector(".discount-percentage").value) || 0; // Get the discount percentage
+    
+            // Calculate the discounted price
+            const discountAmount = price * (discountPercentage / 100);
+            const discountedPrice = price - discountAmount;
+    
             if (quantity > 0) {
                 totalItems += quantity;
-                totalAmount += quantity * price;
+                totalAmount += quantity * discountedPrice;
             }
         });
-
+    
         document.getElementById("listPrice").value = totalAmount.toFixed(2);
         document.getElementById("totalItems").value = totalItems;
         document.getElementById("totalAmount").value = totalAmount.toFixed(2);
     };
+    
 
     /*** PRODUCT DETAILS UPDATE ***/
 
@@ -125,28 +146,39 @@ logLocalStorageItems();
             const productName = product.querySelector("strong").innerText;
             const quantity = parseInt(product.querySelector(".product-quantity").value) || 0;
             const price = parseFloat(product.querySelector(".product-size-select").value);
-
+            const discountPercentage = parseInt(product.querySelector(".discount-percentage").value) || 0; // Get the discount percentage
+        
             if (quantity > 0) {
+                // Calculate the discounted price
+                const discountAmount = price * (discountPercentage / 100);
+                const discountedPrice = price - discountAmount;
+                const total = quantity * discountedPrice;
+        
+                // Push to the product details data
                 productDetailsData.push({
                     name: productName,
-                    price: price,
+                    price: discountedPrice,
                     quantity: quantity,
-                    total: quantity * price
+                    total: total,
+                    discount: discountPercentage // Store the discount percentage
                 });
-
+        
+                // Update the product detail HTML with the discount and total price
                 const itemHTML = `
                     <div class="product-detail">
                         <strong>${productName}</strong>
-                        <p>Price: $${price.toFixed(2)}</p>
+                        <p>Price: $${discountedPrice.toFixed(2)} </p>
+                        <p>Discount: ${discountPercentage}%</p>
                         <p>Quantity: ${quantity}</p>
-                        <p>Total: $${(quantity * price).toFixed(2)}</p>
+                        <p>Total: $${total.toFixed(2)}</p>
                         <hr>
                     </div>`;
-
+        
                 detailsHTML += itemHTML;
                 modalDetailsHTML += itemHTML;
             }
         });
+        
 
         productDetails.innerHTML = detailsHTML || "<p>No items selected.</p>";
         productDetailsModal.innerHTML = modalDetailsHTML || "<p>No items selected in the modal.</p>";
@@ -293,7 +325,7 @@ logLocalStorageItems();
             agentName: user.agentName,
             teamLeaderName: user.teamLeaderName,
             area: user.area,
-            orderDate: new Date().toISOString(), // Use the current date as orderDate
+            orderDate: new Date().toISOString(),
             storeName: user.storeName,
             tin: user.tin,
             listPrice: parseFloat(document.getElementById('listPrice').value),
@@ -307,12 +339,14 @@ logLocalStorageItems();
                 price: 0,
                 quantity: 0,
                 total: 0,
-                description: 'No description available' // Add a default description
+                description: 'No description available',
+                discount: 0 // Add a default discount value
             }]
         };
-    
-        // Log the order data to check if all fields are populated correctly
+        
+        // Log the order data
         console.log('Order data to be sent:', orderData);
+        
     
         const isFieldMissing = (field, fieldName) => {
             // Check if the field is not a string or is empty or undefined

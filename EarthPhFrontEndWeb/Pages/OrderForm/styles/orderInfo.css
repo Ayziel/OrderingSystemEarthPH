@@ -242,3 +242,11 @@ input[type="text"], select {
     width: 90%; /* For responsiveness */
     text-align: center;
 }
+
+.discount-dropdown {
+    margin-top: 10px;
+    text-align: center;
+}
+.discount-percentage {
+    text-align: center;
+}

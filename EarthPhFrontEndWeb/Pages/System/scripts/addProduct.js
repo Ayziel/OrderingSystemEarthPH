@@ -82,18 +82,32 @@ function convertToBase64(file) {
 function syncDiscountWithInput() {
     const discountDropdown = document.getElementById('discountDropdown');
     const discountInput = document.getElementById('discountInput');
-  
+    const originalValue = parseFloat(discountInput.value);
+
     // Update input box with the selected percentage value
     if (discountDropdown.value !== '') {
-        discountInput.value = (discountDropdown.value) ;
+        discountInput.value = (originalValue * discountDropdown.value / 100).toFixed(2);
     }
-  }
-  
-  function syncInputWithDropdown() {
+}
+
+function syncDiscountWithInput() {
     const discountDropdown = document.getElementById('discountDropdown');
     const discountInput = document.getElementById('discountInput');
-  
+    const originalValue = parseFloat(discountInput.value);
+
+    // Update input box with the selected percentage value
+    if (discountDropdown.value !== '' && discountDropdown.value !== '0') {
+        discountInput.value = (originalValue * discountDropdown.value / 100).toFixed(2);
+    } else {
+        discountInput.value = originalValue.toFixed(2); // No discount applied
+    }
+}
+
+function syncInputWithDropdown() {
+    const discountDropdown = document.getElementById('discountDropdown');
+    const discountInput = document.getElementById('discountInput');
+
     // If a custom value is entered, reset the dropdown to a blank option
-    discountDropdown.value = '';
-  }
+    discountDropdown.value = 0;
+}
   
