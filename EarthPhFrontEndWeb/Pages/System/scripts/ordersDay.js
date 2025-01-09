@@ -92,6 +92,68 @@ function populateOrders(orders) {
     });
 }
 
+document.getElementById('export-btn').addEventListener('click', exportToExcel);
+
+function exportToExcel() {
+    // Fetch the orders data from the API
+    fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(orders => {
+            if (!orders || orders.length === 0) {
+                console.log('No orders found.');
+                return;
+            }
+
+            // Sort all orders by order date
+            orders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
+
+            // Prepare data for Excel export
+            const rows = [];
+            const headers = [
+                "No.",
+                "Agent Name",
+                "Store Name",
+                "Order Date",
+                "Area",
+                "Payment Mode",
+                "Products",
+                "Total Amount",
+            ];
+            rows.push(headers);
+
+            orders.forEach((order, index) => {
+                const rowData = [
+                    index + 1,
+                    order.agentName,
+                    order.storeName,
+                    new Date(order.orderDate).toLocaleString(), // Format date
+                    order.area,
+                    order.paymentMode,
+                    order.products.map(product => `${product.name} (Qty: ${product.quantity}, Price: ${product.price})`).join(" - "), // Format product details
+                    order.totalAmount,
+                ];
+                rows.push(rowData);
+            });
+
+            // Create a workbook and sheet
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(rows);
+            XLSX.utils.book_append_sheet(wb, ws, "Orders Export");
+
+            // Trigger the download of the Excel file
+            XLSX.writeFile(wb, 'Today_Orders_Export.xlsx');
+        })
+        .catch(error => {
+            console.error('Error fetching orders:', error);
+            alert('Failed to fetch orders. Please try again later.');
+        });
+}
+
 const modal = document.getElementById('orderModal');
 const closeModal = modal.querySelector('.close');
 
@@ -193,66 +255,4 @@ function openModal(order) {
     document.getElementById('close-modal').addEventListener('click', () => {
         modal.style.display = 'none';
     });
-}
-
-document.getElementById('export-btn').addEventListener('click', exportToExcel);
-
-function exportToExcel() {
-    // Fetch the orders data from the API
-    fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(orders => {
-            if (!orders || orders.length === 0) {
-                console.log('No orders found.');
-                return;
-            }
-
-            // Sort all orders by order date
-            orders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
-
-            // Prepare data for Excel export
-            const rows = [];
-            const headers = [
-                "No.",
-                "Agent Name",
-                "Store Name",
-                "Order Date",
-                "Area",
-                "Payment Mode",
-                "Products",
-                "Total Amount",
-            ];
-            rows.push(headers);
-
-            orders.forEach((order, index) => {
-                const rowData = [
-                    index + 1,
-                    order.agentName,
-                    order.storeName,
-                    new Date(order.orderDate).toLocaleString(), // Format date
-                    order.area,
-                    order.paymentMode,
-                    order.products.map(product => `${product.name} (Qty: ${product.quantity}, Price: ${product.price})`).join(" - "), // Format product details
-                    order.totalAmount,
-                ];
-                rows.push(rowData);
-            });
-
-            // Create a workbook and sheet
-            const wb = XLSX.utils.book_new();
-            const ws = XLSX.utils.aoa_to_sheet(rows);
-            XLSX.utils.book_append_sheet(wb, ws, "Orders Export");
-
-            // Trigger the download of the Excel file
-            XLSX.writeFile(wb, 'Orders_Export.xlsx');
-        })
-        .catch(error => {
-            console.error('Error fetching orders:', error);
-            alert('Failed to fetch orders. Please try again later.');
-        });
 }
