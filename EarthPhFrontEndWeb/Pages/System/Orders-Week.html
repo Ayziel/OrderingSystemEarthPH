@@ -6,11 +6,14 @@
 
     <!----======== CSS ======== -->
     <link rel="stylesheet" href="./styles/style.css">
-    <link rel="stylesheet" href="./styles/navbar.css">
+    <link rel="stylesheet" href="./styles/orders.css">
+    <link rel="stylesheet" href="./styles/productList.css">
+     
     <!----===== Icons ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="./styles/navbar.css">
     <title>EarthPH</title>
 </head>
 <body>
@@ -45,7 +48,7 @@
         <!-- duplicate this li tag if you want to add or remove  navlink with submenu -->
         <!-- start -->
         <li class="item">
-          <div href="#" class="nav_link submenu_item">
+          <div href="https://earthhomecareph.astute.services/System/index.html" class="nav_link submenu_item">
             <span class="navlink_icon">
               </i><i class='bx bx-cart-alt'></i>
             </span>
@@ -69,9 +72,9 @@
             <i class="bx bx-chevron-right arrow-left"></i>
           </div>
           <ul class="menu_items submenu">
-              <a href="https://earthhomecareph.astute.services/System/Stores-Barangay.html" class="nav_link sublink">Barangay</a>
               <a href="https://earthhomecareph.astute.services/System/All-Stores.html" class="nav_link sublink">All stores</a>
               <a href="https://earthhomecareph.astute.services/System/Product-list.html" class="nav_link sublink">Products</a>
+              <a href="https://earthhomecareph.astute.services/System/Add-Store.html" class="nav_link sublink">Add Store</a>
           </ul>
         </li>
         <li class="item">
@@ -98,8 +101,8 @@
             <i class="bx bx-chevron-right arrow-left"></i>
           </div>
           <ul class="menu_items submenu">
-            <a href="https://earthhomecareph.astute.services/System/Add-Agent.html" class="nav_link sublink">Add Agent</a>
-            <a href="https://earthhomecareph.astute.services/System/Add-Product.html" class="nav_link sublink">Add Products</a>
+            <a href="https://earthph.sdevtech.com.ph/System/Add-Agent.html" class="nav_link sublink">Add Agent</a>
+            <a href="https://earthph.sdevtech.com.ph/System/Add-Product.html" class="nav_link sublink">Add Products</a>
           </ul>
         </li>
 
@@ -145,6 +148,7 @@
                         <th>Order Date</th>
                         <th>Location</th>
                         <th>Amount</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody class="orders-body"></tbody>
@@ -160,6 +164,6 @@
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
     <script src="./scripts/script.js"></script>
-    <script src="./scripts/ordersDay.js"></script>
+    <script src="./scripts/ordersWeek.js"></script>
 </body>
 </html>

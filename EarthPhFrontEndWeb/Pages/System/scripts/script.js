@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
         item.style.display = 'none'; // Hide sections that shouldn't be shown
       }
     });
+
+    document.getElementById('newOrderLink').style.display = 'none'; // Hide the New Order link
   }
 });
-
-

@@ -115,6 +115,7 @@ function populateProducts(products) {
                 } catch (error) {
                     console.error('Error updating product:', error);
                 }
+                window.location.reload();
             };
         });
 
@@ -138,3 +139,53 @@ function updateProductData(productId, updatedProduct) {
     // For now, we're just logging the updated product
     console.log(`Updating product ${productId}:`, updatedProduct);
 }
+
+function exportToExcel() {
+    console.log("Exporting products to Excel...");
+
+    fetch('https://earthph.sdevtech.com.ph/products/getProduct')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const products = data.products;
+
+            // Prepare the headers based on the keys you want to export
+            const headers = ["Product SKU", "Product Name", "Description", "Brand", "Category", "Price", "Discount", "Quantity"];
+
+            // Prepare the data by mapping the products to the desired format
+            const formattedData = products.map(product => [
+                product.productSKU,  // SKU
+                product.productName,  // Name
+                product.productDescription,  // Description
+                product.brand,  // Brand
+                product.productCategory,  // Category
+                `₱ ${product.price.toFixed(2)}`,  // Price
+                `${product.discount}%`,  // Discount (as percentage)
+                product.quantity  // Quantity
+            ]);
+
+            // Add headers as the first row
+            formattedData.unshift(headers);
+
+            // Create a worksheet from the data
+            const ws = XLSX.utils.aoa_to_sheet(formattedData);
+
+            // Create a workbook with the worksheet
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Product Data");
+
+            // Export the workbook to an Excel file
+            XLSX.writeFile(wb, 'Product_Data.xlsx');
+        })
+        .catch(error => {
+            console.error('Error exporting data:', error);
+            alert('Failed to export product data. Please try again later.');
+        });
+}
+
+// Add event listener to export button
+document.getElementById('export-btn').addEventListener('click', exportToExcel);

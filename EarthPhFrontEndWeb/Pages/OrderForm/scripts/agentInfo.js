@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 document.addEventListener('DOMContentLoaded', async () => {
+    
     const userID = localStorage.getItem('userID');
     console.log("UserID from localStorage:", userID);
 
@@ -61,7 +62,6 @@ function populateUserData(matchedUser, users) {
 
     // Populate TIN field with matched user's TIN
     document.getElementById('tin').value = matchedUser.tin;
-
     // Populate team leader name field if available
     const teamLeader = findTeamLeader(users, matchedUser.team);
     if (teamLeader) {

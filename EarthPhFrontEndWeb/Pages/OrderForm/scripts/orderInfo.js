@@ -1,20 +1,28 @@
 let productDetailsData = [];
 
+const paymentImageInput = document.getElementById('paymentImage');
+let base64Image = ""; // Variable to store the base64 image string
+
 document.addEventListener("DOMContentLoaded", function () {
-    /*** VARIABLES ***/
- // Array to store product details
 
-    /*** FETCH AND POPULATE PRODUCTS ***/
+    paymentImageInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                base64Image = reader.result;
+                console.log('Base64 Image:', base64Image); // Log the base64 string for debugging
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 
-
-    // Function to log all items in localStorage
 const logLocalStorageItems = () => {
     console.log("Items in localStorage:");
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         const value = localStorage.getItem(key);
         console.log(`${key}: ${value}`);
-        console.log("test");
     }
 };
 
@@ -46,6 +54,7 @@ logLocalStorageItems();
 
     // Populate product list dynamically
     const populateProductList = async () => {
+        
         const products = await fetchProducts();
         const productList = document.getElementById("product-list");
     
@@ -333,7 +342,7 @@ logLocalStorageItems();
             totalAmount: parseFloat(document.getElementById('totalAmount').value),
             paymentMode: document.getElementById('paymentMode').value,
             remarks: document.getElementById('remarks').value,
-            paymentImage: document.getElementById('paymentMode').value === 'credit' ? document.getElementById('paymentImage').value : "No Image",
+            paymentImage: document.getElementById('paymentMode').value === 'credit' ? base64Image : "No Image",
             products: updatedProducts.length > 0 ? updatedProducts : [{
                 name: 'No product selected',
                 price: 0,
@@ -358,17 +367,18 @@ logLocalStorageItems();
         };
     
         // Check for missing required fields
-        if (
-            isFieldMissing(orderData.agentName, 'agentName') ||
-            isFieldMissing(orderData.teamLeaderName, 'teamLeaderName') ||
-            isFieldMissing(orderData.area, 'area') ||
-            isFieldMissing(orderData.storeName, 'storeName') ||
-            isFieldMissing(orderData.tin, 'tin') ||
-            isFieldMissing(orderData.paymentMode, 'paymentMode') ||
-            isFieldMissing(orderData.remarks, 'remarks') ||
-            (orderData.paymentMode === 'credit' && isFieldMissing(orderData.paymentImage, 'paymentImage'))  // Check if paymentImage is missing when paymentMode is credit
-        ) {
-            alert('Please fill out all required fields before submitting the order.');
+        let missingFields = [];
+        if (isFieldMissing(orderData.agentName, 'Agent Name')) missingFields.push('Agent Name');
+        if (isFieldMissing(orderData.teamLeaderName, 'Team Leader Name')) missingFields.push('Team Leader Name');
+        if (isFieldMissing(orderData.area, 'Area')) missingFields.push('Area');
+        if (isFieldMissing(orderData.storeName, 'Store Name')) missingFields.push('Store Name');
+        if (isFieldMissing(orderData.tin, 'TIN')) missingFields.push('TIN');
+        if (isFieldMissing(orderData.paymentMode, 'Payment Mode')) missingFields.push('Payment Mode');
+        if (isFieldMissing(orderData.remarks, 'Remarks')) missingFields.push('Remarks');
+        if (orderData.paymentMode === 'credit' && isFieldMissing(orderData.paymentImage, 'Payment Image')) missingFields.push('Payment Image');
+    
+        if (missingFields.length > 0) {
+            alert('Please fill out the following required fields before submitting the order: ' + missingFields.join(', '));
             return;
         }
     

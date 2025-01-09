@@ -17,19 +17,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-            const todaysOrders = orders.filter(order => {
-                const orderDate = new Date(order.orderDate).toISOString().split('T')[0];
-                return orderDate === today;
+            const today = new Date();
+            const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+            const startOfWeek = new Date(today);
+            const endOfWeek = new Date(today);
+
+            // Adjust startOfWeek to the previous Monday
+            startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+            startOfWeek.setHours(0, 0, 0, 0);
+
+            // Adjust endOfWeek to the upcoming Sunday
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
+            endOfWeek.setHours(23, 59, 59, 999);
+
+            const weekOrders = orders.filter(order => {
+                const orderDate = new Date(order.orderDate);
+                return orderDate >= startOfWeek && orderDate <= endOfWeek;
             });
 
-            if (todaysOrders.length === 0) {
-                console.log('No orders from today.');
+            if (weekOrders.length === 0) {
+                console.log('No orders from this week.');
                 return;
             }
 
-            todaysOrders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
-            populateOrders(todaysOrders);
+            weekOrders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
+            populateOrders(weekOrders);
         })
         .catch(error => console.error('Error fetching orders:', error));
 });
@@ -48,7 +60,7 @@ function populateOrders(orders) {
         <td>${globalCounter++}</td>
         <td>${order.storeName || 'No store name'}</td>
         <td>${order.agentName || 'No agent name'}</td>
-        <td>${order.orderDate ? new Date(order.orderDate).toLocaleDateString('en-US', { timeZone: 'Asia/Manila' }) : 'No date'}</td>
+        <td>${order.orderDate }</td>
         <td>${order.area || 'No location'}</td>
         <td>${order.totalAmount ? '₱ ' + order.totalAmount.toFixed(2) : 'No amount'}</td>
         <td>
@@ -78,96 +90,6 @@ function populateOrders(orders) {
             // You can add logic to update the order status here
         });
     });
-}
-
-
-document.getElementById('export-btn').addEventListener('click', exportToExcel);
-
-function exportToExcel() {
-    // Mocked database for demonstration (replace with your real database fetch logic)
-    const ordersData = [
-        {
-            _id: "675f84f0d5910ae36aece7fa",
-            agentName: "sdevName SdevSurname",
-            teamLeaderName: "Aljhon Franco",
-            area: "TANAY RIZAL",
-            orderDate: "2024-12-16T00:00:00.000+00:00",
-            storeName: "Inasal",
-            houseAddress: "# 54, Lapu Lapu",
-            townProvince: "lourdess",
-            storeCode: "code2d",
-            tin: "54768d",
-            listPrice: 1000,
-            discount: 0,
-            totalItems: 3,
-            totalAmount: 1500,
-            paymentMode: "credit",
-            paymentImage: "",
-            remarks: "",
-            products: [
-                {
-                    name: "Aerosol Multi-Insect Killer",
-                    description: "Advanced® Aerosol Multi-Insect Killer knocks out and kills mosquitoes,…",
-                    price: 215,
-                    quantity: 1,
-                    total: 215,
-                    _id: "675f84f0d5910ae36aece7fb"
-                },
-                {
-                    name: "Aerosol Mosquito Killer",
-                    description: "Advanced® Aerosol Mosquito Killer has a breakthrough formula with Fast…",
-                    price: 95,
-                    quantity: 1,
-                    total: 95,
-                    _id: "675f84f0d5910ae36aece7fc"
-                },
-                {
-                    name: "Pest Catch Sheet",
-                    description: "Banzai® Pest Catch Sheet contains a super-strong adhesive that is sure…",
-                    price: 120,
-                    quantity: 1,
-                    total: 120,
-                    _id: "675f84f0d5910ae36aece7fd"
-                }
-            ],
-            __v: 0
-        }
-    ];
-
-    const rows = [];
-    const headers = [
-        "No.",
-        "Agent Name",
-        "Store Name",
-        "Order Date",
-        "Area",
-        "Total Amount",
-        "Payment Mode",
-        "Products"
-    ];
-    rows.push(headers);
-
-    ordersData.forEach((order, index) => {
-        const rowData = [
-            index + 1,
-            order.agentName,
-            order.storeName,
-            new Date(order.orderDate).toLocaleString(), // Format date
-            order.area,
-            order.totalAmount,
-            order.paymentMode,
-            order.products.map(product => `${product.name} (Qty: ${product.quantity}, Price: ${product.price})`).join("; ") // Format product details
-        ];
-        rows.push(rowData);
-    });
-
-    // Create a workbook and sheet
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(rows);
-    XLSX.utils.book_append_sheet(wb, ws, "Orders Export");
-
-    // Trigger the download of the Excel file
-    XLSX.writeFile(wb, 'Orders_Export.xlsx');
 }
 
 const modal = document.getElementById('orderModal');
@@ -273,3 +195,64 @@ function openModal(order) {
     });
 }
 
+document.getElementById('export-btn').addEventListener('click', exportToExcel);
+
+function exportToExcel() {
+    // Fetch the orders data from the API
+    fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(orders => {
+            if (!orders || orders.length === 0) {
+                console.log('No orders found.');
+                return;
+            }
+
+            // Sort all orders by order date
+            orders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
+
+            // Prepare data for Excel export
+            const rows = [];
+            const headers = [
+                "No.",
+                "Agent Name",
+                "Store Name",
+                "Order Date",
+                "Area",
+                "Payment Mode",
+                "Products",
+                "Total Amount",
+            ];
+            rows.push(headers);
+
+            orders.forEach((order, index) => {
+                const rowData = [
+                    index + 1,
+                    order.agentName,
+                    order.storeName,
+                    new Date(order.orderDate).toLocaleString(), // Format date
+                    order.area,
+                    order.paymentMode,
+                    order.products.map(product => `${product.name} (Qty: ${product.quantity}, Price: ${product.price})`).join(" - "), // Format product details
+                    order.totalAmount,
+                ];
+                rows.push(rowData);
+            });
+
+            // Create a workbook and sheet
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(rows);
+            XLSX.utils.book_append_sheet(wb, ws, "Orders Export");
+
+            // Trigger the download of the Excel file
+            XLSX.writeFile(wb, 'Orders_Export.xlsx');
+        })
+        .catch(error => {
+            console.error('Error fetching orders:', error);
+            alert('Failed to fetch orders. Please try again later.');
+        });
+}
