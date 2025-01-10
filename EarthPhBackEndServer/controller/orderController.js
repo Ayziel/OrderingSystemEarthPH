@@ -37,7 +37,8 @@ exports.createOrder = async (req, res) => {
             return {
                 ...product,
                 price: discountedPrice,  // Set the discounted price for the product
-                total: total  // Set the total based on discounted price
+                total: total,  // Set the total based on discounted price
+                product_uid: product.product_uid  // Ensure product_uid is included
             };
         });
 
@@ -122,7 +123,8 @@ exports.updateOrders = async (req, res) => {
             return {
                 ...product,
                 price: discountedPrice,
-                total: total
+                total: total,
+                product_uid: product.product_uid  // Ensure product_uid is included
             };
         });
 
