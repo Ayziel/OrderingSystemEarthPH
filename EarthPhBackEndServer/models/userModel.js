@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  uid: {
-    type: String,
-    required: true  // Marked as required
-  },
   firstName: {
     type: String,
     required: true  // Marked as required
@@ -53,7 +49,11 @@ const userSchema = new mongoose.Schema({
   address: {
     type: String,
     required: true  // Optional field
-  }
+  },
+  uid: {
+    type: String,
+    required: true  // Marked as required
+  },
 });
 
 const User = mongoose.model('User', userSchema);

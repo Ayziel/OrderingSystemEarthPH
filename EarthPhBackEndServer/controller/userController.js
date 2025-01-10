@@ -29,7 +29,6 @@ async function createUser(req, res) {
   console.log("Validated Fields:", { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin, uid });
 
   const newUser = new UserModel({
-    uid,
     firstName,
     middleName,
     lastName,
@@ -41,7 +40,8 @@ async function createUser(req, res) {
     password,
     role,
     address,
-    tin  // Added tin here
+    tin,  // Added tin here
+    uid
   });
 
   try {
