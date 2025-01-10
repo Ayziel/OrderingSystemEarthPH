@@ -19,7 +19,7 @@ async function createUser(req, res) {
   console.log('Request Body:', req.body); // Log the incoming data
 
   // Destructure the required fields from the request body, including tin
-  const { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin } = req.body;
+  const { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin, uid, } = req.body;
 
   // Validation for required fields
   if (!userName || !password || !role || !firstName || !lastName || !phoneNumber || !workPhone || !email || !team || !address) {

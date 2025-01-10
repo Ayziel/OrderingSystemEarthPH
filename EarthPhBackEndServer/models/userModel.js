@@ -49,8 +49,8 @@ const userSchema = new mongoose.Schema({
   address: {
     type: String,
     required: true  // Optional field
-  },
-  uid: {
+  }
+    uid: {
     type: String,
     required: true  // Marked as required
   },
