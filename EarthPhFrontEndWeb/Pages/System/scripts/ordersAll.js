@@ -149,102 +149,100 @@ const modal = document.getElementById('orderModal');
 const closeModal = modal.querySelector('.close');
 
 function openModal(order) {
-    // Get the modal and its content area
     const modal = document.getElementById('order-modal');
     const modalContent = modal.querySelector('.modal-content');
 
-    // Create table rows for order details
+    // Populate the modal with order details and include edit functionality
     const orderDetailsHTML = `
-        <h3>Order Details</h3>
+        <div class="modal-header">
+            <h3>Order Details</h3>
+            <button id="close-modal" class="close-modal-button">&times;</button>
+        </div>
         <table>
             <tr>
                 <th>Store Name</th>
-                <td>${order.storeName || 'No store name'}</td>
+                <td><input type="text" id="edit-store-name" value="${order.storeName || ''}" class="modal-input" disabled></td>
             </tr>
             <tr>
                 <th>Agent Name</th>
-                <td>${order.agentName || 'No agent name'}</td>
-            </tr>
-            <tr>
-                <th>Team Leader</th>
-                <td>${order.teamLeaderName || 'No team leader'}</td>
-            </tr>
-            <tr>
-                <th>Order Date</th>
-                <td>${order.orderDate
-                    ? new Date(order.orderDate).toLocaleDateString('en-US', { timeZone: 'Asia/Manila' })
-                    : 'No date'}</td>
+                <td><input type="text" id="edit-agent-name" value="${order.agentName || ''}" class="modal-input" disabled></td>
             </tr>
             <tr>
                 <th>Area</th>
-                <td>${order.area || 'No area'}</td>
-            </tr>
-            <tr>
-                <th>House Address</th>
-                <td>${order.houseAddress || 'No house address'}</td>
-            </tr>
-            <tr>
-                <th>Town/Province</th>
-                <td>${order.townProvince || 'No town/province'}</td>
-            </tr>
-            <tr>
-                <th>Total Items</th>
-                <td>${order.totalItems || 0}</td>
+                <td><input type="text" id="edit-area" value="${order.area || ''}" class="modal-input" disabled></td>
             </tr>
             <tr>
                 <th>Total Amount</th>
-                <td>${order.totalAmount ? `₱ ${order.totalAmount.toFixed(2)}` : 'No amount'}</td>
+                <td><input type="number" id="edit-total-amount" value="${order.totalAmount || 0}" class="modal-input" disabled></td>
             </tr>
             <tr>
-                <th>Remarks</th>
-                <td>${order.remarks || 'No remarks'}</td>
+                <th>Status</th>
+                <td>
+                    <select id="edit-status" class="modal-input" disabled>
+                        <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
+                        <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                        <option value="received" ${order.status === 'received' ? 'selected' : ''}>Received</option>
+                    </select>
+                </td>
             </tr>
         </table>
+        <button id="edit-button" class="edit-button">Edit</button>
+        <button id="save-button" style="display:none;" class="save-button">Save</button>
     `;
 
-    // Add the product details as a table if products exist
-    let productsHTML = '';
-    if (order.products && order.products.length > 0) {
-        productsHTML = `
-            <h4>Products:</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Product Name</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${order.products
-                        .map(
-                            product => `
-                            <tr>
-                                <td>${product.name}</td>
-                                <td>₱${product.price.toFixed(2)}</td>
-                                <td>${product.quantity}</td>
-                                <td>₱${product.total.toFixed(2)}</td>
-                            </tr>
-                        `
-                        )
-                        .join('')}
-                </tbody>
-            </table>
-        `;
-    } else {
-        productsHTML = `<p>No products available.</p>`;
-    }
-
-    // Combine order details and products into the modal content
-    modalContent.innerHTML = orderDetailsHTML + productsHTML + '<button id="close-modal">Close</button>';
+    modalContent.innerHTML = orderDetailsHTML;
 
     // Show the modal
     modal.style.display = 'block';
+    document.body.classList.add('modal-open');
 
-    // Add event listener to close the modal
+    // Close modal
     document.getElementById('close-modal').addEventListener('click', () => {
         modal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+    });
+
+    // Edit button functionality
+    document.getElementById('edit-button').addEventListener('click', () => {
+        document.querySelectorAll('.modal-input').forEach(input => input.disabled = false);
+        document.getElementById('save-button').style.display = 'inline-block';
+    });
+
+    // Save button functionality
+    document.getElementById('save-button').addEventListener('click', () => {
+        const updatedOrder = {
+            _id: order._id,
+            storeName: document.getElementById('edit-store-name').value,
+            agentName: document.getElementById('edit-agent-name').value,
+            area: document.getElementById('edit-area').value,
+            totalAmount: parseFloat(document.getElementById('edit-total-amount').value),
+            status: document.getElementById('edit-status').value,
+        };
+
+        saveOrderToDatabase(updatedOrder);
     });
 }
 
+function saveOrderToDatabase(updatedOrder) {
+    fetch('https://earthph.sdevtech.com.ph/orders/updateOrder', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedOrder)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Updated Order:", data);
+            alert('Order updated successfully!');
+            location.reload(); // Refresh the page
+        })
+        .catch(error => {
+            console.error('Error updating order:', error);
+            alert('Failed to update order. Please try again later.');
+        });
+}

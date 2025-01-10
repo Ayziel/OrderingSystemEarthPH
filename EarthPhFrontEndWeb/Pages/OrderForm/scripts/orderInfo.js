@@ -313,7 +313,8 @@ logLocalStorageItems();
     populateProductList();
     handleModals();
     handleReceiptModal();
-    const uid = uuid.v4();
+    const ordersuid = uuid.v4();
+    const stocksuid = uuid.v4();
     document.getElementById('acceptOrderBtn').addEventListener('click', async () => {
         // Log product details data to check its content
         console.log('Product Details Data:', productDetailsData);
@@ -342,7 +343,7 @@ logLocalStorageItems();
             paymentMode: document.getElementById('paymentMode').value,
             remarks: document.getElementById('remarks').value,
             paymentImage: document.getElementById('paymentMode').value === 'credit' ? base64Image : "No Image",
-            uid: 'UID TEST', // Static UID
+            uid: ordersuid,
             products: updatedProducts.length > 0 ? updatedProducts : [{
                 name: 'No product selected',
                 price: 0,
@@ -356,21 +357,32 @@ logLocalStorageItems();
         // Log the order data
         console.log('Order data to be sent:', orderData);
     
-        // Create stock data based on the order products
-        const stockData = updatedProducts.map(product => ({
-            uid: 'UID TEST',
-            parent_uid: orderData.uid, // Use the order's uid as the parent_uid
-            store_name: orderData.storeName,
-            product_name: product.name,
-            quantity: product.quantity
-        }));
+        const isFieldMissing = (field, fieldName) => {
+            if (typeof field !== 'string' || field.trim() === '') {
+                console.log(`${fieldName} is missing`);
+                return true;
+            }
+            return false;
+        };
     
-        console.log('Stock data to be created:', stockData);
+        let missingFields = [];
+        if (isFieldMissing(orderData.agentName, 'Agent Name')) missingFields.push('Agent Name');
+        if (isFieldMissing(orderData.teamLeaderName, 'Team Leader Name')) missingFields.push('Team Leader Name');
+        if (isFieldMissing(orderData.area, 'Area')) missingFields.push('Area');
+        if (isFieldMissing(orderData.storeName, 'Store Name')) missingFields.push('Store Name');
+        if (isFieldMissing(orderData.tin, 'TIN')) missingFields.push('TIN');
+        if (isFieldMissing(orderData.paymentMode, 'Payment Mode')) missingFields.push('Payment Mode');
+        if (isFieldMissing(orderData.remarks, 'Remarks')) missingFields.push('Remarks');
+        if (orderData.paymentMode === 'credit' && isFieldMissing(orderData.paymentImage, 'Payment Image')) missingFields.push('Payment Image');
     
-        // Send POST request to backend for creating the order and stocks
+        if (missingFields.length > 0) {
+            alert('Please fill out the following required fields before submitting the order: ' + missingFields.join(', '));
+            return;
+        }
+    
+        // Send POST request to backend for creating order
         try {
-            // Sending order data to create order
-            const orderResponse = await fetch('https://earthph.sdevtech.com.ph/orders/createOrder', {
+            const response = await fetch('https://earthph.sdevtech.com.ph/orders/createOrder', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -379,42 +391,52 @@ logLocalStorageItems();
                 body: JSON.stringify(orderData)
             });
     
-            const orderResult = await orderResponse.json();
-            console.log('Order Response:', orderResult);
+            const result = await response.json();
+            console.log('Response from backend:', result);
     
-            // Check if order is successfully created
-            if (orderResponse.ok) {
-                // Send stock data to backend to create stock entries
-                const stockResponse = await fetch('https://earthph.sdevtech.com.ph/stocks/createStock', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${localStorage.getItem('authToken')}`
-                    },
-                    body: JSON.stringify(stockData) // Send the stock data array
+            if (response.ok) {
+                // After the order is saved, create stock entries for each product
+                const stockPromises = orderData.products.map(async (product) => {
+                    const stockData = {
+                        uid: stocksuid, // Static UID for now
+                        parent_uid: "parentuid", // Static parent UID for now
+                        store_name: orderData.storeName,
+                        product_name: product.name,
+                        quantity: product.quantity
+                    };
+    
+                    // Send POST request to create stock for each product
+                    const stockResponse = await fetch('https://earthph.sdevtech.com.ph/stocks/createStock', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+                        },
+                        body: JSON.stringify(stockData)
+                    });
+    
+                    const stockResult = await stockResponse.json();
+                    console.log('Stock response:', stockResult);
                 });
     
-                const stockResult = await stockResponse.json();
-                console.log('Stock Response:', stockResult);
+                // Wait for all stock creation requests to complete
+                await Promise.all(stockPromises);
     
-                if (stockResponse.ok) {
-                    const acceptOrderBtn = document.getElementById('acceptOrderBtn');
-                    acceptOrderBtn.textContent = "Continue";
-                    acceptOrderBtn.style.backgroundColor = "#4CAF50"; // Green color
-                    acceptOrderBtn.style.color = "#fff"; // White text color
+                // If order is successful, change the button text and color
+                const acceptOrderBtn = document.getElementById('acceptOrderBtn');
+                acceptOrderBtn.textContent = "Continue";
+                acceptOrderBtn.style.backgroundColor = "#4CAF50"; // Change the color to green
+                acceptOrderBtn.style.color = "#fff"; // White text color
     
-                    alert('Order and Stock accepted and saved successfully!');
+                alert('Order accepted and saved successfully!');
     
-                    // Redirect after successful order and stock creation
-                    acceptOrderBtn.removeEventListener('click', handleOrderClick);
-                    acceptOrderBtn.addEventListener('click', () => {
-                        window.location.href = "https://earthhomecareph.astute.services/OrderForm/Agent-Info.html"; // Redirect to the desired URL
-                    });
-                } else {
-                    alert(`Failed to create stock: ${stockResult.message}`);
-                }
+                // Redirect when the button is clicked again
+                acceptOrderBtn.removeEventListener('click', handleOrderClick);
+                acceptOrderBtn.addEventListener('click', () => {
+                    window.location.href = "https://earthhomecareph.astute.services/OrderForm/Agent-Info.html";
+                });
             } else {
-                alert(`Failed to save order: ${orderResult.message}`);
+                alert(`Failed to save order: ${result.message}`);
             }
         } catch (error) {
             console.error('Network error:', error);

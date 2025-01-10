@@ -6,8 +6,7 @@
 
     <!----======== CSS ======== -->
     <link rel="stylesheet" href="./styles/style.css">
-    <link rel="stylesheet" href="./styles/orders.css">
-    <link rel="stylesheet" href="./styles/productList.css">
+    <link rel="stylesheet" href="./styles/stock.css">
      
     <!----===== Icons ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
@@ -138,11 +137,8 @@
                     <tr>
                         <th>#</th>
                         <th>Store Name</th>
-                        <th>Agent Name</th>
-                        <th>Order Date</th>
-                        <th>Location</th>
-                        <th>Amount</th>
-                        <th>Status</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
                     </tr>
                 </thead>
                 <tbody class="orders-body"></tbody>
@@ -151,11 +147,32 @@
       </div>
       
     </section>
-    <div id="order-modal">
-      <div class="modal-content"></div>
+<!-- Modal for Stock Details -->
+<div id="stock-modal" style="display:none;">
+  <div class="modal-content">
+    <h3>Edit Stock Details</h3>
+    <form id="edit-stock-form">
+      <input type="hidden" id="uid" name="uid" />
+      <label>
+        Store Name:
+        <input type="text" id="store-name" name="store_name" />
+      </label>
+      <label>
+        Product Name:
+        <input type="text" id="product-name" name="product_name" />
+      </label>
+      <label>
+        Quantity:
+        <input type="number" id="quantity" name="quantity" />
+      </label>
+      <button type="submit">Save</button>
+      <button type="button" id="close-modal">Cancel</button>
+    </form>
   </div>
+</div>
+
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <script src="./scripts/script.js"></script>
-    <script src="./scripts/itemList.js"></script>
+    <script src="./scripts/stockList.js"></script>
 </body>
 </html>

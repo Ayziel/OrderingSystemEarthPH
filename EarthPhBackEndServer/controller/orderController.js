@@ -87,3 +87,27 @@ exports.getOrders = async (req, res) => {
         res.status(500).json({ message: 'Error fetching orders' });
     }
 };
+
+
+// Controller function to update order
+exports.updateOrder = async (req, res) => {
+    try {
+        const { id } = req.params; // Order ID from the request URL
+        const updatedData = req.body; // Updated data from the request body
+
+        // Find order by ID and update it
+        const updatedOrder = await Order.findByIdAndUpdate(id, updatedData, { new: true });
+
+        if (!updatedOrder) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        res.status(200).json({ message: 'Order updated successfully', order: updatedOrder });
+    } catch (error) {
+        console.error('Error updating order:', error);
+        res.status(500).json({ message: 'Failed to update order', error });
+    }
+};
+
+// Express route
+router.put('/updateOrder/:id', updateOrder);

@@ -72,3 +72,102 @@ button:hover {
     color: white;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Modal background overlay */
+#order-modal {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.0); /* Semi-transparent background */
+    display: none; /* Hidden by default */
+    z-index: 1000;
+}
+
+/* Modal content container */
+.modal-content {
+    width: 50%;
+    max-height: 90%;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Style for the tables inside the modal */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    padding: 10px 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+td {
+    background-color: #fff;
+}
+
+/* Button styles */
+.close-modal-button {
+    padding: 10px 20px;
+    color: rgb(43, 43, 43)!important;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 1.5rem;
+    background-color: rgba(0, 0, 0, 0)!important;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-input {
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0;
+    margin: 0;
+
+}
+
+.edit-button {
+    background-color: #2196F3;
+    color: white;
+    font-size: 1rem;
+}
+
+.save-button {
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1rem;
+}
