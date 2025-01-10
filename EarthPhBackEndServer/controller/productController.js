@@ -17,7 +17,7 @@ async function getProduct(req, res) {
 async function createProduct(req, res) {
   console.log('Request Body:', req.body); // Log the incoming data
 
-  const { productSKU, productName, productDescription, brand, productCategory, price, discount, quantity, productImage } = req.body;
+  const { productSKU, productName, productDescription, brand, productCategory, price, discount, quantity, productImage ,manufacturer ,uid } = req.body;
 
   // Create a new product instance
   const newProduct = new ProductModel({
@@ -28,6 +28,8 @@ async function createProduct(req, res) {
       productCategory,
       price: parseFloat(price), // Convert the price to a float
       discount: parseFloat(discount) || 0, // Default discount to 0 if not provided
+      manufacturer,
+      uid,
       quantity,
       productImage, // Save the Base64 image string
   });
