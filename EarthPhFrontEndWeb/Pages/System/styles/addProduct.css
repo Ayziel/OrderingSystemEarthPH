@@ -10,3 +10,22 @@
     border-radius: 6px;
     padding: 0 15px;
 }
+
+#store-name {
+    position: relative;
+    height: 50px;
+    width: 100%;
+    outline: none;
+    font-size: 1rem;
+    color: #707070;
+    margin-top: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0 15px;
+}
+
+/* <div class="input-box">
+<label for="store-name">Choose a Store:</label>
+<select id="store-name">
+    <option value="">Loading stores...</option>  <!-- Placeholder option -->
+</select> */

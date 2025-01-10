@@ -69,7 +69,7 @@ function populateOrders(orders) {
             console.log(`Order ID: ${order._id}, Updated Status: ${updatedStatus}`);
 
             // Call the updateOrder method (or just log for now)
-            updateOrder(order._id, updatedStatus);
+            // updateOrder(order._id, updatedStatus);
         });
 
         // Add click event listener to row
@@ -146,7 +146,7 @@ function exportToExcel() {
 }
 
 const modal = document.getElementById('orderModal');
-const closeModal = modal.querySelector('.close');
+// const closeModal = modal.querySelector('.close');
 
 function openModal(order) {
     // Get the modal and its content area
@@ -248,53 +248,53 @@ function openModal(order) {
     });
 }
 
-function updateOrder(orderId, updatedStatus) {
-    const uid = orderId;  // You can use _id or another identifier based on your data model
-    const agentName = 'New Agent Name';  // Replace with actual data if needed
-    const teamLeaderName = 'New Team Leader';  // Replace with actual data if needed
-    const area = 'New Area';  // Replace with actual data if needed
-    const products = [];  // Replace with the actual product data
-    const totalAmount = 100.00;  // Replace with the actual total amount
+// function updateOrder(orderId, updatedStatus) {
+//     const uid = orderId;  // You can use _id or another identifier based on your data model
+//     const agentName = 'New Agent Name';  // Replace with actual data if needed
+//     const teamLeaderName = 'New Team Leader';  // Replace with actual data if needed
+//     const area = 'New Area';  // Replace with actual data if needed
+//     const products = [];  // Replace with the actual product data
+//     const totalAmount = 100.00;  // Replace with the actual total amount
 
-    // Construct the request body
-    const requestBody = {
-        uid,
-        agentName,
-        teamLeaderName,
-        area,
-        products,
-        totalAmount,
-        status: updatedStatus,  // Include the updated status
-    };
+//     // Construct the request body
+//     const requestBody = {
+//         uid,
+//         agentName,
+//         teamLeaderName,
+//         area,
+//         products,
+//         totalAmount,
+//         status: updatedStatus,  // Include the updated status
+//     };
 
-    // Call the server to update the order (You can change the URL to your server endpoint)
-    fetch('https://earthph.sdevtech.com.ph/orders/updateOrder', {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${usertoken}`,  // Assuming you're using token for authorization
-        },
-        body: JSON.stringify(requestBody)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data && data.order) {
-            console.log('Order updated:', data.order);  // Log the updated order
-        } else {
-            console.error('Failed to update the order: No order data returned');
-        }
-    })
-    .catch(error => {
-        console.error('Error updating order:', error);
-        if (error.message.includes("HTTP error!")) {
-            // If the error is an HTTP error, log additional details
-            console.log('Response body:', error.response);
-        }
-    });
-}
+//     // Call the server to update the order (You can change the URL to your server endpoint)
+//     fetch('https://earthph.sdevtech.com.ph/orders/updateOrders', {
+//         method: 'PUT',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Authorization': `Bearer ${usertoken}`,  // Assuming you're using token for authorization
+//         },
+//         body: JSON.stringify(requestBody)
+//     })
+//     .then(response => {
+//         if (!response.ok) {
+//             throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+//         return response.json();
+//     })
+//     .then(data => {
+//         if (data && data.order) {
+//             console.log('Order updated:', data.order);  // Log the updated order
+//         } else {
+//             console.error('Failed to update the order: No order data returned');
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Error updating order:', error);
+//         if (error.message.includes("HTTP error!")) {
+//             // If the error is an HTTP error, log additional details
+//             console.log('Response body:', error.response);
+//         }
+//     });
+// }
 

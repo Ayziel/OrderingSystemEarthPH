@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const manufacturer = document.querySelector('input[placeholder="Enter manufacturer"]').value;
         const price = document.querySelector('input[placeholder="Enter Price"]').value;
         const quantity = document.querySelector('input[placeholder="Enter Quantity"]').value;
+        const storeName = document.querySelector('#store-name').value;  // Assuming the store dropdown has an id 'store-name'
         const uid = uuid.v4();
         // Handle image upload (if any)
         let productImage = null;
@@ -39,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
             brand,
             productCategory,
             manufacturer,
+            storeName,
             price,
             quantity,
             productImage,  // This will be a Base64 string if an image is uploaded
@@ -114,3 +116,43 @@ function syncInputWithDropdown() {
     discountDropdown.value = 0;
 }
   
+// Function to fetch stores data from API
+async function getStores() {
+    try {
+        const response = await fetch('https://earthph.sdevtech.com.ph/stores/getStores');
+        if (response.ok) {
+            const storesData = await response.json();
+            console.log(storesData);  // Log data for debugging
+            if (Array.isArray(storesData.stores)) {
+                populateStoresDropdown(storesData.stores);
+            } else {
+                console.error('stores is not an array:', storesData.stores);
+            }
+        } else {
+            console.error('Error fetching stores data:', response.status);
+        }
+    } catch (error) {
+        console.error('Error fetching stores data:', error);
+    }
+}
+
+// Function to populate the dropdown with store data
+function populateStoresDropdown(stores) {
+    const storeSelect = document.getElementById('store-name');
+    
+    // Clear the current options (e.g., loading message)
+    storeSelect.innerHTML = '<option value="">Select a store...</option>';
+    
+    // Populate dropdown with store data
+    stores.forEach(store => {
+        const option = document.createElement('option');
+        option.value = store._id;  // Set store _id as the value
+        option.textContent = store.name;  // Set store name as the text content
+        storeSelect.appendChild(option);
+    });
+}
+
+// Call getStores function when the page loads
+window.onload = function() {
+    getStores();
+}
