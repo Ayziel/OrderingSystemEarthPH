@@ -1,32 +1,38 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Fetch the stock data from the API
     fetch('https://earthph.sdevtech.com.ph/stocks/getStock')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Full Response:", data);
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Full Response:", data);
 
-            const stocks = data.stocks || data; // Adjust this if the array is inside a property
-            console.log("Stocks Array:", stocks);
+        const stocks = data.stocks || data; // Adjust this if the array is inside a property
+        console.log("Stocks Array:", stocks);
 
-            if (!Array.isArray(stocks)) {
-                console.error("The response is not an array");
-                return;
-            }
+        if (!Array.isArray(stocks)) {
+            console.error("The response is not an array");
+            return;
+        }
 
-            if (stocks.length === 0) {
-                console.log('No stocks found.');
-                return;
-            }
+        if (stocks.length === 0) {
+            console.log('No stocks found.');
+            return;
+        }
 
-            stocks.sort((a, b) => a.store_name.localeCompare(b.store_name));
-            populateStocks(stocks);
-        })
-        .catch(error => console.error('Error fetching stocks:', error));
+        // Log each item in the stocks array
+        stocks.forEach(stock => {
+            console.log("Stock Item:", stock);
+        });
+
+        stocks.sort((a, b) => a.store_name.localeCompare(b.store_name));
+        populateStocks(stocks);
+    })
+    .catch(error => console.error('Error fetching stocks:', error));
+
 });
 
 function populateStocks(stocks) {

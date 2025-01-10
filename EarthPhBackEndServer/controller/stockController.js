@@ -48,7 +48,7 @@ async function createStock(req, res) {
 async function updateStock(req, res) {
     console.log('PUT /updateStock route hit');
 
-    const { uid, parent_uid, store_name, product_name, quantity } = req.body;
+    const { uid, parent_uid, product_uid, store_name, product_name, quantity } = req.body;
 
     try {
         // Find the stock record by `uid` (or another identifier) and update it
@@ -56,6 +56,7 @@ async function updateStock(req, res) {
             { uid },  // Search criteria (e.g., stock uid)
             { 
                 parent_uid,
+                product_uid,
                 store_name,
                 product_name,
                 quantity,

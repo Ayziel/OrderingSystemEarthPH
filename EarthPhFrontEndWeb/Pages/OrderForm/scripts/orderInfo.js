@@ -1,36 +1,32 @@
-let productDetailsData = [];
+let productDetails = []; 
 
 const paymentImageInput = document.getElementById('paymentImage');
-let base64Image = ""; // Variable to store the base64 image string
+let base64PaymentImage = ""; 
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
 
     paymentImageInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                base64Image = reader.result;
-                console.log('Base64 Image:', base64Image); // Log the base64 string for debugging
+                base64PaymentImage = reader.result;
             };
             reader.readAsDataURL(file);
         }
     });
 
-const logLocalStorageItems = () => {
-    console.log("Items in localStorage:");
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        const value = localStorage.getItem(key);
-        console.log(`${key}: ${value}`);
-    }
-};
+    const logLocalStorageItems = () => {
+        console.log("Items in localStorage:");
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            const value = localStorage.getItem(key);
+            console.log(`${key}: ${value}`);
+        }
+    };
 
-// Call this function whenever you want to check the localStorage contents
-logLocalStorageItems();
+    logLocalStorageItems();
 
-
-    // Fetch products from the database
     const fetchProducts = async () => {
         try {
             const response = await fetch("https://earthph.sdevtech.com.ph/products/getProduct", {
@@ -40,34 +36,30 @@ logLocalStorageItems();
                 },
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
             const data = await response.json();
-            return data.products || []; // Ensure we return an empty array if products is missing
+            return data.products || [];
         } catch (error) {
             console.error("Error fetching products:", error);
-            return []; // Return an empty array if there's an error
+            return [];
         }
     };
 
-    // Populate product list dynamically
     const populateProductList = async () => {
-        
         const products = await fetchProducts();
-        const productList = document.getElementById("product-list");
-    
-        if (!productList) {
+        const productListElement = document.getElementById("product-list");
+
+        if (!productListElement) {
             console.error("Product list element not found!");
             return;
         }
-    
+
         if (products.length === 0) {
-            productList.innerHTML = "<p>No products available.</p>";
+            productListElement.innerHTML = "<p>No products available.</p>";
             return;
         }
-    
+
         products.forEach(product => {
             const randomImageURL = "https://picsum.photos/100";
             const productHTML = `
@@ -105,74 +97,64 @@ logLocalStorageItems();
                         </div>
                     </div>
                 </div>`;
-            productList.innerHTML += productHTML;
+            productListElement.innerHTML += productHTML;
         });
-    
+
         addQuantityButtonListeners();
     };
-    
-
-    /*** ORDER COMPUTATION ***/
 
     const updateOrderComputation = () => {
         const products = document.querySelectorAll(".product-container");
         let totalItems = 0;
         let totalAmount = 0;
-    
+
         products.forEach(product => {
             const quantity = parseInt(product.querySelector(".product-quantity").value) || 0;
             const price = parseFloat(product.querySelector(".product-size-select").value);
-            const discountPercentage = parseInt(product.querySelector(".discount-percentage").value) || 0; // Get the discount percentage
-    
-            // Calculate the discounted price
+            const discountPercentage = parseInt(product.querySelector(".discount-percentage").value) || 0;
+
             const discountAmount = price * (discountPercentage / 100);
             const discountedPrice = price - discountAmount;
-    
+
             if (quantity > 0) {
                 totalItems += quantity;
                 totalAmount += quantity * discountedPrice;
             }
         });
-    
+
         document.getElementById("listPrice").value = totalAmount.toFixed(2);
         document.getElementById("totalItems").value = totalItems;
         document.getElementById("totalAmount").value = totalAmount.toFixed(2);
     };
-    
-
-    /*** PRODUCT DETAILS UPDATE ***/
 
     const updateProductDetails = () => {
-        const productDetails = document.getElementById("productDetails");
-        const productDetailsModal = document.getElementById("productDetailsModal");
+        const productDetailsElement = document.getElementById("productDetails");
+        const productDetailsModalElement = document.getElementById("productDetailsModal");
         const products = document.querySelectorAll(".product-container");
 
         let detailsHTML = "";
         let modalDetailsHTML = "";
-        productDetailsData = [];
+        productDetails = [];
 
         products.forEach(product => {
             const productName = product.querySelector("strong").innerText;
             const quantity = parseInt(product.querySelector(".product-quantity").value) || 0;
             const price = parseFloat(product.querySelector(".product-size-select").value);
-            const discountPercentage = parseInt(product.querySelector(".discount-percentage").value) || 0; // Get the discount percentage
-        
+            const discountPercentage = parseInt(product.querySelector(".discount-percentage").value) || 0;
+
             if (quantity > 0) {
-                // Calculate the discounted price
                 const discountAmount = price * (discountPercentage / 100);
                 const discountedPrice = price - discountAmount;
                 const total = quantity * discountedPrice;
-        
-                // Push to the product details data
-                productDetailsData.push({
+
+                productDetails.push({
                     name: productName,
                     price: discountedPrice,
                     quantity: quantity,
                     total: total,
-                    discount: discountPercentage // Store the discount percentage
+                    discount: discountPercentage
                 });
-        
-                // Update the product detail HTML with the discount and total price
+
                 const itemHTML = `
                     <div class="product-detail">
                         <strong>${productName}</strong>
@@ -182,37 +164,34 @@ logLocalStorageItems();
                         <p>Total: $${total.toFixed(2)}</p>
                         <hr>
                     </div>`;
-        
+
                 detailsHTML += itemHTML;
                 modalDetailsHTML += itemHTML;
             }
         });
-        
 
-        productDetails.innerHTML = detailsHTML || "<p>No items selected.</p>";
-        productDetailsModal.innerHTML = modalDetailsHTML || "<p>No items selected in the modal.</p>";
+        productDetailsElement.innerHTML = detailsHTML || "<p>No items selected.</p>";
+        productDetailsModalElement.innerHTML = modalDetailsHTML || "<p>No items selected in the modal.</p>";
     };
 
-    /*** MODAL HANDLING ***/
-
     const handleModals = () => {
-        const addItemBtn = document.getElementById("addItemBtn");
-        const closeModalBtn = document.getElementById("closeModalBtn");
+        const addItemButton = document.getElementById("addItemBtn");
+        const closeModalButton = document.getElementById("closeModalBtn");
         const productModal = document.getElementById("productModal");
 
-        if (addItemBtn && closeModalBtn && productModal) {
-            addItemBtn.addEventListener("click", () => {
+        if (addItemButton && closeModalButton && productModal) {
+            addItemButton.addEventListener("click", () => {
                 productModal.style.display = "block";
             });
 
-            closeModalBtn.addEventListener("click", () => {
+            closeModalButton.addEventListener("click", () => {
                 productModal.style.display = "none";
             });
         }
 
-        const submitProductsBtn = document.getElementById("submitProductsBtn");
-        if (submitProductsBtn) {
-            submitProductsBtn.addEventListener("click", () => {
+        const submitProductsButton = document.getElementById("submitProductsBtn");
+        if (submitProductsButton) {
+            submitProductsButton.addEventListener("click", () => {
                 updateOrderComputation();
                 updateProductDetails();
                 productModal.style.display = "none";
@@ -220,15 +199,13 @@ logLocalStorageItems();
         }
     };
 
-    /*** RECEIPT MODAL ***/
-
-    let receiptModal = document.getElementById("receiptModal");
-    receiptModal.style.display = "none";
     const handleReceiptModal = () => {
         const receiptModal = document.getElementById("receiptModal");
-        const closeReceiptBtn = document.querySelector(".close-receipt");
-        const printReceiptBtn = document.getElementById("printReceiptBtn");
-        const submitOrderBtn = document.getElementById("submitOrderBtn");
+        const closeReceiptButton = document.querySelector(".close-receipt");
+        const printReceiptButton = document.getElementById("printReceiptBtn");
+        const submitOrderButton = document.getElementById("submitOrderBtn");
+
+        receiptModal.style.display = "none";
 
         const generateReceipt = () => {
             const issueDateElement = document.getElementById("issueDate");
@@ -241,7 +218,7 @@ logLocalStorageItems();
             let itemsHTML = "";
             let totalAmount = 0;
 
-            productDetailsData.forEach(item => {
+            productDetails.forEach(item => {
                 itemsHTML += `
                     <p><strong>${item.name}</strong><br>
                        Price: $${item.price.toFixed(2)}<br>
@@ -254,28 +231,26 @@ logLocalStorageItems();
             totalAmountElement.textContent = `$${totalAmount.toFixed(2)}`;
         };
 
-        if (submitOrderBtn) {
-            submitOrderBtn.addEventListener("click", (event) => {
+        if (submitOrderButton) {
+            submitOrderButton.addEventListener("click", (event) => {
                 event.preventDefault();
                 receiptModal.style.display = "block";
                 generateReceipt();
             });
         }
 
-        if (closeReceiptBtn) {
-            closeReceiptBtn.addEventListener("click", () => {
+        if (closeReceiptButton) {
+            closeReceiptButton.addEventListener("click", () => {
                 receiptModal.style.display = "none";
             });
         }
 
-        if (printReceiptBtn) {
-            printReceiptBtn.addEventListener("click", () => {
+        if (printReceiptButton) {
+            printReceiptButton.addEventListener("click", () => {
                 window.print();
             });
         }
     };
-
-    /*** QUANTITY BUTTON LISTENERS ***/
 
     const addQuantityButtonListeners = () => {
         const plusButtons = document.querySelectorAll(".plus-btn");
@@ -308,175 +283,171 @@ logLocalStorageItems();
         });
     };
 
-    /*** INITIALIZE ***/
+    const initialize = () => {
+        populateProductList();
+        handleModals();
+        handleReceiptModal();
 
-    populateProductList();
-    handleModals();
-    handleReceiptModal();
-    const ordersuid = uuid.v4();
-    const stocksuid = uuid.v4();
-    document.getElementById('acceptOrderBtn').addEventListener('click', async () => {
-        // Log product details data to check its content
-        console.log('Product Details Data:', productDetailsData);
-    
-        // Ensure every product has a description
-        const updatedProducts = productDetailsData.map(product => ({
-            ...product,
-            description: product.description || 'No description available' // Add default description if missing
-        }));
-    
-        // Assuming user details are stored as a JSON object in localStorage
-        const user = JSON.parse(localStorage.getItem('orderData')) || {};
-    
-        console.log("test", user.userFullName);
-        // Then use the extracted values to populate order data
-        const orderData = {
-            agentName: user.agentName,
-            teamLeaderName: user.teamLeaderName,
-            area: user.area,
-            orderDate: new Date().toISOString(),
-            storeName: user.storeName,
-            tin: user.tin,
-            listPrice: parseFloat(document.getElementById('listPrice').value),
-            totalItems: parseInt(document.getElementById('totalItems').value),
-            totalAmount: parseFloat(document.getElementById('totalAmount').value),
-            paymentMode: document.getElementById('paymentMode').value,
-            remarks: document.getElementById('remarks').value,
-            paymentImage: document.getElementById('paymentMode').value === 'credit' ? base64Image : "No Image",
-            uid: ordersuid,
-            products: updatedProducts.length > 0 ? updatedProducts : [{
-                name: 'No product selected',
-                price: 0,
-                quantity: 0,
-                total: 0,
-                description: 'No description available',
-                discount: 0 // Add a default discount value
-            }]
-        };
-    
-        // Log the order data
-        console.log('Order data to be sent:', orderData);
-    
-        const isFieldMissing = (field, fieldName) => {
-            if (typeof field !== 'string' || field.trim() === '') {
-                console.log(`${fieldName} is missing`);
-                return true;
+        const orderUid = uuid.v4();
+        const stockUid = uuid.v4();
+
+        document.getElementById('acceptOrderBtn').addEventListener('click', async () => {
+            const button = document.getElementById('acceptOrderBtn');
+        
+            // Check if the button is already in the "Continue" state
+            if (button.textContent === "Continue") {
+                console.warn('Order already accepted. Preventing duplicate submission.');
+                return;
             }
-            return false;
-        };
-    
-        let missingFields = [];
-        if (isFieldMissing(orderData.agentName, 'Agent Name')) missingFields.push('Agent Name');
-        if (isFieldMissing(orderData.teamLeaderName, 'Team Leader Name')) missingFields.push('Team Leader Name');
-        if (isFieldMissing(orderData.area, 'Area')) missingFields.push('Area');
-        if (isFieldMissing(orderData.storeName, 'Store Name')) missingFields.push('Store Name');
-        if (isFieldMissing(orderData.tin, 'TIN')) missingFields.push('TIN');
-        if (isFieldMissing(orderData.paymentMode, 'Payment Mode')) missingFields.push('Payment Mode');
-        if (isFieldMissing(orderData.remarks, 'Remarks')) missingFields.push('Remarks');
-        if (orderData.paymentMode === 'credit' && isFieldMissing(orderData.paymentImage, 'Payment Image')) missingFields.push('Payment Image');
-    
-        if (missingFields.length > 0) {
-            alert('Please fill out the following required fields before submitting the order: ' + missingFields.join(', '));
-            return;
-        }
-    
-        // Send POST request to backend for creating order
-        try {
-            const response = await fetch('https://earthph.sdevtech.com.ph/orders/createOrder', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('authToken')}`
-                },
-                body: JSON.stringify(orderData)
-            });
-    
-            const result = await response.json();
-            console.log('Response from backend:', result);
-    
-            if (response.ok) {
-                // After the order is saved, create stock entries for each product
-                const stockPromises = orderData.products.map(async (product) => {
-                    const stockData = {
-                        uid: stocksuid, // Static UID for now
-                        parent_uid: "parentuid", // Static parent UID for now
-                        store_name: orderData.storeName,
-                        product_name: product.name,
-                        quantity: product.quantity
-                    };
-    
-                    // Send POST request to create stock for each product
-                    const stockResponse = await fetch('https://earthph.sdevtech.com.ph/stocks/createStock', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${localStorage.getItem('authToken')}`
-                        },
-                        body: JSON.stringify(stockData)
+        
+            if (button.disabled) {
+                console.warn('Button is already disabled. Preventing duplicate submission.');
+                return;
+            }
+        
+            button.disabled = true;
+        
+            const updatedProducts = productDetails.map(product => ({
+                ...product,
+                description: product.description || 'No description available',
+            }));
+        
+            const user = JSON.parse(localStorage.getItem('orderData')) || {};
+        
+            const orderData = {
+                agentName: user.agentName,
+                teamLeaderName: user.teamLeaderName,
+                area: user.area,
+                orderDate: new Date().toISOString(),
+                storeName: user.storeName,
+                tin: user.tin,
+                listPrice: parseFloat(document.getElementById('listPrice').value),
+                totalItems: parseInt(document.getElementById('totalItems').value),
+                totalAmount: parseFloat(document.getElementById('totalAmount').value),
+                paymentMode: document.getElementById('paymentMode').value,
+                remarks: document.getElementById('remarks').value,
+                paymentImage: document.getElementById('paymentMode').value === 'credit' ? base64PaymentImage : "No Image",
+                uid: orderUid,
+                products: updatedProducts.length > 0 ? updatedProducts : [{
+                    name: 'No product selected',
+                    price: 0,
+                    quantity: 0,
+                    total: 0,
+                    description: 'No description available',
+                    discount: 0,
+                }]
+            };
+        
+            const isFieldMissing = (field, fieldName) => {
+                if (typeof field !== 'string' || field.trim() === '') {
+                    console.log(`${fieldName} is missing`);
+                    return true;
+                }
+                return false;
+            };
+        
+            let missingFields = [];
+            if (isFieldMissing(orderData.agentName, 'Agent Name')) missingFields.push('Agent Name');
+            if (isFieldMissing(orderData.teamLeaderName, 'Team Leader Name')) missingFields.push('Team Leader Name');
+            if (isFieldMissing(orderData.area, 'Area')) missingFields.push('Area');
+            if (isFieldMissing(orderData.storeName, 'Store Name')) missingFields.push('Store Name');
+            if (isFieldMissing(orderData.tin, 'TIN')) missingFields.push('TIN');
+            if (isFieldMissing(orderData.paymentMode, 'Payment Mode')) missingFields.push('Payment Mode');
+            if (isFieldMissing(orderData.remarks, 'Remarks')) missingFields.push('Remarks');
+            if (orderData.paymentMode === 'credit' && isFieldMissing(orderData.paymentImage, 'Payment Image')) missingFields.push('Payment Image');
+        
+            if (missingFields.length > 0) {
+                alert('Please fill out the following required fields before submitting the order: ' + missingFields.join(', '));
+                button.disabled = false;
+                return;
+            }
+        
+            try {
+                const response = await fetch('https://earthph.sdevtech.com.ph/orders/createOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: JSON.stringify(orderData)
+                });
+        
+                const result = await response.json();
+        
+                if (response.ok) {
+                    const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));  // Retrieve matched user from localStorage
+                    const parentUid = matchedUser ? matchedUser.uid : "defaultParentUid";  // Use the uid from matchedUser or a default value
+                
+                    const stockPromises = orderData.products.map(async (product) => {
+                        const stockData = {
+                            uid: stockUid,
+                            parent_uid: parentUid,  // Auto-populate parent_uid using the uid from matchedUser
+                            product_uid: product.uid,
+                            store_name: orderData.storeName,
+                            product_name: product.name,
+                            quantity: product.quantity
+                        };
+                        const stockResponse = await fetch('https://earthph.sdevtech.com.ph/stocks/createStock', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${localStorage.getItem('authToken')}`
+                            },
+                            body: JSON.stringify(stockData)
+                        });
+        
+                        console.log('Stock response:', await stockResponse.json());
                     });
-    
-                    const stockResult = await stockResponse.json();
-                    console.log('Stock response:', stockResult);
-                });
-    
-                // Wait for all stock creation requests to complete
-                await Promise.all(stockPromises);
-    
-                // If order is successful, change the button text and color
-                const acceptOrderBtn = document.getElementById('acceptOrderBtn');
-                acceptOrderBtn.textContent = "Continue";
-                acceptOrderBtn.style.backgroundColor = "#4CAF50"; // Change the color to green
-                acceptOrderBtn.style.color = "#fff"; // White text color
-    
-                alert('Order accepted and saved successfully!');
-    
-                // Redirect when the button is clicked again
-                acceptOrderBtn.removeEventListener('click', handleOrderClick);
-                acceptOrderBtn.addEventListener('click', () => {
-                    window.location.href = "https://earthhomecareph.astute.services/OrderForm/Agent-Info.html";
-                });
-            } else {
-                alert(`Failed to save order: ${result.message}`);
+        
+                    await Promise.all(stockPromises);
+        
+                    // Change button to "Continue"
+                    button.textContent = "Continue";
+                    button.style.backgroundColor = "#4CAF50";
+                    button.style.color = "#fff";
+        
+                    // Disable the button after it's changed to "Continue" to prevent further submissions
+                    button.disabled = true;
+        
+                    alert('Order accepted and saved successfully!');
+        
+                    // Optionally, add a listener for the "Continue" button to navigate
+                    button.addEventListener('click', () => {
+                        window.location.href = "https://earthhomecareph.astute.services/OrderForm/Agent-Info.html";
+                    });
+                } else {
+                    alert(`Failed to save order: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                alert('A network error occurred. Please check your connection.');
+            } finally {
+                button.disabled = false;
             }
-        } catch (error) {
-            console.error('Network error:', error);
-            alert('A network error occurred. Please check your connection.');
-        }
-    });
-    
-    
-    // Function to handle initial button click (for order submission)
-    const handleOrderClick = (event) => {
-        event.preventDefault();
-        // Initial order handling logic (before redirect)
-        console.log("Initial order submission");
+        });
+        
+
+        const handleOrderClick = (event) => {
+            event.preventDefault();
+            console.log("Initial order submission");
+        };
     };
-    
-    
+
+    initialize();
 });
 
-   // Get the payment mode dropdown and the payment method display element
-   const paymentModeDropdown = document.getElementById('paymentMode');
-   const paymentMethodSpan = document.getElementById('paymentMethod');
+const paymentModeDropdown = document.getElementById('paymentMode');
+const paymentMethodSpan = document.getElementById('paymentMethod');
 
-   // Function to update the payment method display
-   const updatePaymentMethodDisplay = () => {
-       const selectedPaymentMode = paymentModeDropdown.value;
-       
-       // If a valid payment mode is selected, update the span text
-       if (selectedPaymentMode) {
-           paymentMethodSpan.textContent = selectedPaymentMode === 'cash' ? 'Cash' : 'G Cash';
-       } else {
-           paymentMethodSpan.textContent = 'Not selected';
-       }
-   };
+const updatePaymentMethodDisplay = () => {
+    const selectedPaymentMode = paymentModeDropdown.value;
 
-   // Update payment method display on change of payment mode selection
-   paymentModeDropdown.addEventListener('change', updatePaymentMethodDisplay);
+    paymentMethodSpan.textContent = selectedPaymentMode ? (selectedPaymentMode === 'cash' ? 'Cash' : 'G Cash') : 'Not selected';
+};
 
-   // Initial update of the payment method display when page loads
-   updatePaymentMethodDisplay();
+paymentModeDropdown.addEventListener('change', updatePaymentMethodDisplay);
+updatePaymentMethodDisplay();
 
-   let storeName = document.getElementById("storeName");
-   const user = JSON.parse(localStorage.getItem('orderData')) || {};
-   storeName.textContent = user.storeName || 'EarthPH'; // Use textContent to set the display text
+const storeNameElement = document.getElementById("storeName");
+const userData = JSON.parse(localStorage.getItem('orderData')) || {};
+storeNameElement.textContent = userData.storeName || 'EarthPH';

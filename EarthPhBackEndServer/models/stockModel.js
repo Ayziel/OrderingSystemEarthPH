@@ -11,6 +11,10 @@ const stockSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
+    product_uid: {
+        type: String,
+        required: true
+    },
     store_name: 
     { 
         type: String, 

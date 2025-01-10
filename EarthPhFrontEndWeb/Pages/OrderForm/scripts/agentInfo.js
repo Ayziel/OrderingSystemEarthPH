@@ -2,12 +2,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const today = new Date().toISOString().split('T')[0];  // Get today's date in YYYY-MM-DD format
     document.getElementById('order-date').value = today;
     getStores();
+
+    // Log the order data from localStorage on load
+    const savedOrderData = localStorage.getItem('orderData');
+    if (savedOrderData) {
+        console.log('Order Data from localStorage on load:', JSON.parse(savedOrderData)); // Log the order data being saved
+    } else {
+        console.log('No order data found in localStorage on load.');
+    }
 });
 
-
-
 document.addEventListener('DOMContentLoaded', async () => {
-    
     const userID = localStorage.getItem('userID');
     console.log("UserID from localStorage:", userID);
 
@@ -41,6 +46,7 @@ async function fetchUserData() {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
+        console.log('Fetched user data:', data); // Log all the fetched data
         return data.users; // Return users data
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -57,12 +63,14 @@ function findUserByID(users, userID) {
 function populateUserData(matchedUser, users) {
     // Populate agent name field
     document.getElementById('agent-name').value = `${matchedUser.firstName} ${matchedUser.lastName}`;
+    console.log('Matched User:', matchedUser);
 
     // Populate area field with matched user's address
     document.getElementById('area').value = matchedUser.address;
 
     // Populate TIN field with matched user's TIN
     document.getElementById('tin').value = matchedUser.tin;
+
     // Populate team leader name field if available
     const teamLeader = findTeamLeader(users, matchedUser.team);
     if (teamLeader) {
@@ -70,6 +78,9 @@ function populateUserData(matchedUser, users) {
     } else {
         console.log('No team leader found for the current team.');
     }
+
+    // Save the matched user in localStorage
+    localStorage.setItem('matchedUser', JSON.stringify(matchedUser));
 }
 
 // Function to find the team leader from the same team
@@ -83,6 +94,8 @@ document.getElementById('confirm-button').addEventListener('click', (event) => {
     const storeSelect = document.getElementById('store-name');
     const selectedStoreName = storeSelect.options[storeSelect.selectedIndex].text;
 
+    const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));  // Retrieve matched user from localStorage
+
     const orderData = {
         agentName: document.getElementById('agent-name').value,
         teamLeaderName: document.getElementById('team-leader-name').value,
@@ -90,9 +103,10 @@ document.getElementById('confirm-button').addEventListener('click', (event) => {
         orderDate: document.getElementById('order-date').value,
         storeName: selectedStoreName,  // Use the text content of the selected option
         tin: document.getElementById('tin').value,
+        matchedUser: matchedUser  // Include matched user in order data
     };
 
-    console.log('Order Data to save:', orderData);
+    console.log('Order Data to save:', orderData); // Log the order data being saved
 
     try {
         // Save to localStorage
@@ -106,7 +120,6 @@ document.getElementById('confirm-button').addEventListener('click', (event) => {
     console.log('Redirecting to next page...');
     window.location.href = 'https://earthhomecareph.astute.services/OrderForm/Product-Preference.html';
 });
-
 
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
@@ -145,7 +158,6 @@ document.getElementById('confirm-button').addEventListener('click', () => {
     // Placeholder for handling data and creating the second HTML file.
     alert('Data confirmed. Process the filtered data as required.');
 });
-
 
 async function getStores() {
     try {
