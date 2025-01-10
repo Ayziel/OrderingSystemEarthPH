@@ -264,6 +264,7 @@ function updateOrder(orderId, updatedStatus) {
         area,
         products,
         totalAmount,
+        status: updatedStatus,  // Include the updated status
     };
 
     // Call the server to update the order (You can change the URL to your server endpoint)
@@ -275,15 +276,25 @@ function updateOrder(orderId, updatedStatus) {
         },
         body: JSON.stringify(requestBody)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data && data.order) {
             console.log('Order updated:', data.order);  // Log the updated order
         } else {
-            console.error('Failed to update the order');
+            console.error('Failed to update the order: No order data returned');
         }
     })
     .catch(error => {
         console.error('Error updating order:', error);
+        if (error.message.includes("HTTP error!")) {
+            // If the error is an HTTP error, log additional details
+            console.log('Response body:', error.response);
+        }
     });
 }
+

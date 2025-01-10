@@ -94,9 +94,13 @@ exports.updateOrder = async (req, res) => {
     try {
         const { uid, agentName, teamLeaderName, area, products, totalAmount } = req.body;
 
-        // Search for the order by 'uid'
+        if (!uid) {
+            return res.status(400).json({ message: 'UID is required to update the order' });
+        }
+
+        // Match the order based on the 'uid' from the body
         const updatedOrder = await Order.findOneAndUpdate(
-            { uid },
+            { uid }, // Match the order using the 'uid' from the body
             {
                 agentName,
                 teamLeaderName,
@@ -111,7 +115,7 @@ exports.updateOrder = async (req, res) => {
             return res.status(404).json({ message: 'Order not found' });
         }
 
-        console.log('Updated order:', updatedOrder);  // Log the updated order
+        console.log('Updated order:', updatedOrder);
         res.status(200).json({ message: 'Order updated successfully', order: updatedOrder });
 
     } catch (error) {
@@ -119,3 +123,4 @@ exports.updateOrder = async (req, res) => {
         res.status(500).json({ message: 'Failed to update order', error });
     }
 };
+
