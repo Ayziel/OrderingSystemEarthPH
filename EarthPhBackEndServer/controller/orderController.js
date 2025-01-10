@@ -109,5 +109,3 @@ exports.updateOrder = async (req, res) => {
     }
 };
 
-// Express route
-router.put('/updateOrder/:id', updateOrder);
