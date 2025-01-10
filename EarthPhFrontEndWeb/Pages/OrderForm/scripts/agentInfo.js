@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const today = new Date().toISOString().split('T')[0];  // Get today's date in YYYY-MM-DD format
     document.getElementById('order-date').value = today;
+    getStores();
 });
 
 
@@ -78,13 +79,16 @@ function findTeamLeader(users, team) {
 
 document.getElementById('confirm-button').addEventListener('click', (event) => {
     event.preventDefault();  // Prevent any default form submission behavior
-    console.log("TEST")
+
+    const storeSelect = document.getElementById('store-name');
+    const selectedStoreName = storeSelect.options[storeSelect.selectedIndex].text;
+
     const orderData = {
         agentName: document.getElementById('agent-name').value,
         teamLeaderName: document.getElementById('team-leader-name').value,
         area: document.getElementById('area').value,
         orderDate: document.getElementById('order-date').value,
-        storeName: document.getElementById('store-name').value,
+        storeName: selectedStoreName,  // Use the text content of the selected option
         tin: document.getElementById('tin').value,
     };
 
@@ -141,3 +145,33 @@ document.getElementById('confirm-button').addEventListener('click', () => {
     // Placeholder for handling data and creating the second HTML file.
     alert('Data confirmed. Process the filtered data as required.');
 });
+
+
+async function getStores() {
+    try {
+        const response = await fetch('https://earthph.sdevtech.com.ph/stores/getStores');
+        if (response.ok) {
+            const storesData = await response.json();  // assuming the data is in JSON format
+            console.log(storesData); // Log the data for debugging
+            if (Array.isArray(storesData.stores)) {  // Ensure stores is an array
+                populateStoresDropdown(storesData.stores);  // Pass the stores array
+            } else {
+                console.error('stores is not an array:', storesData.stores);
+            }
+        } else {
+            console.error('Error fetching stores data:', response.status);
+        }
+    } catch (error) {
+        console.error('Error fetching stores data:', error);
+    }
+}
+
+function populateStoresDropdown(stores) {
+    const storeSelect = document.getElementById('store-name');
+    stores.forEach(store => {
+        const option = document.createElement('option');
+        option.value = store._id;
+        option.textContent = store.name;
+        storeSelect.appendChild(option);
+    });
+}
