@@ -92,30 +92,45 @@ exports.getOrders = async (req, res) => {
 // Controller function to update order
 exports.updateOrder = async (req, res) => {
     try {
-        const { uid, agentName, teamLeaderName, area, products, totalAmount } = req.body;
+        const { store_name, product_name, agentName, teamLeaderName, area, products, totalAmount, status, listPrice, discount, totalItems, tin, orderDate } = req.body;
 
-        if (!uid) {
-            return res.status(400).json({ message: 'UID is required to update the order' });
-        }
+        // Find the existing order by a field other than uid (e.g., store_name or product_name)
+        const existingOrder = await Order.findOne({ storeName: store_name, products: { $elemMatch: { name: product_name } } });
 
-        // Match the order based on the 'uid' from the body
-        const updatedOrder = await Order.findOneAndUpdate(
-            { uid }, // Match the order using the 'uid' from the body
-            {
-                agentName,
-                teamLeaderName,
-                area,
-                products,
-                totalAmount: parseFloat(totalAmount),
-            },
-            { new: true }
-        );
-
-        if (!updatedOrder) {
+        if (!existingOrder) {
             return res.status(404).json({ message: 'Order not found' });
         }
 
-        console.log('Updated order:', updatedOrder);
+        // Update the fields using the data from the request
+        existingOrder.agentName = agentName || existingOrder.agentName;
+        existingOrder.teamLeaderName = teamLeaderName || existingOrder.teamLeaderName;
+        existingOrder.area = area || existingOrder.area;
+        existingOrder.products = products || existingOrder.products;
+        existingOrder.totalAmount = totalAmount || existingOrder.totalAmount;
+        existingOrder.status = status || existingOrder.status;
+        existingOrder.listPrice = listPrice || existingOrder.listPrice;
+        existingOrder.discount = discount || existingOrder.discount;
+        existingOrder.totalItems = totalItems || existingOrder.totalItems;
+        existingOrder.tin = tin || existingOrder.tin;
+        existingOrder.orderDate = orderDate ? new Date(orderDate) : existingOrder.orderDate;
+
+        // Handle products array and default description
+        const updatedProducts = products.map(product => {
+            const discountedPrice = product.price * (1 - (product.discount / 100));  // Apply discount to price
+            const total = discountedPrice * product.quantity;
+
+            return {
+                ...product,
+                price: discountedPrice,
+                total: total
+            };
+        });
+
+        existingOrder.products = updatedProducts;
+
+        // Save the updated order
+        const updatedOrder = await existingOrder.save();
+
         res.status(200).json({ message: 'Order updated successfully', order: updatedOrder });
 
     } catch (error) {
@@ -123,4 +138,3 @@ exports.updateOrder = async (req, res) => {
         res.status(500).json({ message: 'Failed to update order', error });
     }
 };
-
