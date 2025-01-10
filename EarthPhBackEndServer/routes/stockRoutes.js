@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const StockController = require('../controllers/stockController');
+const StockController = require('../controller/stockController');
 // Route to get all stock records
 router.get('/getStock', StockController.getStock);
 
