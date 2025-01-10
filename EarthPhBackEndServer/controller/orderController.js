@@ -92,44 +92,26 @@ exports.getOrders = async (req, res) => {
 // Controller function to update order
 exports.updateOrder = async (req, res) => {
     try {
-        const { id } = req.params; // Order ID from the request URL
-        const updatedData = req.body; // Updated data from the request body
+        const { uid, agentName, teamLeaderName, area, products, totalAmount } = req.body;
 
-        // Find order by ID and update it
-        const updatedOrder = await Order.findByIdAndUpdate(id, updatedData, { new: true });
-
-        if (!updatedOrder) {
-            return res.status(404).json({ message: 'Order not found' });
-        }
-
-        res.status(200).json({ message: 'Order updated successfully', order: updatedOrder });
-    } catch (error) {
-        console.error('Error updating order:', error);
-        res.status(500).json({ message: 'Failed to update order', error });
-    }
-};
-
-exports.updateOrder = async (req, res) => {
-    try {
-        const { uid, agentName, teamLeaderName, area, products, totalAmount } = req.body;  // Destructure fields from the request body
-
-        // Search for the order by 'uid' or another identifier
+        // Search for the order by 'uid'
         const updatedOrder = await Order.findOneAndUpdate(
-            { uid },  // Search by unique identifier (e.g., 'uid')
-            { 
+            { uid },
+            {
                 agentName,
                 teamLeaderName,
                 area,
-                products,  // Assuming products are sent as an updated array
-                totalAmount: parseFloat(totalAmount),  // Ensure totalAmount is a float
+                products,
+                totalAmount: parseFloat(totalAmount),
             },
-            { new: true }  // Return the updated order
+            { new: true }
         );
 
         if (!updatedOrder) {
             return res.status(404).json({ message: 'Order not found' });
         }
 
+        console.log('Updated order:', updatedOrder);  // Log the updated order
         res.status(200).json({ message: 'Order updated successfully', order: updatedOrder });
 
     } catch (error) {
