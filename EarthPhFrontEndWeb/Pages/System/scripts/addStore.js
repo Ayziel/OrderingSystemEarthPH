@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const lastName = document.getElementById('lastName').value;
         const phoneNumber = document.getElementById('phoneNumber').value;
         const email = document.getElementById('email').value;
-
+        const uid = uuid.v4();
         // Check if any required fields are empty
         if (!storeAddress || !storeName || !status || !firstName || !lastName || !phoneNumber || !email) {
             alert("Please fill in all fields.");
@@ -35,7 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
             firstName,
             lastName,
             phoneNumber: parsedPhoneNumber,  // Use parsed phone number here
-            email
+            email,
+            uid
           };
           
         

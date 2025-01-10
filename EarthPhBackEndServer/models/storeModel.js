@@ -32,7 +32,11 @@ const storeSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now // Automatically set creation date
-  }
+  },
+  uid: {
+    type: String,
+    required: true // Optional status field
+  },
 });
 
 const Store = mongoose.model('Store', storeSchema);
