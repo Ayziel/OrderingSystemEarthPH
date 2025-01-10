@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const manufacturer = document.querySelector('input[placeholder="Enter manufacturer"]').value;
         const price = document.querySelector('input[placeholder="Enter Price"]').value;
         const quantity = document.querySelector('input[placeholder="Enter Quantity"]').value;
-
+        const uid = uuid.v4();
         // Handle image upload (if any)
         let productImage = null;
         if (productImageInput.files.length > 0) {
@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Create a data object to send in the request
         const productData = {
+            uid,
             productSKU,
             productName,
             productDescription,
@@ -42,6 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
             quantity,
             productImage,  // This will be a Base64 string if an image is uploaded
         };
+
+        console.log('Product Data to send:', productData);
 
         try {
             const response = await fetch('https://earthph.sdevtech.com.ph/products/createProduct', {
