@@ -109,3 +109,31 @@ exports.updateOrder = async (req, res) => {
     }
 };
 
+exports.updateOrder = async (req, res) => {
+    try {
+        const { uid, agentName, teamLeaderName, area, products, totalAmount } = req.body;  // Destructure fields from the request body
+
+        // Search for the order by 'uid' or another identifier
+        const updatedOrder = await Order.findOneAndUpdate(
+            { uid },  // Search by unique identifier (e.g., 'uid')
+            { 
+                agentName,
+                teamLeaderName,
+                area,
+                products,  // Assuming products are sent as an updated array
+                totalAmount: parseFloat(totalAmount),  // Ensure totalAmount is a float
+            },
+            { new: true }  // Return the updated order
+        );
+
+        if (!updatedOrder) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        res.status(200).json({ message: 'Order updated successfully', order: updatedOrder });
+
+    } catch (error) {
+        console.error('Error updating order:', error);
+        res.status(500).json({ message: 'Failed to update order', error });
+    }
+};
