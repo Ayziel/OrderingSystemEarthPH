@@ -146,7 +146,7 @@ function populateStoresDropdown(stores) {
     // Populate dropdown with store data
     stores.forEach(store => {
         const option = document.createElement('option');
-        option.value = store._id;  // Set store _id as the value
+        option.value = store.name;  // Set store _id as the value
         option.textContent = store.name;  // Set store name as the text content
         storeSelect.appendChild(option);
     });
