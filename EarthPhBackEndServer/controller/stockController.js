@@ -16,11 +16,10 @@ async function getStock(req, res) {
 
 // Controller to create a new stock record
 async function createStock(req, res) {
-    console.log('Request Body:', req.body); // Log incoming request body
+    console.log('POST /createStock route hit');
 
-    const { uid, parent_uid, product_uid,store_name, product_name, quantity } = req.body;
+    const { uid, parent_uid, product_uid, store_name, product_name, quantity } = req.body;
 
-    // Create a new stock instance
     const newStock = new StockModel({
         uid,
         parent_uid,
@@ -29,8 +28,6 @@ async function createStock(req, res) {
         product_name,
         quantity,
     });
-
-    console.log('New Stock:', newStock);
 
     try {
         // Save the new stock to the database

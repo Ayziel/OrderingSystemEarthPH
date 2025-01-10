@@ -335,6 +335,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     total: 0,
                     description: 'No description available',
                     discount: 0,
+                    product_uid: 'defaultProductUid' // Replace with the actual product UID
                 }]
             };
         
@@ -379,14 +380,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     const parentUid = matchedUser ? matchedUser.uid : "defaultParentUid";  // Use the uid from matchedUser or a default value
                 
                     const stockPromises = orderData.products.map(async (product) => {
+                        // Log the contents of each product
+                        console.log('Product:', product);
+                    
                         const stockData = {
                             uid: stockUid,
                             parent_uid: parentUid,  // Auto-populate parent_uid using the uid from matchedUser
-                            product_uid: product.uid,
+                            product_uid: "test",  // Correctly reference the uid from the product object
                             store_name: orderData.storeName,
                             product_name: product.name,
                             quantity: product.quantity
                         };
+                    
                         const stockResponse = await fetch('https://earthph.sdevtech.com.ph/stocks/createStock', {
                             method: 'POST',
                             headers: {
@@ -395,8 +400,13 @@ document.addEventListener("DOMContentLoaded", () => {
                             },
                             body: JSON.stringify(stockData)
                         });
-        
-                        console.log('Stock response:', await stockResponse.json());
+                    
+                        const stockResult = await stockResponse.json();
+                        console.log('Stock response:', stockResult);
+                    
+                        if (!stockResponse.ok) {
+                            throw new Error(`Failed to create stock for product ${product.name}: ${stockResult.message}`);
+                        }
                     });
         
                     await Promise.all(stockPromises);

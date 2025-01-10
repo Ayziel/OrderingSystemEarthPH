@@ -59,6 +59,10 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
     products: [{
+        product_uid: {
+            type: String,
+            required: true
+        },
         name: {
             type: String,
             required: true
