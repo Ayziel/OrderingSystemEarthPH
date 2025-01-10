@@ -26,9 +26,10 @@ async function createUser(req, res) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
-  console.log("Validated Fields:", { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin });
+  console.log("Validated Fields:", { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin, uid });
 
   const newUser = new UserModel({
+    uid,
     firstName,
     middleName,
     lastName,

@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = document.getElementById('password').value;
         const repeatPassword = document.getElementById('repeat_password').value;
         const role = document.getElementById('role').value;
-
+        const uid = uuid.v4();
         // Validate fields
         if (!firstName || !lastName || !phoneNumber || !workPhone || !email || !address || !tin || !team || !userName || !password || !repeatPassword || !role) {
             console.log("Form validation failed: Missing required fields");
@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Create a data object to send in the request
         const userData = { 
+            uid,
             firstName, 
             lastName, 
             phoneNumber, 
@@ -54,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         console.log("Captured Form Data:", {
-          firstName, lastName, phoneNumber, workPhone, email, address, tin, team, userName, password, role
+          firstName, lastName, phoneNumber, workPhone, email, address, tin, team, userName, password, role, uid
         });
 
         // Set headers with auth token if available
