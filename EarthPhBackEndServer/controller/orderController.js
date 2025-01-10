@@ -90,7 +90,7 @@ exports.getOrders = async (req, res) => {
 
 
 // Controller function to update order
-exports.updateOrder = async (req, res) => {
+exports.updateOrders = async (req, res) => {
     try {
         const { store_name, product_name, agentName, teamLeaderName, area, products, totalAmount, status, listPrice, discount, totalItems, tin, orderDate } = req.body;
 
