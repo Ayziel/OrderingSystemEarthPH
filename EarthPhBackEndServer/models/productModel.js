@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
+  uid: {
+    type: String,
+    required: true,
+  },
   productSKU: {
     type: String,
     required: true,
@@ -18,6 +22,10 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   productCategory: {
+    type: String,
+    required: true,
+  },
+  manufacturer: {
     type: String,
     required: true,
   },
