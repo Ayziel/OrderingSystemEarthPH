@@ -9,6 +9,10 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    uid: {
+        type: String,
+        required: true
+    },
     area: {
         type: String,
         required: true

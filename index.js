@@ -10,6 +10,8 @@ const orderRoutes = require('./EarthPhBackEndServer/routes/orderRoutes');
 const productRoutes = require('./EarthPhBackEndServer/routes/productRoutes');
 const chartDataRoutes = require('./EarthPhBackEndServer/routes/chartDataRoutes');
 const storeRoutes = require('./EarthPhBackEndServer/routes/storeRoutes');
+const stockRoutes = require('./EarthPhBackEndServer/routes/stockRoutes');
+
 
 const app = express();
 
@@ -37,6 +39,7 @@ app.use('/orders', orderRoutes);
 app.use('/products', productRoutes);
 app.use('/chartData', chartDataRoutes);
 app.use('/stores', storeRoutes);
+app.use('/stocks', stockRoutes);
 
 // Error handling middleware (if needed)
 app.use((err, req, res, next) => {

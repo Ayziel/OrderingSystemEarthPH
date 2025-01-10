@@ -56,7 +56,8 @@ exports.createOrder = async (req, res) => {
             paymentMode: orderData.paymentMode,
             paymentImage: orderData.paymentImage || 'noImageYet',  // Ensure paymentImage is set
             remarks: orderData.remarks,
-            products: updatedProducts
+            products: updatedProducts,
+            uid: orderData.uid 
         });
 
         // Save the order in the database
