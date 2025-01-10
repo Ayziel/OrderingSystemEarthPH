@@ -18,12 +18,13 @@ async function getStock(req, res) {
 async function createStock(req, res) {
     console.log('Request Body:', req.body); // Log incoming request body
 
-    const { uid, parent_uid, store_name, product_name, quantity } = req.body;
+    const { uid, parent_uid, product_uid,store_name, product_name, quantity } = req.body;
 
     // Create a new stock instance
     const newStock = new StockModel({
         uid,
         parent_uid,
+        product_uid,
         store_name,
         product_name,
         quantity,
@@ -48,14 +49,13 @@ async function createStock(req, res) {
 async function updateStock(req, res) {
     console.log('PUT /updateStock route hit');
 
-    const { uid, parent_uid, product_uid, store_name, product_name, quantity } = req.body;
+    const { uid, product_uid, store_name, product_name, quantity } = req.body;
 
     try {
         // Find the stock record by `uid` (or another identifier) and update it
         const updatedStock = await StockModel.findOneAndUpdate(
             { uid },  // Search criteria (e.g., stock uid)
             { 
-                parent_uid,
                 product_uid,
                 store_name,
                 product_name,
