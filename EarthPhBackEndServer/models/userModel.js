@@ -49,11 +49,11 @@ const userSchema = new mongoose.Schema({
   address: {
     type: String,
     required: true  // Optional field
-  }
-    uid: {
-    type: String,
-    required: true  // Marked as required
   },
+  uid: {
+  type: String,
+  required: true  // Marked as required
+},
 });
 
 const User = mongoose.model('User', userSchema);
