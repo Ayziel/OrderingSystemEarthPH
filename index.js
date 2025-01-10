@@ -45,7 +45,8 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server
-app.listen(5001, () => {
-  console.log('Server started on port 5001');
+const PORT = process.env.PORT || 5001; // Use environment variable for port if available
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
   console.log(`Connecting to MongoDB at: ${mongoURL}`);
 });
