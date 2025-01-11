@@ -17,7 +17,7 @@ async function getProduct(req, res) {
 async function createProduct(req, res) {
   console.log('Request Body:', req.body); // Log the incoming data
 
-  const { productSKU, productName, productDescription, brand, productCategory, price, discount, quantity, storeName, productImage, manufacturer, uid } = req.body;
+  const { productSKU, productName, productDescription, brand, productCategory, price, discount, quantity, storeName, productImage, manufacturer, uid, storeUid } = req.body;
 
   // Create a new product instance
   const newProduct = new ProductModel({
@@ -31,6 +31,7 @@ async function createProduct(req, res) {
       manufacturer,
       storeName,
       uid,
+      storeUid,
       quantity,
       productImage, // Save the Base64 image string
   });

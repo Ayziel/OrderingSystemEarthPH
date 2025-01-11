@@ -5,6 +5,10 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  storeUid: {
+    type: String,
+    required: true,
+  },
   storeName: {
     type: String,
     required: true,

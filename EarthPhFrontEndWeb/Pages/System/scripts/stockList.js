@@ -1,4 +1,58 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    // Retrieve the saved data from localStorage
+    const localStorageData = localStorage.getItem('orderData');
+    let userUID = null; // Declare a global variable
+
+    if (localStorageData) {
+        try {
+            // Parse the JSON string from localStorage
+            const orderData = JSON.parse(localStorageData);
+
+            // Access and set the user UID
+            if (orderData.matchedUser && orderData.matchedUser.uid) {
+                userUID = orderData.matchedUser.uid;
+                console.log("User UID from orderData:", userUID);
+            } else {
+                console.warn("No user UID found in the orderData.");
+            }
+        } catch (error) {
+            console.error("Error parsing localStorage data:", error);
+        }
+    } else {
+        console.warn("No 'orderData' found in localStorage.");
+    }
+
+    function populateStocks(stocks) {
+        const ordersBody = document.querySelector('.orders-body');
+        ordersBody.innerHTML = ''; // Clear previous rows
+        console.log("Stocks:", stocks);
+        console.log("UserUID", userUID);
+        let globalCounter = 1;
+    
+        // Filter stocks based on parent_uid
+        const filteredStocks = stocks.filter(stock => stock.parent_uid === userUID); // CHANGE
+    
+        filteredStocks.forEach(stock => {
+            const row = document.createElement('tr');
+            console.log("Stock parent_uid:", stock.parent_uid);
+            // Populate row with stock data
+            row.innerHTML = `
+                <td>${globalCounter++}</td>
+                <td>${stock.store_name || 'No store name'}</td>
+                <td>${stock.product_name || 'No product name'}</td>
+                <td>${stock.quantity || '0'}</td>
+            `;
+    
+            row.addEventListener('click', () => {
+                openStockModal(stock); // Pass the stock object to the modal
+            });
+    
+            ordersBody.appendChild(row);
+        });
+    }
+
+
     // Fetch the stock data from the API
     fetch('https://earthph.sdevtech.com.ph/stocks/getStock')
     .then(response => {
@@ -11,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Full Response:", data);
 
         const stocks = data.stocks || data; // Adjust this if the array is inside a property
-        console.log("Stocks Array:", stocks);
+
 
         if (!Array.isArray(stocks)) {
             console.error("The response is not an array");
@@ -24,9 +78,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Log each item in the stocks array
-        stocks.forEach(stock => {
-            console.log("Stock Item:", stock);
-        });
+         stocks.forEach(stock => {
+            console.log("Stock parent_uid:", stock.parent_uid); // CHANGE
+         });
 
         stocks.sort((a, b) => a.store_name.localeCompare(b.store_name));
         populateStocks(stocks);
@@ -35,30 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-function populateStocks(stocks) {
-    const ordersBody = document.querySelector('.orders-body');
-    ordersBody.innerHTML = ''; // Clear previous rows
 
-    let globalCounter = 1;
 
-    stocks.forEach(stock => {
-        const row = document.createElement('tr');
-
-        // Populate row with stock data
-        row.innerHTML = `
-            <td>${globalCounter++}</td>
-            <td>${stock.store_name || 'No store name'}</td>
-            <td>${stock.product_name || 'No product name'}</td>
-            <td>${stock.quantity || '0'}</td>
-        `;
-
-        row.addEventListener('click', () => {
-            openStockModal(stock); // Pass the stock object to the modal
-        });
-
-        ordersBody.appendChild(row);
-    });
-}
 
 function openStockModal(stock) {
     const modal = document.getElementById('stock-modal');

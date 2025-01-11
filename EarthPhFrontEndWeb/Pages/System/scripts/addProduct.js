@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle form submission
     productForm.addEventListener('submit', async function(event) {
         event.preventDefault(); // Prevent the form from refreshing the page
-        
+    
         // Capture the form data
         const productSKU = document.querySelector('input[placeholder="Enter"]').value;
         const productName = document.querySelector('input[placeholder="Enter product name"]').value;
@@ -22,15 +22,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const manufacturer = document.querySelector('input[placeholder="Enter manufacturer"]').value;
         const price = document.querySelector('input[placeholder="Enter Price"]').value;
         const quantity = document.querySelector('input[placeholder="Enter Quantity"]').value;
-        const storeName = document.querySelector('#store-name').value;  // Assuming the store dropdown has an id 'store-name'
+    
+        // Get the selected store name and UID
+        const storeSelect = document.querySelector('#store-name');
+        const storeName = storeSelect.value;
+        const storeUid = storeSelect.options[storeSelect.selectedIndex]?.getAttribute('data-uid'); // Get the UID from the selected option
+    
         const uid = uuid.v4();
+    
         // Handle image upload (if any)
         let productImage = null;
         if (productImageInput.files.length > 0) {
             const file = productImageInput.files[0];
             productImage = await convertToBase64(file);
         }
-
+    
         // Create a data object to send in the request
         const productData = {
             uid,
@@ -41,13 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
             productCategory,
             manufacturer,
             storeName,
+            storeUid, // Include store UID
             price,
             quantity,
-            productImage,  // This will be a Base64 string if an image is uploaded
+            productImage, // This will be a Base64 string if an image is uploaded
         };
-
+    
         console.log('Product Data to send:', productData);
-
+    
         try {
             const response = await fetch('https://earthph.sdevtech.com.ph/products/createProduct', {
                 method: 'POST',
@@ -56,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify(productData), // Convert the data to JSON
             });
-
+    
             const result = await response.json();
             
             if (response.ok) {
@@ -71,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('There was an error with the request.');
         }
     });
+    
 });
 
 // Function to convert image file to Base64 string
@@ -146,11 +154,13 @@ function populateStoresDropdown(stores) {
     // Populate dropdown with store data
     stores.forEach(store => {
         const option = document.createElement('option');
-        option.value = store.name;  // Set store _id as the value
-        option.textContent = store.name;  // Set store name as the text content
+        option.value = store.name;  // Store name as the display value
+        option.textContent = store.name; // Display store name
+        option.setAttribute('data-uid', store.uid); // Include store.uid in a data attribute
         storeSelect.appendChild(option);
     });
 }
+
 
 // Call getStores function when the page loads
 window.onload = function() {

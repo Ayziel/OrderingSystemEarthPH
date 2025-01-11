@@ -62,13 +62,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         products.forEach(product => {
             const randomImageURL = "https://picsum.photos/100";
+            console.log("Productsss:", product);
+            const discountOptions = Array.from({ length: 9 }, (_, i) => `<option value="${i * 10}">${i * 10}%</option>`).join('');
+        
             const productHTML = `
-                <div class="product-container" data-sku="${product.productSKU}">
+                <div class="product-container" data-uid="${product.uid}" data-sku="${product.productSKU}">
                     <div class="product-row">
-                        <strong>${product.brand} ${product.productName}</strong>
+                        <strong>${product.productName}</strong>
                     </div>
                     <div class="product-row product-divider-popup">
-                        <img src="${randomImageURL}" alt="Product Image">
+                        <img src="${product.productImage}" alt="Product Image">
                         <div class="product-controls">
                             <div class="quantity-controls">
                                 <button class="minus-btn" data-sku="${product.productSKU}">-</button>
@@ -82,24 +85,18 @@ document.addEventListener("DOMContentLoaded", () => {
                             </div>
                             <div class="discount-dropdown">
                                 <select id="discount-percentage-${product.productSKU}" class="discount-percentage" data-sku="${product.productSKU}">
-                                    <option value="0">0%</option>
-                                    <option value="5">5%</option>
-                                    <option value="10">10%</option>
-                                    <option value="20">20%</option>
-                                    <option value="30">30%</option>
-                                    <option value="40">40%</option>
-                                    <option value="50">50%</option>
-                                    <option value="60">60%</option>
-                                    <option value="70">70%</option>
-                                    <option value="80">80%</option>
+                                    ${discountOptions}
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>`;
+        
             productListElement.innerHTML += productHTML;
+            console.log("UID:", product.uid);
         });
-
+        
+       
         addQuantityButtonListeners();
     };
 
@@ -141,30 +138,32 @@ document.addEventListener("DOMContentLoaded", () => {
             const quantity = parseInt(product.querySelector(".product-quantity").value) || 0;
             const price = parseFloat(product.querySelector(".product-size-select").value);
             const discountPercentage = parseInt(product.querySelector(".discount-percentage").value) || 0;
-
+            const productUid = product.getAttribute('data-uid'); // Extract the uid from the data-uid attribute
+        
             if (quantity > 0) {
                 const discountAmount = price * (discountPercentage / 100);
                 const discountedPrice = price - discountAmount;
                 const total = quantity * discountedPrice;
-
+        
                 productDetails.push({
                     name: productName,
                     price: discountedPrice,
                     quantity: quantity,
                     total: total,
-                    discount: discountPercentage
+                    discount: discountPercentage,
+                    product_uid: productUid // Include product_uid
                 });
-
+        
                 const itemHTML = `
                     <div class="product-detail">
                         <strong>${productName}</strong>
-                        <p>Price: $${discountedPrice.toFixed(2)} </p>
+                        <p>Price: $${discountedPrice.toFixed(2)}</p>
                         <p>Discount: ${discountPercentage}%</p>
                         <p>Quantity: ${quantity}</p>
                         <p>Total: $${total.toFixed(2)}</p>
                         <hr>
                     </div>`;
-
+        
                 detailsHTML += itemHTML;
                 modalDetailsHTML += itemHTML;
             }
@@ -223,7 +222,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     <p><strong>${item.name}</strong><br>
                        Price: $${item.price.toFixed(2)}<br>
                        Quantity: ${item.quantity}<br>
-                       Total: $${item.total.toFixed(2)}</p>`;
+                       Total: $${item.total.toFixed(2)}</p>
+                       `;
                 totalAmount += item.total;
             });
 
@@ -307,10 +307,18 @@ document.addEventListener("DOMContentLoaded", () => {
         
             button.disabled = true;
         
-            const updatedProducts = productDetails.map(product => ({
-                ...product,
-                description: product.description || 'No description available',
-            }));
+            // Log the productDetails array to verify its structure
+            console.log('productDetails:', productDetails);
+        
+            const updatedProducts = productDetails.map(product => {
+                console.log('Product before update:', product); // Log the product before update
+                const updatedProduct = {
+                    ...product,
+                    description: product.description || 'No description available',
+                };
+                console.log('Product after update:', updatedProduct); // Log the product after update
+                return updatedProduct;
+            });
         
             const user = JSON.parse(localStorage.getItem('orderData')) || {};
         
@@ -335,9 +343,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     total: 0,
                     description: 'No description available',
                     discount: 0,
-                    product_uid: 'defaultProductUid' // Replace with the actual product UID
+                    product_uid: 'defaultProductUid' // Add a default product_uid for the placeholder product
                 }]
             };
+        
+            console.log('Order Data:', orderData); // Log the order data
         
             const isFieldMissing = (field, fieldName) => {
                 if (typeof field !== 'string' || field.trim() === '') {
@@ -381,12 +391,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                     const stockPromises = orderData.products.map(async (product) => {
                         // Log the contents of each product
-                        console.log('Product:', product);
-                    
+                        console.log('STOCK PRODUCTS:', product);
                         const stockData = {
                             uid: stockUid,
                             parent_uid: parentUid,  // Auto-populate parent_uid using the uid from matchedUser
-                            product_uid: "test",  // Correctly reference the uid from the product object
+                            product_uid: product.product_uid ? product.product_uid : "test",  // Correctly reference the uid from the product object
                             store_name: orderData.storeName,
                             product_name: product.name,
                             quantity: product.quantity
