@@ -104,3 +104,18 @@ body {
 .form-container .helper-text a:hover {
     text-decoration: underline;
 }
+
+.show-password {
+    display: flex;
+
+    white-space: nowrap; 
+    gap: 5px;
+}
+
+.show-password label {
+    margin-top: 8px;
+}
+
+.show-password input[type="checkbox"] {
+    margin-right: 5px; /* Adjust the spacing between the checkbox and the label */
+}

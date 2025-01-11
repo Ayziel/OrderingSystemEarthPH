@@ -50,7 +50,7 @@ function populateOrders(orders) {
         <td>${globalCounter++}</td>
         <td>${order.storeName || 'No store name'}</td>
         <td>${order.agentName || 'No agent name'}</td>
-        <td>${order.orderDate}</td>
+        <td>${new Date(order.orderDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
         <td>${order.area || 'No location'}</td>
         <td>${order.totalAmount ? '₱ ' + order.totalAmount.toFixed(2) : 'No amount'}</td>
         <td>
@@ -61,6 +61,7 @@ function populateOrders(orders) {
                 <option value="received" ${order.status === 'received' ? 'selected' : ''}>Received</option>
             </select>
         </td>
+        <td class="open-button">Open</td>
     `;
 
         // Add change event listener to status dropdown
@@ -237,7 +238,7 @@ function openModal(order) {
     }
 
     // Combine order details and products into the modal content
-    modalContent.innerHTML = orderDetailsHTML + productsHTML + '<button id="close-modal">Close</button>';
+    modalContent.innerHTML = orderDetailsHTML + productsHTML + '<button id="close-modal">X</button>';
 
     // Show the modal
     modal.style.display = 'block';

@@ -14,14 +14,16 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
     .then(data => {
         const users = data.users;
 
+        // Filter users with the role "teamLeader"
+        const teamLeaders = users.filter(user => user.role === 'teamLeader');
+
         // Clear previous data in the table body
         document.getElementById('agent-data').innerHTML = '';
 
-        // Filter users with the role "agent"
-        const agents = users.filter(user => user.role === 'agent');
-
         // Loop through each agent and populate the table rows
-        agents.forEach(user => {
+        users.forEach(user => {
+            if (user.role !== 'agent') return; // Skip if the user is not an agent
+
             // Create a new row for each agent
             const row = document.createElement('tr');
 
@@ -30,26 +32,12 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
             nameCell.textContent = `${user.firstName} ${user.lastName}`;
             row.appendChild(nameCell);
 
-            // Team Leader based on the team
-            let teamLeader = '';
-            switch (user.team) {
-                case 'Alpha':
-                    teamLeader = 'Kharl Panganiban';
-                    break;
-                case 'Gamma':
-                    teamLeader = 'Francesca Tengco';
-                    break;
-                case 'Betta':
-                    teamLeader = 'Joy Madriaga';
-                    break;
-                case 'Delta':
-                    teamLeader = 'Chris Soriaga';
-                    break;
-                default:
-                    teamLeader = 'Unknown';
-            }
+            // Find the team leader for the current user's team
+            const teamLeader = teamLeaders.find(leader => leader.team === user.team);
+            const teamLeaderName = teamLeader ? `${teamLeader.firstName} ${teamLeader.lastName}` : 'Unknown';
+
             const teamLeaderCell = document.createElement('td');
-            teamLeaderCell.textContent = teamLeader;
+            teamLeaderCell.textContent = teamLeaderName;
             row.appendChild(teamLeaderCell);
 
             // Status (Always ONLINE)

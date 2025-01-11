@@ -3,6 +3,19 @@ const usertoken = localStorage.getItem('authToken');
 console.log("userRole", userRole);
 console.log("usertoken", usertoken);
 
+// Function to log all localStorage data
+const logLocalStorageItems = () => {
+    console.log('Logging localStorage contents:');
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const value = localStorage.getItem(key);
+        console.log(`${key}: ${value}`);
+    }
+};
+
+// Call the function to log localStorage contents
+logLocalStorageItems();
+
 // Fetch the users data from the server
 fetch('https://earthph.sdevtech.com.ph/users/getUsers')
     .then(response => {

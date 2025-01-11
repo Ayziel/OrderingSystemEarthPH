@@ -49,24 +49,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const populateProductList = async () => {
         const products = await fetchProducts();
         const productListElement = document.getElementById("product-list");
-
+        const storeUid = localStorage.getItem('storeUid'); // Retrieve storeUid from localStorage
+    
         if (!productListElement) {
             console.error("Product list element not found!");
             return;
         }
-
+    
         if (products.length === 0) {
             productListElement.innerHTML = "<p>No products available.</p>";
             return;
         }
-
+    
         products.forEach(product => {
+            // Filter products based on storeUid
+            if (product.storeUid !== storeUid) {
+                return; // Skip this product if it doesn't match the storeUid
+            }
+    
             const randomImageURL = "https://picsum.photos/100";
             console.log("Productsss:", product);
             const discountOptions = Array.from({ length: 9 }, (_, i) => `<option value="${i * 10}">${i * 10}%</option>`).join('');
-        
+    
             const productHTML = `
-                <div class="product-container" data-uid="${product.uid}" data-sku="${product.productSKU}">
+                <div class="product-container" data-uid="${product.uid}" data-sku="${product.productSKU}" data-store-uid="${product.storeUid}">
                     <div class="product-row">
                         <strong>${product.productName}</strong>
                     </div>
@@ -91,12 +97,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
                     </div>
                 </div>`;
-        
+    
             productListElement.innerHTML += productHTML;
             console.log("UID:", product.uid);
         });
-        
-       
+    
         addQuantityButtonListeners();
     };
 
@@ -124,54 +129,62 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("totalAmount").value = totalAmount.toFixed(2);
     };
 
-    const updateProductDetails = () => {
-        const productDetailsElement = document.getElementById("productDetails");
-        const productDetailsModalElement = document.getElementById("productDetailsModal");
-        const products = document.querySelectorAll(".product-container");
+    const storeUid = localStorage.getItem('storeUid'); // Retrieve storeUid from localStorage
 
-        let detailsHTML = "";
-        let modalDetailsHTML = "";
-        productDetails = [];
+const updateProductDetails = () => {
+    const productDetailsElement = document.getElementById("productDetails");
+    const productDetailsModalElement = document.getElementById("productDetailsModal");
+    const products = document.querySelectorAll(".product-container");
 
-        products.forEach(product => {
-            const productName = product.querySelector("strong").innerText;
-            const quantity = parseInt(product.querySelector(".product-quantity").value) || 0;
-            const price = parseFloat(product.querySelector(".product-size-select").value);
-            const discountPercentage = parseInt(product.querySelector(".discount-percentage").value) || 0;
-            const productUid = product.getAttribute('data-uid'); // Extract the uid from the data-uid attribute
-        
-            if (quantity > 0) {
-                const discountAmount = price * (discountPercentage / 100);
-                const discountedPrice = price - discountAmount;
-                const total = quantity * discountedPrice;
-        
-                productDetails.push({
-                    name: productName,
-                    price: discountedPrice,
-                    quantity: quantity,
-                    total: total,
-                    discount: discountPercentage,
-                    product_uid: productUid // Include product_uid
-                });
-        
-                const itemHTML = `
-                    <div class="product-detail">
-                        <strong>${productName}</strong>
-                        <p>Price: $${discountedPrice.toFixed(2)}</p>
-                        <p>Discount: ${discountPercentage}%</p>
-                        <p>Quantity: ${quantity}</p>
-                        <p>Total: $${total.toFixed(2)}</p>
-                        <hr>
-                    </div>`;
-        
-                detailsHTML += itemHTML;
-                modalDetailsHTML += itemHTML;
-            }
-        });
+    let detailsHTML = "";
+    let modalDetailsHTML = "";
+    productDetails = [];
 
-        productDetailsElement.innerHTML = detailsHTML || "<p>No items selected.</p>";
-        productDetailsModalElement.innerHTML = modalDetailsHTML || "<p>No items selected in the modal.</p>";
-    };
+    products.forEach(product => {
+        const productName = product.querySelector("strong").innerText;
+        const quantity = parseInt(product.querySelector(".product-quantity").value) || 0;
+        const price = parseFloat(product.querySelector(".product-size-select").value);
+        const discountPercentage = parseInt(product.querySelector(".discount-percentage").value) || 0;
+        const productUid = product.getAttribute('data-uid'); // Extract the uid from the data-uid attribute
+        const productStoreUid = product.getAttribute('data-store-uid'); // Extract the storeUid from the data-store-uid attribute
+
+        // Filter products based on storeUid
+        if (productStoreUid !== storeUid) {
+            return; // Skip this product if it doesn't match the storeUid
+        }
+
+        if (quantity > 0) {
+            const discountAmount = price * (discountPercentage / 100);
+            const discountedPrice = price - discountAmount;
+            const total = quantity * discountedPrice;
+
+            productDetails.push({
+                name: productName,
+                price: discountedPrice,
+                quantity: quantity,
+                total: total,
+                discount: discountPercentage,
+                product_uid: productUid // Include product_uid
+            });
+
+            const itemHTML = `
+                <div class="product-detail">
+                    <strong>${productName}</strong>
+                    <p>Price: $${discountedPrice.toFixed(2)}</p>
+                    <p>Discount: ${discountPercentage}%</p>
+                    <p>Quantity: ${quantity}</p>
+                    <p>Total: $${total.toFixed(2)}</p>
+                    <hr>
+                </div>`;
+
+            detailsHTML += itemHTML;
+            modalDetailsHTML += itemHTML;
+        }
+    });
+
+    productDetailsElement.innerHTML = detailsHTML;
+    productDetailsModalElement.innerHTML = modalDetailsHTML;
+};
 
     const handleModals = () => {
         const addItemButton = document.getElementById("addItemBtn");

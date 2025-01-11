@@ -71,6 +71,7 @@ function populateOrders(orders) {
                 <option value="received" ${order.status === 'received' ? 'selected' : ''}>Received</option>
             </select>
         </td>
+        <td class="open-button">Open</td>
     `;
 
         // Add click event listener to row

@@ -170,3 +170,17 @@ td {
     color: white;
     font-size: 1rem;
 }
+
+.open-button {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    text-align: center; /* Center text */
+    padding: 10px; /* Padding */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+.open-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}

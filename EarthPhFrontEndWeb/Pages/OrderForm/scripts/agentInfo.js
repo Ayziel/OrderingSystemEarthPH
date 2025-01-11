@@ -184,6 +184,15 @@ function populateStoresDropdown(stores) {
         const option = document.createElement('option');
         option.value = store._id;
         option.textContent = store.name;
+        option.setAttribute('data-uid', store.uid); // Store the store uid in a data attribute
         storeSelect.appendChild(option);
+    });
+
+    // Add event listener to store the selected store's uid in localStorage
+    storeSelect.addEventListener('change', () => {
+        const selectedOption = storeSelect.options[storeSelect.selectedIndex];
+        const storeUid = selectedOption.getAttribute('data-uid');
+        localStorage.setItem('storeUid', storeUid); // Store the store uid in localStorage
+        console.log('Selected store UID:', storeUid); // Log the store uid for debugging
     });
 }
