@@ -44,44 +44,45 @@ function populateOrders(orders) {
 
     orders.forEach(order => {
         const row = document.createElement('tr');
-
+    
         // Populate row with order data and add the button for 'Status' after the totalAmount
         row.innerHTML = `
-        <td>${globalCounter++}</td>
-        <td>${order.storeName || 'No store name'}</td>
-        <td>${order.agentName || 'No agent name'}</td>
-        <td>${new Date(order.orderDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
-        <td>${order.area || 'No location'}</td>
-        <td>${order.totalAmount ? '₱ ' + order.totalAmount.toFixed(2) : 'No amount'}</td>
-        <td>
-            <select class="status-dropdown" data-order-id="${order._id}">
-                <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
-                <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-                <option value="received" ${order.status === 'received' ? 'selected' : ''}>Received</option>
-            </select>
-        </td>
-        <td class="open-button">Open</td>
-    `;
-
-        // Add change event listener to status dropdown
+            <td>${globalCounter++}</td>
+            <td>${order.storeName || 'No store name'}</td>
+            <td>${order.agentName || 'No agent name'}</td>
+            <td>${new Date(order.orderDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
+            <td>${order.area || 'No location'}</td>
+            <td>${order.totalAmount ? '₱ ' + order.totalAmount.toFixed(2) : 'No amount'}</td>
+            <td>
+                <select class="status-dropdown" data-order-id="${order._id}">
+                    <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                    <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
+                    <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                    <option value="received" ${order.status === 'received' ? 'selected' : ''}>Received</option>
+                </select>
+            </td>
+            <td class="open-button">Open</td>
+        `;
+    
+        // Add change event listener to status dropdown (inside the loop)
         row.querySelector('.status-dropdown').addEventListener('change', (e) => {
             const updatedStatus = e.target.value;
-            console.log(`Order ID: ${order._id}, Updated Status: ${updatedStatus}`);
-
-            // Call the updateOrder method (or just log for now)
-            // updateOrder(order._id, updatedStatus);
+            const orderId = e.target.getAttribute('data-order-id');
+            console.log(`Order ID: ${orderId}, Updated Status: ${updatedStatus}`);
+            
+            // Call the updateOrderStatus function
+            updateOrderStatus(orderId, updatedStatus);
         });
-
+    
         // Add click event listener to row
         row.addEventListener('click', () => {
             openModal(order); // Pass the entire order object to the modal
         });
-
+    
         ordersBody.appendChild(row);
     });
+    
 }
-
 
 
 document.getElementById('export-btn').addEventListener('click', exportToExcel);
@@ -150,12 +151,16 @@ const modal = document.getElementById('orderModal');
 // const closeModal = modal.querySelector('.close');
 
 function openModal(order) {
+    // Get the modal and its content area
     const modal = document.getElementById('order-modal');
     const modalContent = modal.querySelector('.modal-content');
 
-    // Order Details (non-editable fields remain as text)
+    // Create table rows for order details
     const orderDetailsHTML = `
-        <h3>Order Details</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>Order Details</h3>
+            <button id="close-modal" style="border: none; background: none; color:rgb(29, 29, 29); cursor: pointer; font-size: 16px;">X</button>
+        </div>
         <table>
             <tr>
                 <th>Store Name</th>
@@ -180,12 +185,20 @@ function openModal(order) {
                 <td>${order.area || 'No area'}</td>
             </tr>
             <tr>
+                <th>House Address</th>
+                <td>${order.houseAddress || 'No house address'}</td>
+            </tr>
+            <tr>
+                <th>Town/Province</th>
+                <td>${order.townProvince || 'No town/province'}</td>
+            </tr>
+            <tr>
                 <th>Total Items</th>
-                <td><input type="number" id="edit-total-items" value="${order.totalItems || 0}" /></td>
+                <td>${order.totalItems || 0}</td>
             </tr>
             <tr>
                 <th>Total Amount</th>
-                <td>₱ <span id="display-total-amount">${order.totalAmount ? order.totalAmount.toFixed(2) : '0.00'}</span></td>
+                <td>${order.totalAmount ? `₱ ${order.totalAmount.toFixed(2)}` : 'No amount'}</td>
             </tr>
             <tr>
                 <th>Remarks</th>
@@ -194,125 +207,70 @@ function openModal(order) {
         </table>
     `;
 
-    // Product Details (editable fields for quantity and price)
-    const productsHTML = order.products && order.products.length > 0
-        ? `
-        <h4>Products:</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th>Product Name</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${order.products
-                    .map(
-                        (product, index) => `
-                        <tr>
-                            <td>${product.name}</td>
-                            <td>
-                                <input type="number" step="0.01" class="edit-product-price" data-index="${index}" value="${product.price.toFixed(2)}" />
-                            </td>
-                            <td>
-                                <input type="number" class="edit-product-quantity" data-index="${index}" value="${product.quantity}" />
-                            </td>
-                            <td>₱ <span class="product-total" data-index="${index}">${product.total.toFixed(2)}</span></td>
-                        </tr>
-                    `
-                    )
-                    .join('')}
-            </tbody>
-        </table>
-    `
-        : '<p>No products available.</p>';
+    // Add the product details as a table if products exist
+    let productsHTML = '';
+    if (order.products && order.products.length > 0) {
+        productsHTML = `
+            <h4>Products:</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${order.products
+                        .map(
+                            product => ` 
+                            <tr>
+                                <td>${product.name}</td>
+                                <td>₱${product.price.toFixed(2)}</td>
+                                <td>${product.quantity}</td>
+                                <td>₱${product.total.toFixed(2)}</td>
+                            </tr>
+                        `
+                        )
+                        .join('')}
+                </tbody>
+            </table>
+        `;
+    } else {
+        productsHTML = `<p>No products available.</p>`;
+    }
 
-    // Combine content and include Save button
-    modalContent.innerHTML = `
-        ${orderDetailsHTML}
-        ${productsHTML}
-        <button id="save-order">Save</button>
-        <button id="close-modal">Close</button>
-    `;
+    // Combine order details and products into the modal content
+    modalContent.innerHTML = orderDetailsHTML + productsHTML;
 
-    // Show modal
+    // Show the modal
     modal.style.display = 'block';
 
-    // Add event listeners
+    // Add event listener to close the modal
     document.getElementById('close-modal').addEventListener('click', () => {
         modal.style.display = 'none';
     });
-
-    document.querySelectorAll('.edit-product-price, .edit-product-quantity').forEach(input => {
-        input.addEventListener('input', () => updateProductTotals(order.products));
-    });
-
-    document.getElementById('save-order').addEventListener('click', () => saveOrderChanges(order));
 }
 
-// Function to update product totals when editing
-function updateProductTotals(products) {
-    const updatedTotalItems = Array.from(document.querySelectorAll('.edit-product-quantity')).reduce((sum, input, index) => {
-        const quantity = parseFloat(input.value) || 0;
-        const priceInput = document.querySelector(`.edit-product-price[data-index="${index}"]`);
-        const price = parseFloat(priceInput.value) || 0;
-        const total = quantity * price;
 
-        // Update displayed product total
-        const totalDisplay = document.querySelector(`.product-total[data-index="${index}"]`);
-        totalDisplay.textContent = total.toFixed(2);
 
-        return sum + quantity;
-    }, 0);
-
-    // Update total items
-    document.getElementById('edit-total-items').value = updatedTotalItems;
-
-    // Update total amount
-    const totalAmount = Array.from(document.querySelectorAll('.product-total')).reduce((sum, span) => sum + parseFloat(span.textContent), 0);
-    document.getElementById('display-total-amount').textContent = totalAmount.toFixed(2);
-}
-
-// Function to save changes and send updates to the server
-async function saveOrderChanges(order) {
-    // Collect updated data
-    const totalItems = parseInt(document.getElementById('edit-total-items').value) || 0;
-    const updatedProducts = order.products.map((product, index) => ({
-        ...product,
-        price: parseFloat(document.querySelector(`.edit-product-price[data-index="${index}"]`).value) || product.price,
-        quantity: parseInt(document.querySelector(`.edit-product-quantity[data-index="${index}"]`).value) || product.quantity,
-    }));
-
-    // Update the order object
-    const updatedOrder = {
-        ...order,
-        totalItems: totalItems,
-        totalAmount: updatedProducts.reduce((sum, product) => sum + product.price * product.quantity, 0),
-        products: updatedProducts,
-    };
-
-    try {
-        // Send updated order to the server
-        const response = await fetch('https://earthph.sdevtech.com.ph/orders/updateOrders', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedOrder),
-        });
-
-        const responseData = await response.json();
-        console.log(responseData);  // Log response data to see the server's response
-
-        if (response.ok) {
-            alert('Order updated successfully!');
-            location.reload(); // Refresh the page  
+function updateOrderStatus(orderId, status) {
+    fetch(`https://earthph.sdevtech.com.ph/orders/updateOrders/${orderId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${usertoken}`,
+        },
+        body: JSON.stringify({ status: status }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message === 'Order updated successfully') {
+            console.log('Order status updated:', data.order);
         } else {
-            alert('Failed to update order. Please try again.');
+            console.error('Failed to update order:', data.message);
         }
-    } catch (error) {
-        console.error('Error updating order:', error);
-        alert('An error occurred while updating the order.');
-    }
+    })
+    .catch(error => console.error('Error updating order:', error));
 }
-

@@ -39,7 +39,7 @@ function populateStoresTable(stores) {
         statusCell.textContent = store.phone || 'N/A';
         
             const button = document.createElement('td');
-            button.textContent = 'Click me';
+            button.textContent = 'Open';
             button.style.padding = '10px';
             button.style.backgroundColor = '#66bb6a';
             button.style.color = 'white';
