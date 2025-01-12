@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
             const data = await response.json();
+            console.log("Data",data);
             return data.products || [];
         } catch (error) {
             console.error("Error fetching products:", error);
@@ -49,9 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const populateProductList = async () => {
+        const storeData = JSON.parse(localStorage.getItem('storeData')); // Parse the storeData object
         const products = await fetchProducts();
         const productListElement = document.getElementById("product-list");
-        const storeUid = localStorage.getItem('storeUid'); // Retrieve storeUid from localStorage
+        const storeUid = storeData ? storeData.uid : null
     
         if (!productListElement) {
             console.error("Product list element not found!");
@@ -65,11 +67,13 @@ document.addEventListener("DOMContentLoaded", () => {
     
         products.forEach(product => {
             // Filter products based on storeUid
+            console.log("product.storeUid",product.storeUid);
+            console.log("storeUid",storeUid);
             if (product.storeUid !== storeUid) {
                 return; // Skip this product if it doesn't match the storeUid
             }
-    
-            const randomImageURL = "https://picsum.photos/100";
+            
+
             console.log("Productsss:", product);
             const discountOptions = Array.from({ length: 9 }, (_, i) => `<option value="${i * 10}">${i * 10}%</option>`).join('');
     
@@ -106,6 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
         addQuantityButtonListeners();
     };
+    populateProductList();
 
     const updateOrderComputation = () => {
         const products = document.querySelectorAll(".product-container");
