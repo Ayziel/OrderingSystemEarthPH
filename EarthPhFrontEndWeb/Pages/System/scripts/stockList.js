@@ -1,56 +1,72 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+function logAllLocalStorageItems() {
+    console.log("Items in localStorage:");
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i); // Get the key at index `i`
+        const value = localStorage.getItem(key); // Get the value associated with the key
+        console.log(`${key}: ${value}`);
+    }
+}
+
+// Call the function
+logAllLocalStorageItems();
+
+
+
+
     // Retrieve the saved data from localStorage
-    const localStorageData = localStorage.getItem('orderData');
-    let userUID = null; // Declare a global variable
+// Retrieve the saved data from localStorage
+const localStorageData = localStorage.getItem('orderData'); // Retrieve the stored order data from localStorage
+const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+let userUID = null;
 
-    if (localStorageData) {
-        try {
-            // Parse the JSON string from localStorage
-            const orderData = JSON.parse(localStorageData);
+if (localStorageData) {
+    try {
+        // Parse the JSON string from localStorage
+        const orderData = JSON.parse(localStorageData);
+        console.log("Order Data from localStorage:", orderData);
 
-            // Access and set the user UID
-            if (orderData.matchedUser && orderData.matchedUser.uid) {
-                userUID = orderData.matchedUser.uid;
-                console.log("User UID from orderData:", userUID);
-            } else {
-                console.warn("No user UID found in the orderData.");
-            }
-        } catch (error) {
-            console.error("Error parsing localStorage data:", error);
+        // Access and set the user UID from matchedUser
+        if (matchedUser && matchedUser.uid) {
+            userUID = matchedUser.uid;
+            console.log("User UID from matchedUser:", userUID);
+        } else {
+            console.warn("No user UID found in the matchedUser.");
         }
-    } else {
-        console.warn("No 'orderData' found in localStorage.");
+    } catch (error) {
+        console.error("Error parsing localStorage data:", error);
     }
+} else {
+    console.warn("No 'orderData' found in localStorage.");
+}
 
-    function populateStocks(stocks) {
-        const ordersBody = document.querySelector('.orders-body');
-        ordersBody.innerHTML = ''; // Clear previous rows
-        console.log("Stocks:", stocks);
-        console.log("UserUID", userUID);
-        let globalCounter = 1;
-    
-        // Filter stocks based on parent_uid
-        const filteredStocks = stocks.filter(stock => stock.parent_uid === userUID); // CHANGE
-    
-        filteredStocks.forEach(stock => {
-            const row = document.createElement('tr');
-            console.log("Stock parent_uid:", stock.parent_uid);
-            // Populate row with stock data
-            row.innerHTML = `
-                <td>${globalCounter++}</td>
-                <td>${stock.store_name || 'No store name'}</td>
-                <td>${stock.product_name || 'No product name'}</td>
-                <td>${stock.quantity || '0'}</td>
-            `;
-    
-            row.addEventListener('click', () => {
-                openStockModal(stock); // Pass the stock object to the modal
-            });
-    
-            ordersBody.appendChild(row);
+function populateStocks(stocks) {
+    const ordersBody = document.querySelector('.orders-body');
+    ordersBody.innerHTML = ''; // Clear previous rows
+    console.log("Stocks:", stocks);
+    console.log("UserUID", userUID);
+    let globalCounter = 1;
+
+    // No filtering, just loop through all stocks
+    stocks.forEach(stock => {
+        const row = document.createElement('tr');
+        console.log("Stock parent_uid:", stock.parent_uid);
+        // Populate row with stock data
+        row.innerHTML = `
+            <td>${globalCounter++}</td>
+            <td>${stock.store_name || 'No store name'}</td>
+            <td>${stock.product_name || 'No product name'}</td>
+            <td>${stock.quantity || '0'}</td>
+        `;
+
+        row.addEventListener('click', () => {
+            openStockModal(stock); // Pass the stock object to the modal
         });
-    }
+
+        ordersBody.appendChild(row);
+    });
+}
 
 
     // Fetch the stock data from the API

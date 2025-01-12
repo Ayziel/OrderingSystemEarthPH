@@ -45,6 +45,27 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
             statusCell.textContent = user.phoneNumber;
             row.appendChild(statusCell);
 
+            const button = document.createElement('td');
+            button.textContent = 'Click me';
+            button.style.padding = '10px';
+            button.style.backgroundColor = '#66bb6a';
+            button.style.color = 'white';
+            button.style.textAlign = 'center';
+            button.style.cursor = 'pointer';
+            button.style.borderRadius = '5px';
+            button.style.transition = 'background-color 0.3s ease';
+            button.style.backgroundColor = 'green !important'; // Apply background color with !important
+
+            button.addEventListener('mouseover', () => {
+                button.style.backgroundColor = '#28a745'; 
+            });
+            
+            button.addEventListener('mouseout', () => {
+                button.style.backgroundColor = '#66bb6a';
+            });
+            
+            row.appendChild(button);
+
             // Add click event to open the modal with the user data
             row.onclick = function () {
                 openModal(user);

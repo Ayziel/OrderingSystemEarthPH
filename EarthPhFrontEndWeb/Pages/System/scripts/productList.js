@@ -59,7 +59,27 @@ function populateProducts(products) {
             <td>${truncateText(product.brand || 'No brand', 30)}</td>
             <td>₱ ${priceWithDiscount ? priceWithDiscount.toFixed(2) : '0.00'}</td>
             <td>% ${product.discount ? product.discount.toFixed(2) : '0'}</td>
+             <td class="open-cell">Open</td>
         `;
+
+        // Design Hard Coded Rush implementation
+            const openCell = row.querySelector('.open-cell');
+            openCell.style.padding = '10px';
+            openCell.style.backgroundColor = '#66bb6a'; // Lighter green
+            openCell.style.color = 'white';
+            openCell.style.textAlign = 'center';
+            openCell.style.cursor = 'pointer';
+            openCell.style.borderRadius = '5px';
+            openCell.style.transition = 'background-color 0.3s ease';
+
+            // Add hover effect
+            openCell.addEventListener('mouseover', () => {
+                openCell.style.backgroundColor = '#28a745'; // Darker green on hover
+            });
+
+            openCell.addEventListener('mouseout', () => {
+                openCell.style.backgroundColor = '#66bb6a'; // Reset to lighter green
+            });
 
         row.addEventListener('click', () => {
             // When the product is clicked, populate the modal with its details

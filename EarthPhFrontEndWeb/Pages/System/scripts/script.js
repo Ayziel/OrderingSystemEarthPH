@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hide other sections that are not relevant to team leaders
     sidebarMenu.querySelectorAll('.item').forEach(item => {
       const navlinkText = item.querySelector('.navlink')?.textContent.trim();
-      if (navlinkText !== 'Dashboard' && navlinkText !== 'Agents' && navlinkText !== 'Team Performance') {
+      if (navlinkText !== 'Dashboard' && navlinkText !== 'Agents' && navlinkText !== 'Team Performance' && navlinkText !== 'Orders' && navlinkText !== 'Stores') {
         item.style.display = 'none'; // Hide sections that shouldn't be shown
       }
     });

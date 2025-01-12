@@ -150,11 +150,10 @@ const modal = document.getElementById('orderModal');
 // const closeModal = modal.querySelector('.close');
 
 function openModal(order) {
-    // Get the modal and its content area
     const modal = document.getElementById('order-modal');
     const modalContent = modal.querySelector('.modal-content');
 
-    // Create table rows for order details
+    // Order Details (non-editable fields remain as text)
     const orderDetailsHTML = `
         <h3>Order Details</h3>
         <table>
@@ -181,20 +180,12 @@ function openModal(order) {
                 <td>${order.area || 'No area'}</td>
             </tr>
             <tr>
-                <th>House Address</th>
-                <td>${order.houseAddress || 'No house address'}</td>
-            </tr>
-            <tr>
-                <th>Town/Province</th>
-                <td>${order.townProvince || 'No town/province'}</td>
-            </tr>
-            <tr>
                 <th>Total Items</th>
-                <td>${order.totalItems || 0}</td>
+                <td><input type="number" id="edit-total-items" value="${order.totalItems || 0}" /></td>
             </tr>
             <tr>
                 <th>Total Amount</th>
-                <td>${order.totalAmount ? `₱ ${order.totalAmount.toFixed(2)}` : 'No amount'}</td>
+                <td>₱ <span id="display-total-amount">${order.totalAmount ? order.totalAmount.toFixed(2) : '0.00'}</span></td>
             </tr>
             <tr>
                 <th>Remarks</th>
@@ -203,99 +194,121 @@ function openModal(order) {
         </table>
     `;
 
-    // Add the product details as a table if products exist
-    let productsHTML = '';
-    if (order.products && order.products.length > 0) {
-        productsHTML = `
-            <h4>Products:</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Product Name</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${order.products
-                        .map(
-                            product => `
-                            <tr>
-                                <td>${product.name}</td>
-                                <td>₱${product.price.toFixed(2)}</td>
-                                <td>${product.quantity}</td>
-                                <td>₱${product.total.toFixed(2)}</td>
-                            </tr>
-                        `
-                        )
-                        .join('')}
-                </tbody>
-            </table>
-        `;
-    } else {
-        productsHTML = `<p>No products available.</p>`;
-    }
+    // Product Details (editable fields for quantity and price)
+    const productsHTML = order.products && order.products.length > 0
+        ? `
+        <h4>Products:</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${order.products
+                    .map(
+                        (product, index) => `
+                        <tr>
+                            <td>${product.name}</td>
+                            <td>
+                                <input type="number" step="0.01" class="edit-product-price" data-index="${index}" value="${product.price.toFixed(2)}" />
+                            </td>
+                            <td>
+                                <input type="number" class="edit-product-quantity" data-index="${index}" value="${product.quantity}" />
+                            </td>
+                            <td>₱ <span class="product-total" data-index="${index}">${product.total.toFixed(2)}</span></td>
+                        </tr>
+                    `
+                    )
+                    .join('')}
+            </tbody>
+        </table>
+    `
+        : '<p>No products available.</p>';
 
-    // Combine order details and products into the modal content
-    modalContent.innerHTML = orderDetailsHTML + productsHTML + '<button id="close-modal">X</button>';
+    // Combine content and include Save button
+    modalContent.innerHTML = `
+        ${orderDetailsHTML}
+        ${productsHTML}
+        <button id="save-order">Save</button>
+        <button id="close-modal">Close</button>
+    `;
 
-    // Show the modal
+    // Show modal
     modal.style.display = 'block';
 
-    // Add event listener to close the modal
+    // Add event listeners
     document.getElementById('close-modal').addEventListener('click', () => {
         modal.style.display = 'none';
     });
+
+    document.querySelectorAll('.edit-product-price, .edit-product-quantity').forEach(input => {
+        input.addEventListener('input', () => updateProductTotals(order.products));
+    });
+
+    document.getElementById('save-order').addEventListener('click', () => saveOrderChanges(order));
 }
 
-// function updateOrder(orderId, updatedStatus) {
-//     const uid = orderId;  // You can use _id or another identifier based on your data model
-//     const agentName = 'New Agent Name';  // Replace with actual data if needed
-//     const teamLeaderName = 'New Team Leader';  // Replace with actual data if needed
-//     const area = 'New Area';  // Replace with actual data if needed
-//     const products = [];  // Replace with the actual product data
-//     const totalAmount = 100.00;  // Replace with the actual total amount
+// Function to update product totals when editing
+function updateProductTotals(products) {
+    const updatedTotalItems = Array.from(document.querySelectorAll('.edit-product-quantity')).reduce((sum, input, index) => {
+        const quantity = parseFloat(input.value) || 0;
+        const priceInput = document.querySelector(`.edit-product-price[data-index="${index}"]`);
+        const price = parseFloat(priceInput.value) || 0;
+        const total = quantity * price;
 
-//     // Construct the request body
-//     const requestBody = {
-//         uid,
-//         agentName,
-//         teamLeaderName,
-//         area,
-//         products,
-//         totalAmount,
-//         status: updatedStatus,  // Include the updated status
-//     };
+        // Update displayed product total
+        const totalDisplay = document.querySelector(`.product-total[data-index="${index}"]`);
+        totalDisplay.textContent = total.toFixed(2);
 
-//     // Call the server to update the order (You can change the URL to your server endpoint)
-//     fetch('https://earthph.sdevtech.com.ph/orders/updateOrders', {
-//         method: 'PUT',
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': `Bearer ${usertoken}`,  // Assuming you're using token for authorization
-//         },
-//         body: JSON.stringify(requestBody)
-//     })
-//     .then(response => {
-//         if (!response.ok) {
-//             throw new Error(`HTTP error! status: ${response.status}`);
-//         }
-//         return response.json();
-//     })
-//     .then(data => {
-//         if (data && data.order) {
-//             console.log('Order updated:', data.order);  // Log the updated order
-//         } else {
-//             console.error('Failed to update the order: No order data returned');
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Error updating order:', error);
-//         if (error.message.includes("HTTP error!")) {
-//             // If the error is an HTTP error, log additional details
-//             console.log('Response body:', error.response);
-//         }
-//     });
-// }
+        return sum + quantity;
+    }, 0);
 
+    // Update total items
+    document.getElementById('edit-total-items').value = updatedTotalItems;
+
+    // Update total amount
+    const totalAmount = Array.from(document.querySelectorAll('.product-total')).reduce((sum, span) => sum + parseFloat(span.textContent), 0);
+    document.getElementById('display-total-amount').textContent = totalAmount.toFixed(2);
+}
+
+// Function to save changes and send updates to the server
+async function saveOrderChanges(order) {
+    // Collect updated data
+    const totalItems = parseInt(document.getElementById('edit-total-items').value) || 0;
+    const updatedProducts = order.products.map((product, index) => ({
+        ...product,
+        price: parseFloat(document.querySelector(`.edit-product-price[data-index="${index}"]`).value) || product.price,
+        quantity: parseInt(document.querySelector(`.edit-product-quantity[data-index="${index}"]`).value) || product.quantity,
+    }));
+
+    // Update the order object
+    const updatedOrder = {
+        ...order,
+        totalItems: totalItems,
+        totalAmount: updatedProducts.reduce((sum, product) => sum + product.price * product.quantity, 0),
+        products: updatedProducts,
+    };
+
+    try {
+        // Send updated order to the server
+        const response = await fetch('https://earthph.sdevtech.com.ph/orders/updateOrders', {
+            method: 'PUT', // Use PUT to match the server route
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedOrder),
+        });
+
+        if (response.ok) {
+            alert('Order updated successfully!');
+            location.reload(); // Refresh the page  
+        } else {
+            alert('Failed to update order. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error updating order:', error);
+        alert('An error occurred while updating the order.');
+    }
+}

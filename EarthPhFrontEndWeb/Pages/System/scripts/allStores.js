@@ -36,8 +36,28 @@ function populateStoresTable(stores) {
         storeNameCell.textContent = store.name || 'N/A';  // Update from 'storeName' to 'name'
         
         const statusCell = document.createElement('td');
-        statusCell.textContent = store.status || 'N/A';
+        statusCell.textContent = store.phone || 'N/A';
         
+            const button = document.createElement('td');
+            button.textContent = 'Click me';
+            button.style.padding = '10px';
+            button.style.backgroundColor = '#66bb6a';
+            button.style.color = 'white';
+            button.style.textAlign = 'center';
+            button.style.cursor = 'pointer';
+            button.style.borderRadius = '5px';
+            button.style.transition = 'background-color 0.3s ease';
+            button.style.backgroundColor = 'green !important'; // Apply background color with !important
+
+            button.addEventListener('mouseover', () => {
+                button.style.backgroundColor = '#28a745'; 
+            });
+            
+            button.addEventListener('mouseout', () => {
+                button.style.backgroundColor = '#66bb6a';
+            });
+            
+            row.appendChild(button);
         // Add a click event to open the modal when the row is clicked
         row.addEventListener('click', () => {
             openStoreModal(store);
@@ -47,7 +67,7 @@ function populateStoresTable(stores) {
         row.appendChild(addressCell);
         row.appendChild(storeNameCell);
         row.appendChild(statusCell);
-        
+        row.appendChild(button);
         // Append the row to the table body
         tableBody.appendChild(row);
     }

@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
+    status: {
+        type: String,
+        required: true,
+        default: 'Pending'
+    },
     agentName: {
         type: String,
         required: true

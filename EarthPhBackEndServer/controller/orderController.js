@@ -60,7 +60,8 @@ exports.createOrder = async (req, res) => {
             products: updatedProducts,
             uid: orderData.uid,
             storeUid: orderData.storeUid, // CHANGE: Add storeUid
-            userUid: orderData.userUid // CHANGE: Add userUid
+            userUid: orderData.userUid, // CHANGE: Add userUid
+            status: 'Pending' // Set default status to 'Pending'
         });
 
         // Save the order in the database
