@@ -94,6 +94,7 @@
           <ul class="menu_items submenu">
               <a href="https://earthhomecareph.astute.services/System/Agent-Name.html" class="nav_link sublink">By Name</a>
               <a href="https://earthhomecareph.astute.services/System/Agent-Leader.html" class="nav_link sublink">By Team Leader</a>
+              <a href="https://earthhomecareph.astute.services/System/stock-list.html" class="nav_link sublink">Stocks</a>
           </ul>
         </li>
         <li class="item">
@@ -188,10 +189,10 @@
                         <label>Price</label>
                         <input type="number" placeholder="Enter Price" required />
                     </div>
-                    <div class="input-box">
+                    <!-- <div class="input-box">
                         <label>Quantity</label>
                         <input type="number" placeholder="Enter Quantity" required />
-                    </div>
+                    </div> -->
                 </div>
                 <div class="column">
                   <div class="input-box">
@@ -202,13 +203,11 @@
                               id="discountInput" 
                               placeholder="Enter Custom Value" 
                               onchange="syncInputWithDropdown()" 
-                              required 
                               style="flex: 1;" />
                           <select 
                               id="discountDropdown" 
                               class="discount"
                               onchange="syncDiscountWithInput()" 
-                              required 
                               style="width: auto;">
                               <option value="0">Select Discount</option>
                               <option value="0">0%</option>

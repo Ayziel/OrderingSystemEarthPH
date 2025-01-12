@@ -37,12 +37,12 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
             const teamLeaderName = teamLeader ? `${teamLeader.firstName} ${teamLeader.lastName}` : 'Unknown';
 
             const teamLeaderCell = document.createElement('td');
-            teamLeaderCell.textContent = teamLeaderName;
+            teamLeaderCell.textContent = user.team;
             row.appendChild(teamLeaderCell);
 
             // Status (Always ONLINE)
             const statusCell = document.createElement('td');
-            statusCell.textContent = 'ONLINE';
+            statusCell.textContent = user.phoneNumber;
             row.appendChild(statusCell);
 
             // Add click event to open the modal with the user data

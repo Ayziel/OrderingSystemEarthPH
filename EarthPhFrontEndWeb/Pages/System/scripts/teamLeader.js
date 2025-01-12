@@ -44,30 +44,14 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
             row.appendChild(nameCell);
 
             // Team Leader based on the team
-            let teamLeader = '';
-            switch (user.team) {
-                case 'Alpha':
-                    teamLeader = 'Kharl Panganiban';
-                    break;
-                case 'Gamma':
-                    teamLeader = 'Francesca Tengco';
-                    break;
-                case 'Betta':
-                    teamLeader = 'Joy Madriaga';
-                    break;
-                case 'Delta':
-                    teamLeader = 'Chris Soriaga';
-                    break;
-                default:
-                    teamLeader = 'Unknown';
-            }
+            let teamLeader = user.phoneNumber;
             const teamLeaderCell = document.createElement('td');
             teamLeaderCell.textContent = teamLeader;
             row.appendChild(teamLeaderCell);
 
             // Status (Always ONLINE)
             const statusCell = document.createElement('td');
-            statusCell.textContent = 'ONLINE';
+            statusCell.textContent = user.team;
             row.appendChild(statusCell);
 
             // Add click event to open the modal with the user data

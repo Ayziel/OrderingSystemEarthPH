@@ -15,6 +15,19 @@ const usertoken = localStorage.getItem('authToken');
 console.log("userRole", userRole);
 console.log("usertoken", usertoken);
 
+function logAllLocalStorageItems() {
+    console.log("Items in localStorage:");
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i); // Get the key at index `i`
+        const value = localStorage.getItem(key); // Get the value associated with the key
+        console.log(`${key}: ${value}`);
+    }
+}
+
+// Call the function
+logAllLocalStorageItems();
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     console.log("token", token);
@@ -48,34 +61,88 @@ function updateProgress(index, itemName, percentage) {
 // Function to fetch orders and process them
 // Main function to fetch orders
 function fetchOrders() {
-    fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
+    // Step 1: Fetch the logged-in user's data from local storage
+    const currentUserRole = localStorage.getItem('userRole');
+    const currentUserTeam = localStorage.getItem('userTeam');
+    
+    // Fetching the matchedUser object from localStorage
+    const matchedUserData = localStorage.getItem('matchedUser'); // Assuming the object is stored under the 'matchedUser' key
+    let currentUserUid = null;
+    
+    if (matchedUserData) {
+        try {
+            // Parse the matchedUser data
+            const parsedData = JSON.parse(matchedUserData);
+            // Access the userUid from the matchedUser object
+            currentUserUid = parsedData.uid; // Corrected line
+            console.log("currentUserUid", currentUserUid); // This will log the UID
+        } catch (error) {
+            console.error("Error parsing matchedUser data:", error);
+        }
+    }
+    
+    console.log("currentUserUid", currentUserUid)
+    // Step 2: Fetch the list of users
+    fetch('https://earthph.sdevtech.com.ph/users/getUsers')
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error('Failed to fetch users.');
             }
             return response.json();
         })
-        .then(orders => {
-            if (!orders || orders.length === 0) {
-                console.log('No orders found.');
-                return;
-            }
+        .then(userData => {
+            const users = userData.users; // All users fetched
 
-            // Process orders after fetching them
-            const { totalSales, sales, productSales } = processOrders(orders);
-            
-            // Make sure the UI only updates after data is fully processed
-            updateUI(totalSales, sales);
+            // Step 3: Fetch orders
+            return fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch orders.');
+                    }
+                    return response.json();
+                })
+                .then(orders => {
+                    if (!orders || orders.length === 0) {
+                        console.log('No orders found.');
+                        return;
+                    }
 
-            const sortedProducts = sortAndDisplayTopProducts(productSales);
+                    // Step 4: If the user is an agent, apply the filter by userUid
+                    let filteredOrders = orders;
 
-            // Optionally, update the UI with the new data
-            updateProgressBars(sortedProducts, sales);
+                    if (currentUserRole === 'agent' && currentUserUid) {
+                        // Filter orders only for the logged-in agent's UID
+                        filteredOrders = orders.filter(order => order.userUid === currentUserUid);
+                    }
+
+                    // Step 5: If the user is a team leader, filter orders by team; otherwise, no filter is applied
+                    if (currentUserRole === 'teamLeader') {
+                        filteredOrders = orders.filter(order => {
+                            const user = users.find(user => user.uid === order.userUid);
+                            return user && user.team === currentUserTeam;
+                        });
+                    }
+
+                    if (filteredOrders.length === 0) {
+                        console.log('No orders match the current user role or team.');
+                        return;
+                    }
+
+                    // Step 6: Process and display the filtered orders
+                    const { totalSales, sales, productSales } = processOrders(filteredOrders);
+
+                    updateUI(totalSales, sales);
+
+                    const sortedProducts = sortAndDisplayTopProducts(productSales);
+
+                    updateProgressBars(sortedProducts, sales);
+                });
         })
-        .catch(error => console.error('Error fetching orders:', error));
+        .catch(error => {
+            console.error('Error fetching data:', error);
+            alert('Failed to fetch data. Please check your server.');
+        });
 }
-
-
 
 // Function to process the orders, calculate total sales and track product sales
 function processOrders(orders) {
@@ -198,122 +265,185 @@ function fetchUsers() {
 
 // Function to fetch chart data and generate a chart
 function chart() {
-    fetch('https://earthph.sdevtech.com.ph/orders/getOrders') // Fetch order data from the specified URL
+    const currentUserRole = localStorage.getItem('userRole'); // Get the current user's role from local storage
+    const currentUserTeam = localStorage.getItem('userTeam'); // Get the current user's team from local storage
+
+    // Fetching the matchedUser object from localStorage
+    const matchedUserData = localStorage.getItem('matchedUser'); // Assuming the object is stored under the 'matchedUser' key
+    let currentUserUid = null;
+
+    if (matchedUserData) {
+        try {
+            // Parse the matchedUser data
+            const parsedData = JSON.parse(matchedUserData);
+            // Access the userUid from the matchedUser object
+            currentUserUid = parsedData.uid; // Correctly accessing the uid
+        } catch (error) {
+            console.error("Error parsing matchedUser data:", error);
+        }
+    }
+
+    // Step 1: Fetch the list of users
+    fetch('https://earthph.sdevtech.com.ph/users/getUsers')
         .then(response => {
             if (!response.ok) {
-                console.error(`HTTP error! status: ${response.status}`);
-                throw new Error(`HTTP error! status: ${response.status}`);
+                console.error('Failed to fetch users.');
+                throw new Error('Failed to fetch users.');
             }
             return response.json(); // Convert the response to JSON format
         })
-        .then(orderData => {
-            console.log('Order data fetched:', orderData); // Log the fetched order data
-            if (!orderData || orderData.length === 0) {
-                console.log('No order data found.');
-                return;
-            }
+        .then(userData => {
+            const users = userData.users; // All users fetched
 
-            // Generate labels dynamically for the current month and the last 5 months
-            const labels = Array.from({ length: 6 }, (_, i) => {
-                const date = new Date();
-                date.setMonth(date.getMonth() - (5 - i)); // Get last 6 months including current month
-                const month = date.toLocaleString('default', { month: 'long' }); // Get the full month name
-                const year = date.getFullYear(); // Get the year
-                return `${month} ${year}`; // Month and Year (e.g., December 2024)
-            });
-
-            console.log('Generated labels:', labels);
-
-            // Aggregate sales data by item name using a Map
-            const aggregatedSalesData = new Map();
-
-            orderData.forEach(order => {
-                order.products.forEach(product => {
-                    if (!aggregatedSalesData.has(product.name)) {
-                        aggregatedSalesData.set(product.name, Array(6).fill(0));
+            // Step 2: Fetch orders
+            fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
+                .then(response => {
+                    if (!response.ok) {
+                        console.error(`HTTP error! status: ${response.status}`);
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
-                    const saleDate = new Date(order.orderDate);
-                    const saleMonth = saleDate.getMonth();
-                    const saleYear = saleDate.getFullYear();
-                    const currentDate = new Date();
-                    const currentMonth = currentDate.getMonth();
-                    const currentYear = currentDate.getFullYear();
-
-                    let monthIndex = -1;
-                    for (let i = 0; i < 6; i++) {
-                        const targetDate = new Date();
-                        targetDate.setMonth(currentMonth - (5 - i));
-                        if (saleYear === targetDate.getFullYear() && saleMonth === targetDate.getMonth()) {
-                            monthIndex = i;
-                            break;
-                        }
+                    return response.json(); // Convert the response to JSON format
+                })
+                .then(orderData => {
+                    console.log('Order data fetched:', orderData); // Log the fetched order data
+                    if (!orderData || orderData.length === 0) {
+                        console.log('No order data found.');
+                        return;
                     }
 
-                    if (monthIndex !== -1) {
-                        aggregatedSalesData.get(product.name)[monthIndex] += product.quantity;
+                    // Step 3: If the user is an agent, apply the filter by userUid
+                    let filteredOrders = orderData;
+
+                    if (currentUserRole === 'agent' && currentUserUid) {
+                        // Filter orders only for the logged-in agent's UID
+                        filteredOrders = orderData.filter(order => order.userUid === currentUserUid);
                     }
-                });
-            });
 
-            // Convert the Map to an array of objects
-            let itemSalesData = Array.from(aggregatedSalesData, ([label, data]) => ({ label, data }));
+                    // Step 4: If the user is a team leader, filter orders by team; otherwise, no filter is applied
+                    if (currentUserRole === 'teamLeader') {
+                        filteredOrders = orderData.filter(order => {
+                            const user = users.find(user => user.uid === order.userUid); // Find the user for this order
+                            return user && user.team === currentUserTeam; // Filter by team if it's a team leader
+                        });
+                    }
 
-            console.log('Item sales data before sorting:', itemSalesData);
+                    // If no orders match the filter criteria
+                    if (filteredOrders.length === 0) {
+                        console.log('No orders match the current user role or team.');
+                        return;
+                    }
 
-            // Sort the itemSalesData array by total quantity in descending order
-            itemSalesData.sort((a, b) => {
-                const totalA = a.data.reduce((sum, value) => sum + value, 0);
-                const totalB = b.data.reduce((sum, value) => sum + value, 0);
-                return totalB - totalA;
-            });
+                    // Step 5: Generate labels dynamically for the current month and the last 5 months
+                    const labels = Array.from({ length: 6 }, (_, i) => {
+                        const date = new Date();
+                        date.setMonth(date.getMonth() - (5 - i)); // Get last 6 months including current month
+                        const month = date.toLocaleString('default', { month: 'long' }); // Get the full month name
+                        const year = date.getFullYear(); // Get the year
+                        return `${month} ${year}`; // Month and Year (e.g., December 2024)
+                    });
 
-            console.log('Item sales data after sorting:', itemSalesData);
+                    console.log('Generated labels:', labels);
 
-            // Limit to top 5 items
-            itemSalesData = itemSalesData.slice(0, 5); // CHANGE: Limit to top 5 items
+                    // Step 6: Aggregate sales data by item name using a Map
+                    const aggregatedSalesData = new Map();
 
-            // Destroy the previous chart if it exists
-            if (myLineChart) {
-                myLineChart.destroy();
-            }
+                    filteredOrders.forEach(order => {
+                        order.products.forEach(product => {
+                            if (!aggregatedSalesData.has(product.name)) {
+                                aggregatedSalesData.set(product.name, Array(6).fill(0));
+                            }
+                            const saleDate = new Date(order.orderDate);
+                            const saleMonth = saleDate.getMonth();
+                            const saleYear = saleDate.getFullYear();
+                            const currentDate = new Date();
+                            const currentMonth = currentDate.getMonth();
+                            const currentYear = currentDate.getFullYear();
 
-            var ctx = document.getElementById('myLineChart').getContext('2d');
-            myLineChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels, // Use dynamically generated labels (months)
-                    datasets: itemSalesData.map((item, index) => ({
-                        label: item.label,
-                        data: item.data,
-                        borderColor: getBorderColor(index),
-                        backgroundColor: getBackgroundColor(index),
-                        borderWidth: 2,
-                        tension: 0.4
-                    }))
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
+                            let monthIndex = -1;
+                            for (let i = 0; i < 6; i++) {
+                                const targetDate = new Date();
+                                targetDate.setMonth(currentMonth - (5 - i));
+                                if (saleYear === targetDate.getFullYear() && saleMonth === targetDate.getMonth()) {
+                                    monthIndex = i;
+                                    break;
+                                }
+                            }
+
+                            if (monthIndex !== -1) {
+                                aggregatedSalesData.get(product.name)[monthIndex] += product.quantity;
+                            }
+                        });
+                    });
+
+                    // Convert the Map to an array of objects
+                    let itemSalesData = Array.from(aggregatedSalesData, ([label, data]) => ({ label, data }));
+
+                    console.log('Item sales data before sorting:', itemSalesData);
+
+                    // Step 7: Sort the itemSalesData array by total quantity in descending order
+                    itemSalesData.sort((a, b) => {
+                        const totalA = a.data.reduce((sum, value) => sum + value, 0);
+                        const totalB = b.data.reduce((sum, value) => sum + value, 0);
+                        return totalB - totalA;
+                    });
+
+                    console.log('Item sales data after sorting:', itemSalesData);
+
+                    // Step 8: Limit to top 5 items
+                    itemSalesData = itemSalesData.slice(0, 5); // Limit to top 5 items
+
+                    // Step 9: Destroy the previous chart if it exists
+                    if (myLineChart) {
+                        myLineChart.destroy();
+                    }
+
+                    // Step 10: Create a new chart with the filtered and processed data
+                    var ctx = document.getElementById('myLineChart').getContext('2d');
+                    myLineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels, // Use dynamically generated labels (months)
+                            datasets: itemSalesData.map((item, index) => ({
+                                label: item.label,
+                                data: item.data,
+                                borderColor: getBorderColor(index),
+                                backgroundColor: getBackgroundColor(index),
+                                borderWidth: 2,
+                                tension: 0.4
+                            }))
                         },
-                        tooltip: {
-                            enabled: true
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'top'
+                                },
+                                tooltip: {
+                                    enabled: true
+                                }
+                            }
                         }
-                    }
-                }
-            });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching order data:', error);
+                });
         })
         .catch(error => {
-            console.error('Error fetching order data:', error);
+            console.error('Error fetching user data:', error);
         });
 }
+
+
+
+
+
 
 function getBorderColor(index) {
     const colors = [
@@ -623,3 +753,22 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
             document.getElementById('agent-performance').appendChild(row);
         });
     })
+
+
+        // Get the user role from localStorage
+        const currentUserRole = localStorage.getItem('userRole');
+
+        // Get the text elements by their IDs
+        const overAllProfitText = document.getElementById('overAllProfitText');
+        const salesText = document.getElementById('salesText');
+    
+        // Change text based on the user role
+        if (currentUserRole === 'agent') {
+            // If the user is an agent, change the text accordingly
+            overAllProfitText.textContent = 'Total Purchases'; // Change "Overall Sales" to "Total Purchases"
+            salesText.textContent = 'Items Bought';           // Change "Sales" to "Items Bought"
+        } else {
+            // If the user is not an agent, keep the text as is
+            overAllProfitText.textContent = 'Overall Sales';
+            salesText.textContent = 'Sales';
+        }
