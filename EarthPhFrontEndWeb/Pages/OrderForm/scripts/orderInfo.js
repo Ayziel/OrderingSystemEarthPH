@@ -138,60 +138,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const storeUid = localStorage.getItem('storeUid'); // Retrieve storeUid from localStorage
 
-const updateProductDetails = () => {
-    const productDetailsElement = document.getElementById("productDetails");
-    const productDetailsModalElement = document.getElementById("productDetailsModal");
-    const products = document.querySelectorAll(".product-container");
-
-    let detailsHTML = "";
-    let modalDetailsHTML = "";
-    productDetails = [];
-
-    products.forEach(product => {
-        const productName = product.querySelector("strong").innerText;
-        const quantity = parseInt(product.querySelector(".product-quantity").value) || 0;
-        const price = parseFloat(product.querySelector(".product-size-select").value);
-        const discountPercentage = parseInt(product.querySelector(".discount-percentage").value) || 0;
-        const productUid = product.getAttribute('data-uid'); // Extract the uid from the data-uid attribute
-        const productStoreUid = product.getAttribute('data-store-uid'); // Extract the storeUid from the data-store-uid attribute
-
-        // Filter products based on storeUid
-        if (productStoreUid !== storeUid) {
-            return; // Skip this product if it doesn't match the storeUid
-        }
-
-        if (quantity > 0) {
-            const discountAmount = price * (discountPercentage / 100);
-            const discountedPrice = price - discountAmount;
-            const total = quantity * discountedPrice;
-
-            productDetails.push({
-                name: productName,
-                price: discountedPrice,
-                quantity: quantity,
-                total: total,
-                discount: discountPercentage,
-                product_uid: productUid // Include product_uid
-            });
-
-            const itemHTML = `
-                <div class="product-detail">
-                    <strong>${productName}</strong>
-                    <p>Price: $${discountedPrice.toFixed(2)}</p>
-                    <p>Discount: ${discountPercentage}%</p>
-                    <p>Quantity: ${quantity}</p>
-                    <p>Total: $${total.toFixed(2)}</p>
-                    <hr>
-                </div>`;
-
-            detailsHTML += itemHTML;
-            modalDetailsHTML += itemHTML;
-        }
-    });
-
-    productDetailsElement.innerHTML = detailsHTML;
-    productDetailsModalElement.innerHTML = modalDetailsHTML;
-};
+    const updateProductDetails = () => {
+        const productDetailsElement = document.getElementById("productDetails");
+        const productDetailsModalElement = document.getElementById("productDetailsModal");
+        const products = document.querySelectorAll(".product-container");
+    
+        let detailsHTML = "";
+        let modalDetailsHTML = "";
+        productDetails = [];
+    
+        products.forEach(product => {
+            const productName = product.querySelector("strong").innerText;
+            const quantity = parseInt(product.querySelector(".product-quantity").value) || 0;
+            const price = parseFloat(product.querySelector(".product-size-select").value);
+            const discountPercentage = parseInt(product.querySelector(".discount-percentage").value) || 0;
+            const productUid = product.getAttribute('data-uid'); // Extract the uid from the data-uid attribute
+    
+            if (quantity > 0) {
+                const discountAmount = price * (discountPercentage / 100);
+                const discountedPrice = price - discountAmount;
+                const total = quantity * discountedPrice;
+    
+                productDetails.push({
+                    name: productName,
+                    price: discountedPrice,
+                    quantity: quantity,
+                    total: total,
+                    discount: discountPercentage,
+                    product_uid: productUid // Include product_uid
+                });
+    
+                const itemHTML = `
+                    <div class="product-detail">
+                        <strong>${productName}</strong>
+                        <p>Price: $${discountedPrice.toFixed(2)}</p>
+                        <p>Discount: ${discountPercentage}%</p>
+                        <p>Quantity: ${quantity}</p>
+                        <p>Total: $${total.toFixed(2)}</p>
+                        <hr>
+                    </div>`;
+    
+                detailsHTML += itemHTML;
+                modalDetailsHTML += itemHTML;
+            }
+        });
+    
+        productDetailsElement.innerHTML = detailsHTML;
+        productDetailsModalElement.innerHTML = modalDetailsHTML;
+    };
+    
 
     const handleModals = () => {
         const addItemButton = document.getElementById("addItemBtn");

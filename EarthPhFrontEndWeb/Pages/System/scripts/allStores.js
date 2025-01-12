@@ -125,7 +125,50 @@ document.getElementById('closeModal').addEventListener('click', () => {
 getStores();
 
 
-// Call the function to fetch and populate the table on page load
-getStores();
 
+// Function to handle export to Excel
+document.getElementById('export-btn').addEventListener('click', async () => {
+    // Fetch the stores data
+    const storesData = await fetchStoresData();
+    if (!storesData || !Array.isArray(storesData)) {
+        alert('No data to export!');
+        return;
+    }
 
+    // Prepare the data to be written to Excel
+    const excelData = storesData.map(store => ({
+        "Store Name": store.name || "N/A",
+        "First Name": store.firstName || "N/A",
+        "Last Name": store.lastName || "N/A",
+        "Address": store.address || "N/A",
+        "Phone": store.phone || "N/A",
+        "Email": store.email || "N/A",
+        "Status": store.status || "N/A",
+        "UID": store.uid || "N/A",
+        "Created At": store.createdAt ? new Date(store.createdAt).toLocaleDateString() : "N/A"
+    }));
+
+    // Create a worksheet and a workbook
+    const ws = XLSX.utils.json_to_sheet(excelData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Stores Data");
+
+    // Generate the Excel file and prompt for download
+    XLSX.writeFile(wb, 'stores_data.xlsx');
+});
+
+// Function to fetch store data from API
+async function fetchStoresData() {
+    try {
+        const response = await fetch('https://earthph.sdevtech.com.ph/stores/getStores');
+        if (response.ok) {
+            const storesData = await response.json();
+            return storesData.stores; // Return the stores data array
+        } else {
+            console.error('Error fetching stores data:', response.status);
+        }
+    } catch (error) {
+        console.error('Error fetching stores data:', error);
+    }
+    return null;
+}

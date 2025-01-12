@@ -54,45 +54,45 @@ function populateOrders(orders) {
 
     orders.forEach(order => {
         const row = document.createElement('tr');
-
+    
         // Populate row with order data and add the button for 'Status' after the totalAmount
         row.innerHTML = `
-        <td>${globalCounter++}</td>
-        <td>${order.storeName || 'No store name'}</td>
-        <td>${order.agentName || 'No agent name'}</td>
-        <td>${order.orderDate }</td>
-        <td>${order.area || 'No location'}</td>
-        <td>${order.totalAmount ? '₱ ' + order.totalAmount.toFixed(2) : 'No amount'}</td>
-        <td>
-            <select class="status-dropdown" data-order-id="${order._id}">
-                <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
-                <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-                <option value="received" ${order.status === 'received' ? 'selected' : ''}>Received</option>
-            </select>
-        </td>
-        <td class="open-button">Open</td>
-    `;
-
+            <td>${globalCounter++}</td>
+            <td>${order.storeName || 'No store name'}</td>
+            <td>${order.agentName || 'No agent name'}</td>
+            <td>${new Date(order.orderDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
+            <td>${order.area || 'No location'}</td>
+            <td>${order.totalAmount ? '₱ ' + order.totalAmount.toFixed(2) : 'No amount'}</td>
+            <td>
+                <select class="status-dropdown" data-order-id="${order._id}">
+                    <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                    <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
+                    <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                    <option value="received" ${order.status === 'received' ? 'selected' : ''}>Received</option>
+                </select>
+            </td>
+            <td class="open-button">Open</td>
+        `;
+    
+        // Add change event listener to status dropdown (inside the loop)
+        row.querySelector('.status-dropdown').addEventListener('change', (e) => {
+            const updatedStatus = e.target.value;
+            const orderId = e.target.getAttribute('data-order-id');
+            console.log(`Order ID: ${orderId}, Updated Status: ${updatedStatus}`);
+            
+            // Call the updateOrderStatus function
+            updateOrderStatus(orderId, updatedStatus);
+        });
+    
         // Add click event listener to row
         row.addEventListener('click', () => {
             openModal(order); // Pass the entire order object to the modal
         });
-
+    
         ordersBody.appendChild(row);
     });
-
-    // Add event listener for the status button click (if needed)
-    const statusButtons = document.querySelectorAll('.status-btn');
-    statusButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            const orderId = e.target.dataset.orderId;
-            console.log(`Updating status for order with ID: ${orderId}`);
-            // You can add logic to update the order status here
-        });
-    });
+    
 }
-
 document.getElementById('export-btn').addEventListener('click', exportToExcel);
 
 function exportToExcel() {
@@ -165,7 +165,10 @@ function openModal(order) {
 
     // Create table rows for order details
     const orderDetailsHTML = `
-        <h3>Order Details</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>Order Details</h3>
+            <button id="close-modal" style="border: none; background: none; color:rgb(29, 29, 29); cursor: pointer; font-size: 16px;">X</button>
+        </div>
         <table>
             <tr>
                 <th>Store Name</th>
@@ -229,7 +232,7 @@ function openModal(order) {
                 <tbody>
                     ${order.products
                         .map(
-                            product => `
+                            product => ` 
                             <tr>
                                 <td>${product.name}</td>
                                 <td>₱${product.price.toFixed(2)}</td>
@@ -247,7 +250,7 @@ function openModal(order) {
     }
 
     // Combine order details and products into the modal content
-    modalContent.innerHTML = orderDetailsHTML + productsHTML + '<button id="close-modal">Close</button>';
+    modalContent.innerHTML = orderDetailsHTML + productsHTML;
 
     // Show the modal
     modal.style.display = 'block';

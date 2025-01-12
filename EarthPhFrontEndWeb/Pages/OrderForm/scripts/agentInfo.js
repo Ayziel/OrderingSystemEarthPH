@@ -179,6 +179,9 @@ async function getStores() {
 function populateStoresDropdown(stores) {
     const storeSelect = document.getElementById('store-name');
     
+    // Clear existing options (except the first placeholder option)
+    storeSelect.innerHTML = '<option value="">Select store name</option>';
+    
     // Populate the dropdown with store options
     stores.forEach(store => {
         const option = document.createElement('option');
@@ -192,9 +195,29 @@ function populateStoresDropdown(stores) {
     // Add event listener to store the selected store's data in localStorage
     storeSelect.addEventListener('change', () => {
         const selectedOption = storeSelect.options[storeSelect.selectedIndex];
-        const storeData = JSON.parse(selectedOption.getAttribute('data-store'));
-        localStorage.setItem('storeData', JSON.stringify(storeData)); // Store the entire store data in localStorage
-        console.log('Selected store data:', storeData); // Log the store data for debugging
+        
+        // Check if the selected option has a valid store data
+        const storeData = selectedOption && selectedOption.getAttribute('data-store') ? JSON.parse(selectedOption.getAttribute('data-store')) : null;
+        
+        if (storeData) {
+            localStorage.setItem('storeData', JSON.stringify(storeData)); // Store the entire store data in localStorage
+            console.log('Selected store data:', storeData); // Log the store data for debugging
+        }
     });
 }
+
+// Form validation before submission
+document.getElementById('orderForm').addEventListener('submit', (event) => {
+    const storeSelect = document.getElementById('store-name');
+    const selectedOption = storeSelect.options[storeSelect.selectedIndex];
+    
+    // Check if no valid store is selected (value is empty or no store data exists)
+    const storeData = selectedOption && selectedOption.getAttribute('data-store') ? JSON.parse(selectedOption.getAttribute('data-store')) : null;
+
+    if (!storeData) {
+        event.preventDefault(); // Prevent form submission
+        alert('Please select a valid store.'); // Show an alert if no valid store is selected
+    }
+});
+
 
