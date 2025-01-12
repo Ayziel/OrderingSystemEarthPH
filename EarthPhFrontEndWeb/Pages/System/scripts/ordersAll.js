@@ -264,7 +264,16 @@ function updateOrderStatus(orderId, status) {
         },
         body: JSON.stringify({ status: status }),
     })
-    .then(response => response.json())
+    .then(response => {
+        // Log the response text to debug
+        return response.text().then(text => {
+            console.log('Response Text:', text);
+            if (!response.ok) {
+                throw new Error('HTTP error! status: ' + response.status);
+            }
+            return JSON.parse(text); // Parse as JSON only if the response is valid
+        });
+    })
     .then(data => {
         if (data.message === 'Order updated successfully') {
             console.log('Order status updated:', data.order);
