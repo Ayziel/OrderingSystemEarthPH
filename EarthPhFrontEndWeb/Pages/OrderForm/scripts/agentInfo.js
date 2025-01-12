@@ -94,7 +94,6 @@ document.getElementById('confirm-button').addEventListener('click', (event) => {
     const storeSelect = document.getElementById('store-name');
     const selectedStoreName = storeSelect.options[storeSelect.selectedIndex].text;
 
-    const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));  // Retrieve matched user from localStorage
 
     const orderData = {
         agentName: document.getElementById('agent-name').value,
@@ -102,8 +101,7 @@ document.getElementById('confirm-button').addEventListener('click', (event) => {
         area: document.getElementById('area').value,
         orderDate: document.getElementById('order-date').value,
         storeName: selectedStoreName,  // Use the text content of the selected option
-        tin: document.getElementById('tin').value,
-        matchedUser: matchedUser  // Include matched user in order data
+        tin: document.getElementById('tin').value
     };
 
     console.log('Order Data to save:', orderData); // Log the order data being saved
@@ -180,19 +178,23 @@ async function getStores() {
 
 function populateStoresDropdown(stores) {
     const storeSelect = document.getElementById('store-name');
+    
+    // Populate the dropdown with store options
     stores.forEach(store => {
         const option = document.createElement('option');
         option.value = store._id;
         option.textContent = store.name;
         option.setAttribute('data-uid', store.uid); // Store the store uid in a data attribute
+        option.setAttribute('data-store', JSON.stringify(store)); // Store the entire store object in a data attribute
         storeSelect.appendChild(option);
     });
 
-    // Add event listener to store the selected store's uid in localStorage
+    // Add event listener to store the selected store's data in localStorage
     storeSelect.addEventListener('change', () => {
         const selectedOption = storeSelect.options[storeSelect.selectedIndex];
-        const storeUid = selectedOption.getAttribute('data-uid');
-        localStorage.setItem('storeUid', storeUid); // Store the store uid in localStorage
-        console.log('Selected store UID:', storeUid); // Log the store uid for debugging
+        const storeData = JSON.parse(selectedOption.getAttribute('data-store'));
+        localStorage.setItem('storeData', JSON.stringify(storeData)); // Store the entire store data in localStorage
+        console.log('Selected store data:', storeData); // Log the store data for debugging
     });
 }
+

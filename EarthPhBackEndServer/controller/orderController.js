@@ -5,8 +5,8 @@ exports.createOrder = async (req, res) => {
         const orderData = req.body; // This should be the full data object you sent from the frontend
 
         // Validate required fields
-        if (!orderData.agentName || !orderData.teamLeaderName || !orderData.area || !orderData.products) {
-            return res.status(400).json({ message: 'Missing required fields: agentName, teamLeaderName, area, and products.' });
+        if (!orderData.agentName || !orderData.teamLeaderName || !orderData.area || !orderData.products || !orderData.storeUid || !orderData.userUid) {
+            return res.status(400).json({ message: 'Missing required fields: agentName, teamLeaderName, area, products, storeUid, and userUid.' });
         }
 
         // Validate paymentImage for 'credit' payment mode
@@ -58,7 +58,9 @@ exports.createOrder = async (req, res) => {
             paymentImage: orderData.paymentImage || 'noImageYet',  // Ensure paymentImage is set
             remarks: orderData.remarks,
             products: updatedProducts,
-            uid: orderData.uid 
+            uid: orderData.uid,
+            storeUid: orderData.storeUid, // CHANGE: Add storeUid
+            userUid: orderData.userUid // CHANGE: Add userUid
         });
 
         // Save the order in the database

@@ -79,9 +79,9 @@ function fetchOrders() {
 
 // Function to process the orders, calculate total sales and track product sales
 function processOrders(orders) {
-     totalSales = 0;
-     sales = 0;
-    const productSales = {};
+    let totalSales = 0; 
+    let sales = 0;
+    const productSales = {}; 
 
     orders.forEach(order => {
         if (order.products && order.products.length > 0) {
@@ -95,24 +95,30 @@ function processOrders(orders) {
                 productSales[product.name].quantity += product.quantity;
 
                 sales += product.quantity;
-                console.log("product name & quantity",product.name, product.quantity);
+                console.log("product name & quantity", product.name, product.quantity);
             });
         }
     });
 
+    console.log("Final product sales:", productSales); // CHANGE: Log the final aggregated product sales
     return { totalSales, sales, productSales };
 }
 
 // Function to sort products by quantity sold and get the top 5
 function sortAndDisplayTopProducts(productSales) {
-    const sortedProducts = Object.entries(productSales)
-        .sort((a, b) => b[1].quantity - a[1].quantity)
-        .slice(0, 5);
+    const sortedProducts = Object.entries(productSales) // CHANGE: Convert productSales object to an array of entries
+        .sort((a, b) => b[1].quantity - a[1].quantity) // CHANGE: Sort the products by quantity sold in descending order
+        .slice(0, 5); // CHANGE: Get the top 5 products
+
     sortedProducts.forEach(([name, { id, quantity }], index) => {
+        // Currently does nothing inside the loop
     });
-    topSales = sortedProducts;
-    chart()
-    return sortedProducts;
+
+    console.log("Top 5 products by quantity sold:", sortedProducts); // CHANGE: Log the sorted top 5 products
+
+    topSales = sortedProducts; // CHANGE: Assign the sorted top 5 products to topSales
+    chart(); // CHANGE: Call the chart function to update the chart
+    return sortedProducts; // CHANGE: Return the sorted top 5 products
 }
 
 
@@ -192,17 +198,18 @@ function fetchUsers() {
 
 // Function to fetch chart data and generate a chart
 function chart() {
-    fetch('https://earthph.sdevtech.com.ph/chartData/getChartData')
+    fetch('https://earthph.sdevtech.com.ph/orders/getOrders') // Fetch order data from the specified URL
         .then(response => {
             if (!response.ok) {
                 console.error(`HTTP error! status: ${response.status}`);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return response.json();
+            return response.json(); // Convert the response to JSON format
         })
-        .then(chartData => {
-            if (!chartData || chartData.length === 0) {
-                console.log('No chart data found.');
+        .then(orderData => {
+            console.log('Order data fetched:', orderData); // Log the fetched order data
+            if (!orderData || orderData.length === 0) {
+                console.log('No order data found.');
                 return;
             }
 
@@ -215,52 +222,56 @@ function chart() {
                 return `${month} ${year}`; // Month and Year (e.g., December 2024)
             });
 
-            // Collect the items and their corresponding sales data
-            const itemSalesData = [];
+            console.log('Generated labels:', labels);
 
-            chartData.forEach(item => {
-                item.itemSales.forEach(sale => {
-                    // Parse the saleDate string into a Date object
-                    const saleDate = new Date(sale.saleDate);
-                    const saleMonth = saleDate.getMonth(); // Get the month index (0-11)
-                    const saleYear = saleDate.getFullYear(); // Get the year (e.g., 2024)
+            // Aggregate sales data by item name using a Map
+            const aggregatedSalesData = new Map();
 
-                    // Determine the current month and year
+            orderData.forEach(order => {
+                order.products.forEach(product => {
+                    if (!aggregatedSalesData.has(product.name)) {
+                        aggregatedSalesData.set(product.name, Array(6).fill(0));
+                    }
+                    const saleDate = new Date(order.orderDate);
+                    const saleMonth = saleDate.getMonth();
+                    const saleYear = saleDate.getFullYear();
                     const currentDate = new Date();
-                    const currentMonth = currentDate.getMonth(); // Current month index (0-11)
-                    const currentYear = currentDate.getFullYear(); // Current year
+                    const currentMonth = currentDate.getMonth();
+                    const currentYear = currentDate.getFullYear();
 
-                    // Compare the sale's month and year to determine its position in the labels array
                     let monthIndex = -1;
                     for (let i = 0; i < 6; i++) {
                         const targetDate = new Date();
-                        targetDate.setMonth(currentMonth - (5 - i)); // Calculate the target month
+                        targetDate.setMonth(currentMonth - (5 - i));
                         if (saleYear === targetDate.getFullYear() && saleMonth === targetDate.getMonth()) {
                             monthIndex = i;
                             break;
                         }
                     }
 
-                    // Skip sales that are outside of the last 6 months
-                    if (monthIndex === -1) return;
-
-                    // Check if the item already exists in the itemSalesData array
-                    const existingItem = itemSalesData.find(i => i.label === sale.itemName);
-                    if (existingItem) {
-                        // Update the existing item data by adding the total quantity for the sale month
-                        existingItem.data[monthIndex] += sale.totalQuantity;
-                    } else {
-                        // Create a new entry for the item with zero values for each month
-                        const newItem = {
-                            label: sale.itemName,
-                            data: Array(6).fill(0), // Initialize all months with 0 sales
-                        };
-                        // Add the sale quantity for the sale month
-                        newItem.data[monthIndex] = sale.totalQuantity;
-                        itemSalesData.push(newItem);
+                    if (monthIndex !== -1) {
+                        aggregatedSalesData.get(product.name)[monthIndex] += product.quantity;
                     }
                 });
             });
+
+            // Convert the Map to an array of objects
+            let itemSalesData = Array.from(aggregatedSalesData, ([label, data]) => ({ label, data }));
+
+            console.log('Item sales data before sorting:', itemSalesData);
+
+            // Sort the itemSalesData array by total quantity in descending order
+            itemSalesData.sort((a, b) => {
+                const totalA = a.data.reduce((sum, value) => sum + value, 0);
+                const totalB = b.data.reduce((sum, value) => sum + value, 0);
+                return totalB - totalA;
+            });
+
+            console.log('Item sales data after sorting:', itemSalesData);
+
+            // Limit to top 5 items
+            itemSalesData = itemSalesData.slice(0, 5); // CHANGE: Limit to top 5 items
+
             // Destroy the previous chart if it exists
             if (myLineChart) {
                 myLineChart.destroy();
@@ -300,40 +311,36 @@ function chart() {
             });
         })
         .catch(error => {
-            console.error('Error fetching chart data:', error);
+            console.error('Error fetching order data:', error);
         });
 }
 
-
 function getBorderColor(index) {
     const colors = [
-        'rgb(23, 162, 184)',   // Light blue
-        'rgb(220, 53, 69)', // Red
-        'rgb(40, 167, 69)', // Green
-        'rgba(153, 102, 255, 1)', // Purple
-        'rgb(255, 193, 7)',  // Orange
-        'rgb(0, 123, 255)', // Blue
+        'rgb(220, 53, 69)',   // Red
+        'rgb(23, 162, 184)',  // Light blue
+        'rgb(40, 167, 69)',   // Green
+        'rgb(255, 193, 7)',   // Yellow
+        'rgb(0, 123, 255)'    // Blue
     ];
     return colors[index % colors.length]; // Cycle through colors
 }
 
-// Function to generate a light background color (can be cnustomized)
+// Function to generate a light background color (can be customized)
 function getBackgroundColor(index) {
     const colors = [
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 99, 132, 0.2)', 
-        'rgba(75, 192, 192, 0.2)', 
-        'rgba(153, 102, 255, 0.2)', 
-        'rgba(255, 159, 64, 0.2)',
-        'rgba(0, 123, 255, 0.2)'
-
+        'rgba(255, 99, 132, 0.2)',   // Red
+        'rgba(54, 162, 235, 0.2)',   // Light blue
+        'rgba(75, 192, 192, 0.2)',   // Green
+        'rgba(255, 206, 86, 0.2)',   // Yellow
+        'rgba(0, 123, 255, 0.2)'     // Blue
     ];
     return colors[index % colors.length]; // Cycle through colors
 }
 
 // Process and send order data function
 function processAndSendOrderData() {
-    // Fetch orders from the backend
+    console.log('Fetching orders from the backend...');
     fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
         .then(response => {
             if (!response.ok) {
@@ -343,6 +350,7 @@ function processAndSendOrderData() {
             return response.json();
         })
         .then(orders => {
+            console.log('Orders fetched:', orders);
             if (!orders || orders.length === 0) {
                 console.log('No orders found.');
                 return;
@@ -354,6 +362,8 @@ function processAndSendOrderData() {
                 const orderDate = new Date(order.orderDate).toISOString().split('T')[0];
                 return orderDate === today;
             });
+
+            console.log('Today\'s orders:', todaysOrders);
 
             if (todaysOrders.length === 0) {
                 console.log('No orders from today.');
@@ -392,6 +402,8 @@ function processAndSendOrderData() {
                 itemSales: []
             });
 
+            console.log('Aggregated data:', aggregatedData);
+
             // Sort the item sales array by totalAmount and get the top 5
             const top5Items = aggregatedData.itemSales
                 .sort((a, b) => b.totalAmount - a.totalAmount) // Sort by total amount in descending order
@@ -407,11 +419,14 @@ function processAndSendOrderData() {
                 itemSales: top5Items // Only send the top 5 items
             };
 
+            console.log('Chart data to be sent:', chartData);
+
             // First, delete existing chart data
             fetch('https://earthph.sdevtech.com.ph/chartData/deleteAll', {
                 method: 'DELETE'
             })
             .then(() => {
+                console.log('Existing chart data deleted.');
                 // Send aggregated data to backend
                 return fetch('https://earthph.sdevtech.com.ph/chartData/createChartData', {
                     method: 'POST',
@@ -423,7 +438,10 @@ function processAndSendOrderData() {
             })
             .then(response => response.json())
             .then(data => {
+                console.log('Chart data saved successfully:', data);
                 updateUI(totalSales, sales);
+                // Reload the window to reflect the updates
+                window.location.reload();
             })
             .catch(error => console.error('Error saving chart data:', error));
         })
@@ -498,23 +516,40 @@ function createChart(aggregatedData) {
 }
 
 // Add event listener to the button
-document.getElementById('updateChart').addEventListener('click', function() {
-    processAndSendOrderData();  // Call your function to process the order data
-
-    // Reload the page after 3 seconds (3000 milliseconds)
-    setTimeout(function() {
-        location.reload();
-    }, 3000);  // Delay in milliseconds (3 seconds)
-});
-
 //#endregion
 
-function updateUI(totalSales, sales) {
+
+async function fetchStoreCount() {
+    try {
+        const response = await fetch('https://earthph.sdevtech.com.ph/stores/getStores');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Debugging the API response
+        console.log("API Response:", data);
+
+        // Access the stores key and check its length
+        if (data.stores && Array.isArray(data.stores)) {
+            return data.stores.length;
+        } else {
+            console.error("Unexpected response structure. 'stores' key not found or not an array.");
+            return 0;
+        }
+    } catch (error) {
+        console.error("Error fetching stores:", error);
+        return 0; // Fallback to 0 if there is an error
+    }
+}
+
+async function updateUI(totalSales, sales) {
+    const storeCount = await fetchStoreCount(); // Fetch the dynamic store count
     document.getElementById("overAllProfit").innerText = '₱ ' + totalSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     document.getElementById("sales").innerText = sales;
-    document.getElementById("stores").innerText = 0; // Placeholder if stores isn't yet dynamic
+    document.getElementById("stores").innerText = storeCount || "Unavailable"; // Use the dynamic count, or show fallback
     // document.getElementById("customers").innerText = agents; // Reference the global variable directly
-
 }
 
 document.addEventListener('DOMContentLoaded', () => {

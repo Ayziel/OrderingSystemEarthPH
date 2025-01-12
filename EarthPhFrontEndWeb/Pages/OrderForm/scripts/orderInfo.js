@@ -1,4 +1,6 @@
 let productDetails = []; 
+const storeData = JSON.parse(localStorage.getItem('storeData'));
+const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
 
 const paymentImageInput = document.getElementById('paymentImage');
 let base64PaymentImage = ""; 
@@ -349,6 +351,8 @@ const updateProductDetails = () => {
                 remarks: document.getElementById('remarks').value,
                 paymentImage: document.getElementById('paymentMode').value === 'credit' ? base64PaymentImage : "No Image",
                 uid: orderUid,
+                storeUid: storeData.uid,
+                userUid: matchedUser.uid,
                 products: updatedProducts.length > 0 ? updatedProducts : [{
                     name: 'No product selected',
                     price: 0,
