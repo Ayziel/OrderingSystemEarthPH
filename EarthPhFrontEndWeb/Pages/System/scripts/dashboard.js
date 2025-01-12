@@ -333,6 +333,7 @@ function getBackgroundColor(index) {
 
 // Process and send order data function
 function processAndSendOrderData() {
+    // Fetch orders from the backend
     fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
         .then(response => {
             if (!response.ok) {
@@ -406,13 +407,19 @@ function processAndSendOrderData() {
                 itemSales: top5Items // Only send the top 5 items
             };
 
-            // Send aggregated data to backend
-            fetch('https://earthph.sdevtech.com.ph/chartData/createChartData', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(chartData)  // Send the full chart data, including item sales
+            // First, delete existing chart data
+            fetch('https://earthph.sdevtech.com.ph/chartData/deleteAll', {
+                method: 'DELETE'
+            })
+            .then(() => {
+                // Send aggregated data to backend
+                return fetch('https://earthph.sdevtech.com.ph/chartData/createChartData', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(chartData)  // Send the full chart data, including item sales
+                });
             })
             .then(response => response.json())
             .then(data => {
@@ -421,8 +428,6 @@ function processAndSendOrderData() {
             .catch(error => console.error('Error saving chart data:', error));
         })
         .catch(error => console.error('Error fetching orders:', error));
-
-    
 }
 // Update chart with new data
 function updateChart(aggregatedData) {

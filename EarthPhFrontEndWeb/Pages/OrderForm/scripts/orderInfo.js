@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <strong>${product.productName}</strong>
                     </div>
                     <div class="product-row product-divider-popup">
-                        <img src="${product.productImage}" alt="Product Image">
+                        <img src="${product.productImage}" class="product-image" alt="Product Image">
                         <div class="product-controls">
                             <div class="quantity-controls">
                                 <button class="minus-btn" data-sku="${product.productSKU}">-</button>
