@@ -55,11 +55,11 @@ exports.getChartData = async (req, res) => {
     }
 };
 
-exports.delete('/deleteAll', async (req, res) => {
+exports.deleteAll = async (req, res) => {
     try {
         await ChartData.deleteMany({});
         res.status(200).json({ message: 'All chart data deleted successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error deleting chart data', error });
     }
-});
+};

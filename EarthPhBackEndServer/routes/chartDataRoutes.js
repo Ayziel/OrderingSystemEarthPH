@@ -8,6 +8,7 @@ router.post('/createChartData', chartDataController.createChartData);
 
 // Route to fetch all chart data (use GET for fetching)
 router.get('/getChartData', chartDataController.getChartData);
+router.delete('/deleteAll', chartDataController.deleteAll);
 
 module.exports = router;
 
