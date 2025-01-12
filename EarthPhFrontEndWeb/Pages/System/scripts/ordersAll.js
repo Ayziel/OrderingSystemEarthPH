@@ -296,10 +296,13 @@ async function saveOrderChanges(order) {
     try {
         // Send updated order to the server
         const response = await fetch('https://earthph.sdevtech.com.ph/orders/updateOrders', {
-            method: 'PUT', // Use PUT to match the server route
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedOrder),
         });
+
+        const responseData = await response.json();
+        console.log(responseData);  // Log response data to see the server's response
 
         if (response.ok) {
             alert('Order updated successfully!');
@@ -312,3 +315,4 @@ async function saveOrderChanges(order) {
         alert('An error occurred while updating the order.');
     }
 }
+

@@ -94,52 +94,23 @@ exports.getOrders = async (req, res) => {
 
 
 // Controller function to update order
-exports.updateOrders = async (req, res) => {
+app.put('/orders/updateOrders', async (req, res) => {
+    const { _id, ...updatedData } = req.body;
+
     try {
-        const { store_name, product_name, agentName, teamLeaderName, area, products, totalAmount, status, listPrice, discount, totalItems, tin, orderDate } = req.body;
+        const updatedOrder = await Order.findByIdAndUpdate(
+            _id, // Find the order by its ID
+            updatedData, // Update with the new data
+            { new: true } // Return the updated document
+        );
 
-        // Find the existing order by a field other than uid (e.g., store_name or product_name)
-        const existingOrder = await Order.findOne({ storeName: store_name, products: { $elemMatch: { name: product_name } } });
-
-        if (!existingOrder) {
+        if (!updatedOrder) {
             return res.status(404).json({ message: 'Order not found' });
         }
 
-        // Update the fields using the data from the request
-        existingOrder.agentName = agentName || existingOrder.agentName;
-        existingOrder.teamLeaderName = teamLeaderName || existingOrder.teamLeaderName;
-        existingOrder.area = area || existingOrder.area;
-        existingOrder.products = products || existingOrder.products;
-        existingOrder.totalAmount = totalAmount || existingOrder.totalAmount;
-        existingOrder.status = status || existingOrder.status;
-        existingOrder.listPrice = listPrice || existingOrder.listPrice;
-        existingOrder.discount = discount || existingOrder.discount;
-        existingOrder.totalItems = totalItems || existingOrder.totalItems;
-        existingOrder.tin = tin || existingOrder.tin;
-        existingOrder.orderDate = orderDate ? new Date(orderDate) : existingOrder.orderDate;
-
-        // Handle products array and default description
-        const updatedProducts = products.map(product => {
-            const discountedPrice = product.price * (1 - (product.discount / 100));  // Apply discount to price
-            const total = discountedPrice * product.quantity;
-
-            return {
-                ...product,
-                price: discountedPrice,
-                total: total,
-                product_uid: product.product_uid  // Ensure product_uid is included
-            };
-        });
-
-        existingOrder.products = updatedProducts;
-
-        // Save the updated order
-        const updatedOrder = await existingOrder.save();
-
-        res.status(200).json({ message: 'Order updated successfully', order: updatedOrder });
-
+        res.status(200).json(updatedOrder);
     } catch (error) {
         console.error('Error updating order:', error);
-        res.status(500).json({ message: 'Failed to update order', error });
+        res.status(500).json({ message: 'Error updating order' });
     }
-};
+});

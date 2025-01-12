@@ -4,7 +4,8 @@ const orderController = require('../controller/orderController');
 
 router.get('/getOrders', orderController.getOrders); // Ensure this matches the frontend fetch
 
+router.put('/updateOrders', orderController.updateOrders);
+
 router.post('/createOrder', orderController.createOrder);
 
-router.put('/updateOrders', orderController.updateOrders);
 module.exports = router;
