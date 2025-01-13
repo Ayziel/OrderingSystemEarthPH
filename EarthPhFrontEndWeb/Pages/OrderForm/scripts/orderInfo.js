@@ -357,26 +357,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.getElementById('acceptOrderBtn').addEventListener('click', async () => {
             const button = document.getElementById('acceptOrderBtn');
-            const goToDashboardBtn = document.getElementById('adashboardBtn');  // Get the "Go to Dashboard" button
         
-            // Initially, disable the "Go to Dashboard" button
-            goToDashboardBtn.disabled = true;
-        
-            // Check if the button is in the "Order Again" state
-            if (button.textContent === "Order Again") {
-                window.open('https://earthhomecareph.astute.services/OrderForm/Agent-Info.html');
-                // Proceed with the same logic as for the first order submission
-                await processOrder();
+            // Check if the button is already in the "Continue" state
+            if (button.textContent === "Continue") {
+                console.warn('Order already accepted. Preventing duplicate submission.');
                 return;
             }
         
-            // Check if the button is already disabled (to prevent duplicate submission)
             if (button.disabled) {
                 console.warn('Button is already disabled. Preventing duplicate submission.');
                 return;
             }
         
-            // Disable the button immediately to prevent multiple clicks
             button.disabled = true;
         
             // Log the productDetails array to verify its structure
@@ -423,7 +415,6 @@ document.addEventListener("DOMContentLoaded", () => {
         
             console.log('Order Data:', orderData); // Log the order data
         
-            // Check for missing fields
             const isFieldMissing = (field, fieldName) => {
                 if (typeof field !== 'string' || field.trim() === '') {
                     console.log(`${fieldName} is missing`);
@@ -442,10 +433,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (isFieldMissing(orderData.remarks, 'Remarks')) missingFields.push('Remarks');
             if (orderData.paymentMode === 'credit' && isFieldMissing(orderData.paymentImage, 'Payment Image')) missingFields.push('Payment Image');
         
-            // If any required fields are missing, show alert and reset the button
             if (missingFields.length > 0) {
                 alert('Please fill out the following required fields before submitting the order: ' + missingFields.join(', '));
-                button.disabled = false; // Re-enable the button in case of missing fields
+                button.disabled = false;
                 return;
             }
         
@@ -464,8 +454,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (response.ok) {
                     const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));  // Retrieve matched user from localStorage
                     const parentUid = matchedUser ? matchedUser.uid : "defaultParentUid";  // Use the uid from matchedUser or a default value
-        
+                
                     const stockPromises = orderData.products.map(async (product) => {
+                        // Log the contents of each product
                         console.log('STOCK PRODUCTS:', product);
                         const stockData = {
                             uid: stockUid,
@@ -475,7 +466,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             product_name: product.name,
                             quantity: product.quantity
                         };
-        
+                    
                         const stockResponse = await fetch('https://earthph.sdevtech.com.ph/stocks/createStock', {
                             method: 'POST',
                             headers: {
@@ -484,10 +475,10 @@ document.addEventListener("DOMContentLoaded", () => {
                             },
                             body: JSON.stringify(stockData)
                         });
-        
+                    
                         const stockResult = await stockResponse.json();
                         console.log('Stock response:', stockResult);
-        
+                    
                         if (!stockResponse.ok) {
                             throw new Error(`Failed to create stock for product ${product.name}: ${stockResult.message}`);
                         }
@@ -495,16 +486,20 @@ document.addEventListener("DOMContentLoaded", () => {
         
                     await Promise.all(stockPromises);
         
-                    // Change button to "Order Again" after successful submission
-                    button.textContent = "Order Again";
-                    button.style.backgroundColor = "#FF9800";
+                    // Change button to "Continue"
+                    button.textContent = "Continue";
+                    button.style.backgroundColor = "#4CAF50";
                     button.style.color = "#fff";
-                    button.disabled = false; // Enable the button to allow "Order Again"
+        
+                    // Disable the button after it's changed to "Continue" to prevent further submissions
+                    button.disabled = true;
         
                     alert('Order accepted and saved successfully!');
-                    
-                    // Enable "Go to Dashboard" button after order is completed
-                    goToDashboardBtn.disabled = false;  // Enable the "Go to Dashboard" button
+        
+                    // Optionally, add a listener for the "Continue" button to navigate
+                    button.addEventListener('click', () => {
+                        window.location.href = "https://earthhomecareph.astute.services/OrderForm/Agent-Info.html";
+                    });
                 } else {
                     alert(`Failed to save order: ${result.message}`);
                 }
@@ -512,25 +507,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error('Network error:', error);
                 alert('A network error occurred. Please check your connection.');
             } finally {
-                button.disabled = false; // Re-enable the button after the process
+                button.disabled = false;
             }
         });
-
-        
-        document.getElementById('dashboardBtn').addEventListener('click', async () => {
-            window.location.href = 'https://earthhomecareph.astute.services/';  // Redirect to the specified URL
-        });
-        
-        
-        
-        // Function to handle "Order Again"
-        async function processOrder() {
-            const button = document.getElementById('acceptOrderBtn');
-            // Re-trigger the order process (similar to initial submission)
-            button.disabled = true;
-            await document.getElementById('acceptOrderBtn').click();  // Trigger the same logic as the first time
-        }
-        
         
 
         const handleOrderClick = (event) => {
