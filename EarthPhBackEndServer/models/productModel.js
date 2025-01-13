@@ -46,7 +46,7 @@ const productSchema = new mongoose.Schema({
     default: 0,   // Default is no discount
   },
   size: {
-    type: text,
+    type: String,
     required: false,
   },
   productImage: {
