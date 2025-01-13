@@ -1,34 +1,39 @@
 const mongoose = require('mongoose');
 
-const storeSchema = new mongoose.Schema({
-  name: {
+const surveySchema = new mongoose.Schema({
+  insectControl: {
     type: String,
-    required: true // Store name is required
+    required: true
   },
-  address: {
+  rodentControl: {
     type: String,
-    required: true // Address is required
+    required: true
   },
-  phone: {
+  fabricSpray: {
     type: String,
-    required: true // Optional phone field
+    required: true
   },
-  email: {
+  airConCleaner: {
     type: String,
-    required: true // Optional email field
+    required: true
   },
-  products: [
+  petCare: {
+    type: String,
+    required: true
+  },
+  selectedProducts: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product' // Reference to products
+      ref: 'Product', // Reference to products
+      required: true
     }
   ],
   createdAt: {
     type: Date,
-    default: Date.now // Automatically set creation date
+    default: Date.now
   }
 });
 
-const Store = mongoose.model('Store', storeSchema);
+const Survey = mongoose.model('Survey', surveySchema);
 
-module.exports = Store;
+module.exports = Survey;
