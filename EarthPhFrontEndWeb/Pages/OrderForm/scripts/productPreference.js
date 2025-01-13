@@ -35,6 +35,8 @@ document.getElementById('submit-button').addEventListener('click', async () => {
         console.error('Error submitting survey:', error);
         alert('An error occurred. Please try again.');
     }
+
+    window.location.href = "https://earthhomecareph.astute.services/OrderForm/Order-Info.html";
 });
 
 // Function to get selected products from the form (modify based on your form elements)
@@ -42,5 +44,10 @@ function getSelectedProducts() {
     // Example: Assuming there are checkboxes or a multi-select dropdown for products
     const selectedProductCheckboxes = document.querySelectorAll('input[name="selectedProducts"]:checked');
     const selectedProducts = Array.from(selectedProductCheckboxes).map(checkbox => checkbox.value);
+     alert('Survey has been submitted!');
+  
+    // Redirect to the order info page
+  
     return selectedProducts;
+    
 }

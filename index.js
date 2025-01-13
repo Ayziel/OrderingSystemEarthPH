@@ -39,7 +39,7 @@ app.use('/products', productRoutes);
 app.use('/chartData', chartDataRoutes);
 app.use('/stores', storeRoutes);
 app.use('/survey', surveyRoutes);
-app.use('/stock', stockRoutes);
+app.use('/stocks', stockRoutes);
 
 // Error handling middleware (if needed)
 app.use((err, req, res, next) => {
