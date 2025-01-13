@@ -76,3 +76,37 @@ button:hover {
         padding: 30px;
     }
 }
+
+
+.form-container {
+    margin: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.survey-question {
+    margin-bottom: 15px;
+}
+
+.survey-question label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.survey-question select,
+.survey-question input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+

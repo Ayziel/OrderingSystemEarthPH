@@ -87,69 +87,7 @@ function populateOrders(orders) {
 
 document.getElementById('export-btn').addEventListener('click', exportToExcel);
 
-function exportToExcel() {
-    // Fetch the orders data from the API
-    fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(orders => {
-            if (!orders || orders.length === 0) {
-                console.log('No orders found.');
-                return;
-            }
-
-            // Sort all orders by order date
-            orders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
-
-            // Prepare data for Excel export
-            const rows = [];
-            const headers = [
-                "No.",
-                "Agent Name",
-                "Store Name",
-                "Order Date",
-                "Area",
-                "Payment Mode",
-                "Products",
-                "Total Amount",
-            ];
-            rows.push(headers);
-
-            orders.forEach((order, index) => {
-                const rowData = [
-                    index + 1,
-                    order.agentName,
-                    order.storeName,
-                    new Date(order.orderDate).toLocaleString(), // Format date
-                    order.area,
-                    order.paymentMode,
-                    order.products.map(product => `${product.name} (Qty: ${product.quantity}, Price: ${product.price})`).join(" - "), // Format product details
-                    order.totalAmount,
-                ];
-                rows.push(rowData);
-            });
-
-            // Create a workbook and sheet
-            const wb = XLSX.utils.book_new();
-            const ws = XLSX.utils.aoa_to_sheet(rows);
-            XLSX.utils.book_append_sheet(wb, ws, "Orders Export");
-
-            // Trigger the download of the Excel file
-            XLSX.writeFile(wb, 'All_Orders_Export.xlsx');
-        })
-        .catch(error => {
-            console.error('Error fetching orders:', error);
-            alert('Failed to fetch orders. Please try again later.');
-        });
-}
-
 const modal = document.getElementById('orderModal');
-// const closeModal = modal.querySelector('.close');
-
 function openModal(order) {
     // Get the modal and its content area
     const modal = document.getElementById('order-modal');
@@ -185,20 +123,12 @@ function openModal(order) {
                 <td>${order.area || 'No area'}</td>
             </tr>
             <tr>
-                <th>House Address</th>
-                <td>${order.houseAddress || 'No house address'}</td>
-            </tr>
-            <tr>
-                <th>Town/Province</th>
-                <td>${order.townProvince || 'No town/province'}</td>
-            </tr>
-            <tr>
                 <th>Total Items</th>
-                <td>${order.totalItems || 0}</td>
+                <td id="total-items">${order.totalItems || 0}</td>
             </tr>
             <tr>
                 <th>Total Amount</th>
-                <td>${order.totalAmount ? `₱ ${order.totalAmount.toFixed(2)}` : 'No amount'}</td>
+                <td id="total-amount">${order.totalAmount ? `₱ ${order.totalAmount.toFixed(2)}` : 'No amount'}</td>
             </tr>
             <tr>
                 <th>Remarks</th>
@@ -224,18 +154,25 @@ function openModal(order) {
                 <tbody>
                     ${order.products
                         .map(
-                            product => ` 
+                            (product, index) => `
                             <tr>
                                 <td>${product.name}</td>
-                                <td>₱${product.price.toFixed(2)}</td>
-                                <td>${product.quantity}</td>
-                                <td>₱${product.total.toFixed(2)}</td>
+                                <td>
+                                    <input type="number" class="product-price" value="${product.price}" disabled data-index="${index}" />
+                                </td>
+                                <td>
+                                    <input type="number" class="product-quantity" value="${product.quantity}" disabled data-index="${index}" />
+                                </td>
+                                <td class="product-total" id="product-total-${index}">
+                                    ₱${product.total.toFixed(2)}
+                                </td>
                             </tr>
-                        `
-                        )
+                        `)
                         .join('')}
                 </tbody>
             </table>
+            <button id="edit-button">Edit</button>
+            <button id="save-button" style="display: none;">Save</button>
         `;
     } else {
         productsHTML = `<p>No products available.</p>`;
@@ -251,7 +188,114 @@ function openModal(order) {
     document.getElementById('close-modal').addEventListener('click', () => {
         modal.style.display = 'none';
     });
+
+    // Handle edit button click
+    document.getElementById('edit-button').addEventListener('click', () => {
+        const priceInputs = document.querySelectorAll('.product-price');
+        const quantityInputs = document.querySelectorAll('.product-quantity');
+        
+        // Enable the price and quantity fields
+        priceInputs.forEach(input => input.disabled = false);
+        quantityInputs.forEach(input => input.disabled = false);
+
+        // Show save button, hide edit button
+        document.getElementById('save-button').style.display = 'inline-block';
+        document.getElementById('edit-button').style.display = 'none';
+    });
+
+    // Update total whenever price or quantity is changed
+    const updateTotal = (index) => {
+        const price = parseFloat(document.querySelectorAll('.product-price')[index].value);
+        const quantity = parseInt(document.querySelectorAll('.product-quantity')[index].value, 10);
+        const total = price * quantity;
+        document.getElementById(`product-total-${index}`).textContent = `₱${total.toFixed(2)}`;
+
+        // Recalculate and update total amount and total items
+        updateOrderSummary(order.products);
+    };
+
+    // Update the order summary (total amount and total items)
+    const updateOrderSummary = (products) => {
+        const { totalAmount, totalItems } = calculateTotalAmountAndItems(products);
+        console.log('Updating order summary: totalAmount', totalAmount, 'totalItems', totalItems);
+        document.getElementById('total-amount').textContent = `₱ ${totalAmount.toFixed(2)}`;
+        document.getElementById('total-items').textContent = totalItems;
+    };
+
+    // Calculate total amount and total items
+    function calculateTotalAmountAndItems(products) {
+        let totalAmount = 0;
+        let totalItems = 0;
+        products.forEach(product => {
+            totalAmount += product.total;
+            totalItems += product.quantity;
+        });
+        console.log('Calculated totalAmount:', totalAmount, 'totalItems:', totalItems);
+        return { totalAmount, totalItems };
+    }
+
+    // Add event listeners to the price and quantity inputs
+    const priceInputs = document.querySelectorAll('.product-price');
+    const quantityInputs = document.querySelectorAll('.product-quantity');
+
+    priceInputs.forEach((input, index) => {
+        input.addEventListener('input', () => updateTotal(index));
+    });
+
+    quantityInputs.forEach((input, index) => {
+        input.addEventListener('input', () => updateTotal(index));
+    });
+
+    // Handle save button click
+    document.getElementById('save-button').addEventListener('click', () => {
+        console.log('Save button clicked');
+
+        const updatedProducts = order.products.map((product, index) => {
+            const price = parseFloat(document.querySelectorAll('.product-price')[index].value);
+            const quantity = parseInt(document.querySelectorAll('.product-quantity')[index].value, 10);
+            return {
+                ...product,
+                price,
+                quantity,
+                total: price * quantity, // Recalculate total
+            };
+        });
+
+        // Recalculate total amount and total items after the update
+        const { totalAmount, totalItems } = calculateTotalAmountAndItems(updatedProducts);
+        console.log('Updated products:', updatedProducts);
+        console.log('Sending data to the backend: totalAmount', totalAmount, 'totalItems', totalItems);
+
+        // Update the order with new products, totalAmount, and totalItems
+        fetch(`https://earthph.sdevtech.com.ph/orders/updateOrders/${order._id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${usertoken}`,
+            },
+            body: JSON.stringify({
+                products: updatedProducts,
+                totalAmount: totalAmount,
+                totalItems: totalItems,  // Send totalItems to the backend
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Response from backend:', data);
+            if (data.message === 'Order updated successfully') {
+                console.log('Order updated successfully');
+                window.location.reload(); // Refresh the page to get the updated data
+            } else {
+                console.error('Failed to update order:', data.message);
+            }
+        })
+        .catch(error => console.error('Error updating order:', error));
+    });
 }
+
+
+
+
 
 
 
@@ -264,16 +308,7 @@ function updateOrderStatus(orderId, status) {
         },
         body: JSON.stringify({ status: status }),
     })
-    .then(response => {
-        // Log the response text to debug
-        return response.text().then(text => {
-            console.log('Response Text:', text);
-            if (!response.ok) {
-                throw new Error('HTTP error! status: ' + response.status);
-            }
-            return JSON.parse(text); // Parse as JSON only if the response is valid
-        });
-    })
+    .then(response => response.json())
     .then(data => {
         if (data.message === 'Order updated successfully') {
             console.log('Order status updated:', data.order);

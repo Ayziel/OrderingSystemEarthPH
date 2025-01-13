@@ -25,35 +25,66 @@
     <div class="form-container">
         <h1>Product Preference Survey</h1>
         <form>
-            <div class="form-group">
-                <label for="shop-name">Shop Name</label>
-                <input type="text" id="shop-name" name="shop-name" placeholder="Enter shop name">
-            </div>
-            <div class="form-group">
-                <label for="quantity">Preferred Quantity</label>
-                <input type="number" id="quantity" name="quantity" placeholder="Enter preferred quantity">
-            </div>
-            <div class="form-group">
-                <label for="delivery-schedule">Preferred Delivery Schedule</label>
-                <select id="delivery-schedule" name="delivery-schedule">
-                    <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                    <!-- Add more options as necessary -->
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="product-quality">Most Important Product Features</label>
-                <input type="text" id="product-quality" name="product-quality" placeholder="Enter product features">
-            </div>
-            <div class="form-group">
-                <label for="pricing">Preferred Price Range</label>
-                <input type="text" id="pricing" name="pricing" placeholder="Enter preferred price range">
-            </div>
-            <div class="form-group">
-                <label for="delivery-instructions">Special Delivery Instructions</label>
-                <input type="text" id="delivery-instructions" name="delivery-instructions" placeholder="Enter any delivery instructions">
-            </div>
+            <form id="surveyForm">
+                <!-- Insect Control -->
+                <div class="survey-question">
+                    <label>1. Insect Control</label>
+                    <select name="insectControl">
+                        <option value="Advanced">Advanced</option>
+                        <option value="Bayer">Bayer</option>
+                        <option value="Baygon">Baygon</option>
+                        <option value="Target">Target</option>
+                        <option value="AgroShield">AgroShield</option>
+                    </select>
+                </div>
+                
+                <!-- Rodent Control -->
+                <div class="survey-question">
+                    <label>2. Rodent Control</label>
+                    <select name="rodentControl">
+                        <option value="Bayer">Bayer</option>
+                        <option value="Racumin">Racumin</option>
+                        <option value="Rascal">Rascal</option>
+                        <option value="Fresh Cab">Fresh Cab</option>
+                        <option value="Natural Safe">Natural Safe</option>
+                    </select>
+                </div>
+                
+                <!-- Linen and Fabric Spray -->
+                <div class="survey-question">
+                    <label>3. Linen and Fabric Spray</label>
+                    <select name="fabricSpray">
+                        <option value="Natucair">Natucair</option>
+                        <option value="Vunguard Fresh Room and Linen Disinfectant Spray">Vunguard Fresh Room and Linen Disinfectant Spray</option>
+                        <option value="Bench Linen and Room Sprays">Bench Linen and Room Sprays</option>
+                        <option value="Natucair Fabric and Linen Spray">Natucair Fabric and Linen Spray</option>
+                        <option value="Mandaue Foam Linen and Room Sprays">Mandaue Foam Linen and Room Sprays</option>
+                    </select>
+                </div>
+                
+                <!-- Air Con Cleaner -->
+                <div class="survey-question">
+                    <label>4. Air Con Cleaner</label>
+                    <select name="airConCleaner">
+                        <option value="EarthPH">EarthPH</option>
+                        <option value="FreshFoam AC Cleaner Spray">FreshFoam AC Cleaner Spray</option>
+                        <option value="Coil-Brite R1 Aircon Coil Cleaner">Coil-Brite R1 Aircon Coil Cleaner</option>
+                        <option value="3M AC Cleaner & Anti-Mic Foam">3M AC Cleaner & Anti-Mic Foam</option>
+                        <option value="Bitop A/C Foam Cleaner">Bitop A/C Foam Cleaner</option>
+                    </select>
+                </div>
+                
+                <!-- Pet Care -->
+                <div class="survey-question">
+                    <label>5. Pet Care</label>
+                    <select name="petCare">
+                        <option value="Bayopet">Bayopet</option>
+                        <option value="Royal Canin">Royal Canin</option>
+                        <option value="TropiClean">TropiClean</option>
+                        <option value="Happy Life">Happy Life</option>
+                        <option value="Zee Dog">Zee Dog</option>
+                    </select>
+                </div>
             <button id="submit-button" type="button">Submit Survey</button>
         </form>
     </div>

@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const storeData = JSON.parse(localStorage.getItem('storeData')); // Parse the storeData object
         const products = await fetchProducts();
         const productListElement = document.getElementById("product-list");
-        const storeUid = storeData ? storeData.uid : null
+        const storeUid = storeData ? storeData.uid : null;
     
         if (!productListElement) {
             console.error("Product list element not found!");
@@ -61,20 +61,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     
         if (products.length === 0) {
-            productListElement.innerHTML = "<p>No products available.</p>";
+            productListElement.innerHTML = "<p>No products available. <a href='/add-product'>Add a product</a></p>";
             return;
         }
     
         products.forEach(product => {
             // Filter products based on storeUid
-            console.log("product.storeUid",product.storeUid);
-            console.log("storeUid",storeUid);
-            if (product.storeUid !== storeUid) {
+            if (product.storeUid !== storeUid && storeUid !== null) {
                 return; // Skip this product if it doesn't match the storeUid
             }
-            
-
-            console.log("Productsss:", product);
+    
             const discountOptions = Array.from({ length: 9 }, (_, i) => `<option value="${i * 10}">${i * 10}%</option>`).join('');
     
             const productHTML = `
@@ -105,11 +101,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>`;
     
             productListElement.innerHTML += productHTML;
-            console.log("UID:", product.uid);
         });
     
         addQuantityButtonListeners();
     };
+    
+    
     populateProductList();
 
     const updateOrderComputation = () => {
@@ -134,6 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("listPrice").value = totalAmount.toFixed(2);
         document.getElementById("totalItems").value = totalItems;
         document.getElementById("totalAmount").value = totalAmount.toFixed(2);
+
     };
 
     const storeUid = localStorage.getItem('storeUid'); // Retrieve storeUid from localStorage
@@ -142,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const productDetailsElement = document.getElementById("productDetails");
         const productDetailsModalElement = document.getElementById("productDetailsModal");
         const products = document.querySelectorAll(".product-container");
-    
+        
         let detailsHTML = "";
         let modalDetailsHTML = "";
         productDetails = [];
@@ -155,26 +153,39 @@ document.addEventListener("DOMContentLoaded", () => {
             const productUid = product.getAttribute('data-uid'); // Extract the uid from the data-uid attribute
     
             if (quantity > 0) {
-                const discountAmount = price * (discountPercentage / 100);
-                const discountedPrice = price - discountAmount;
-                const total = quantity * discountedPrice;
+                // Check if this product is already in productDetails array
+                const existingProduct = productDetails.find(item => item.product_uid === productUid);
     
-                productDetails.push({
-                    name: productName,
-                    price: discountedPrice,
-                    quantity: quantity,
-                    total: total,
-                    discount: discountPercentage,
-                    product_uid: productUid // Include product_uid
-                });
+                if (existingProduct) {
+                    // If product exists, update its quantity and total
+                    existingProduct.quantity += quantity;
+                    const discountAmount = price * (discountPercentage / 100);
+                    const discountedPrice = price - discountAmount;
+                    existingProduct.total += quantity * discountedPrice;
+                } else {
+                    // If the product doesn't exist in the order, add it to the array
+                    const discountAmount = price * (discountPercentage / 100);
+                    const discountedPrice = price - discountAmount;
+                    const total = quantity * discountedPrice;
     
+                    productDetails.push({
+                        name: productName,
+                        price: discountedPrice,
+                        quantity: quantity,
+                        total: total,
+                        discount: discountPercentage,
+                        product_uid: productUid // Include product_uid
+                    });
+                }
+    
+                // Add the HTML for displaying the product details in the list and modal
                 const itemHTML = `
                     <div class="product-detail">
                         <strong>${productName}</strong>
-                        <p>Price: $${discountedPrice.toFixed(2)}</p>
+                        <p>Price: ₱${(price - (price * (discountPercentage / 100))).toFixed(2)}</p>
                         <p>Discount: ${discountPercentage}%</p>
                         <p>Quantity: ${quantity}</p>
-                        <p>Total: $${total.toFixed(2)}</p>
+                        <p>Total: ₱${(quantity * (price - (price * (discountPercentage / 100)))).toFixed(2)}</p>
                         <hr>
                     </div>`;
     
@@ -185,6 +196,14 @@ document.addEventListener("DOMContentLoaded", () => {
     
         productDetailsElement.innerHTML = detailsHTML;
         productDetailsModalElement.innerHTML = modalDetailsHTML;
+    };
+    
+    const checkStockAvailability = (productUid, orderedQuantity) => {
+        const product = productDetails.find(item => item.product_uid === productUid);
+        if (!product) return true; // If the product doesn't exist in order, it's not restricted
+    
+        const currentStock = getStockLevelFromDatabase(productUid); // Retrieve the stock level for this product
+        return currentStock >= (product.quantity + orderedQuantity);
     };
     
 
@@ -227,23 +246,23 @@ document.addEventListener("DOMContentLoaded", () => {
             issueDateElement.textContent = currentDate;
 
             const itemsPurchasedElement = document.getElementById("productDetailsModal");
-            const totalAmountElement = document.getElementById("totalAmount");
+            const totalAmountElement = document.getElementById("modalTotalAmount");
 
             let itemsHTML = "";
             let totalAmount = 0;
-
+            console.log("productDetails", productDetails);
             productDetails.forEach(item => {
                 itemsHTML += `
                     <p><strong>${item.name}</strong><br>
-                       Price: $${item.price.toFixed(2)}<br>
+                       Price: ₱${item.price.toFixed(2)}<br>
                        Quantity: ${item.quantity}<br>
-                       Total: $${item.total.toFixed(2)}</p>
+                       Total: ₱${item.total.toFixed(2)}</p>
                        `;
                 totalAmount += item.total;
             });
 
             itemsPurchasedElement.innerHTML = itemsHTML;
-            totalAmountElement.textContent = `$${totalAmount.toFixed(2)}`;
+            totalAmountElement.textContent = `₱${totalAmount.toFixed(2)}`;
         };
 
         if (submitOrderButton) {
@@ -270,36 +289,66 @@ document.addEventListener("DOMContentLoaded", () => {
     const addQuantityButtonListeners = () => {
         const plusButtons = document.querySelectorAll(".plus-btn");
         const minusButtons = document.querySelectorAll(".minus-btn");
-
+    
         plusButtons.forEach(button => {
             button.addEventListener("click", (event) => {
                 event.preventDefault();
                 const quantityInput = button.closest(".quantity-controls").querySelector(".product-quantity");
+    
+                if (!quantityInput) {
+                    console.error("Product quantity input not found!");
+                    return;
+                }
+    
                 let quantity = parseInt(quantityInput.value) || 0;
                 quantityInput.value = quantity + 1;
-
-                updateOrderComputation();
-                updateProductDetails();
+    
+                if (typeof updateOrderComputation === 'function') {
+                    updateOrderComputation();
+                } else {
+                    console.warn("updateOrderComputation function is not defined.");
+                }
+    
+                if (typeof updateProductDetails === 'function') {
+                    updateProductDetails();
+                } else {
+                    console.warn("updateProductDetails function is not defined.");
+                }
             });
         });
-
+    
         minusButtons.forEach(button => {
             button.addEventListener("click", (event) => {
                 event.preventDefault();
                 const quantityInput = button.closest(".quantity-controls").querySelector(".product-quantity");
+    
+                if (!quantityInput) {
+                    console.error("Product quantity input not found!");
+                    return;
+                }
+    
                 let quantity = parseInt(quantityInput.value) || 0;
                 if (quantity > 0) {
                     quantityInput.value = quantity - 1;
                 }
-
-                updateOrderComputation();
-                updateProductDetails();
+    
+                if (typeof updateOrderComputation === 'function') {
+                    updateOrderComputation();
+                } else {
+                    console.warn("updateOrderComputation function is not defined.");
+                }
+    
+                if (typeof updateProductDetails === 'function') {
+                    updateProductDetails();
+                } else {
+                    console.warn("updateProductDetails function is not defined.");
+                }
             });
         });
     };
+    
 
     const initialize = () => {
-        populateProductList();
         handleModals();
         handleReceiptModal();
 
@@ -308,18 +357,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.getElementById('acceptOrderBtn').addEventListener('click', async () => {
             const button = document.getElementById('acceptOrderBtn');
+            const goToDashboardBtn = document.getElementById('adashboardBtn');  // Get the "Go to Dashboard" button
         
-            // Check if the button is already in the "Continue" state
-            if (button.textContent === "Continue") {
-                console.warn('Order already accepted. Preventing duplicate submission.');
+            // Initially, disable the "Go to Dashboard" button
+            goToDashboardBtn.disabled = true;
+        
+            // Check if the button is in the "Order Again" state
+            if (button.textContent === "Order Again") {
+                window.open('https://earthhomecareph.astute.services/OrderForm/Agent-Info.html');
+                // Proceed with the same logic as for the first order submission
+                await processOrder();
                 return;
             }
         
+            // Check if the button is already disabled (to prevent duplicate submission)
             if (button.disabled) {
                 console.warn('Button is already disabled. Preventing duplicate submission.');
                 return;
             }
         
+            // Disable the button immediately to prevent multiple clicks
             button.disabled = true;
         
             // Log the productDetails array to verify its structure
@@ -366,6 +423,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
             console.log('Order Data:', orderData); // Log the order data
         
+            // Check for missing fields
             const isFieldMissing = (field, fieldName) => {
                 if (typeof field !== 'string' || field.trim() === '') {
                     console.log(`${fieldName} is missing`);
@@ -384,9 +442,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (isFieldMissing(orderData.remarks, 'Remarks')) missingFields.push('Remarks');
             if (orderData.paymentMode === 'credit' && isFieldMissing(orderData.paymentImage, 'Payment Image')) missingFields.push('Payment Image');
         
+            // If any required fields are missing, show alert and reset the button
             if (missingFields.length > 0) {
                 alert('Please fill out the following required fields before submitting the order: ' + missingFields.join(', '));
-                button.disabled = false;
+                button.disabled = false; // Re-enable the button in case of missing fields
                 return;
             }
         
@@ -405,9 +464,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (response.ok) {
                     const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));  // Retrieve matched user from localStorage
                     const parentUid = matchedUser ? matchedUser.uid : "defaultParentUid";  // Use the uid from matchedUser or a default value
-                
+        
                     const stockPromises = orderData.products.map(async (product) => {
-                        // Log the contents of each product
                         console.log('STOCK PRODUCTS:', product);
                         const stockData = {
                             uid: stockUid,
@@ -417,7 +475,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             product_name: product.name,
                             quantity: product.quantity
                         };
-                    
+        
                         const stockResponse = await fetch('https://earthph.sdevtech.com.ph/stocks/createStock', {
                             method: 'POST',
                             headers: {
@@ -426,10 +484,10 @@ document.addEventListener("DOMContentLoaded", () => {
                             },
                             body: JSON.stringify(stockData)
                         });
-                    
+        
                         const stockResult = await stockResponse.json();
                         console.log('Stock response:', stockResult);
-                    
+        
                         if (!stockResponse.ok) {
                             throw new Error(`Failed to create stock for product ${product.name}: ${stockResult.message}`);
                         }
@@ -437,20 +495,16 @@ document.addEventListener("DOMContentLoaded", () => {
         
                     await Promise.all(stockPromises);
         
-                    // Change button to "Continue"
-                    button.textContent = "Continue";
-                    button.style.backgroundColor = "#4CAF50";
+                    // Change button to "Order Again" after successful submission
+                    button.textContent = "Order Again";
+                    button.style.backgroundColor = "#FF9800";
                     button.style.color = "#fff";
-        
-                    // Disable the button after it's changed to "Continue" to prevent further submissions
-                    button.disabled = true;
+                    button.disabled = false; // Enable the button to allow "Order Again"
         
                     alert('Order accepted and saved successfully!');
-        
-                    // Optionally, add a listener for the "Continue" button to navigate
-                    button.addEventListener('click', () => {
-                        window.location.href = "https://earthhomecareph.astute.services/OrderForm/Agent-Info.html";
-                    });
+                    
+                    // Enable "Go to Dashboard" button after order is completed
+                    goToDashboardBtn.disabled = false;  // Enable the "Go to Dashboard" button
                 } else {
                     alert(`Failed to save order: ${result.message}`);
                 }
@@ -458,9 +512,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error('Network error:', error);
                 alert('A network error occurred. Please check your connection.');
             } finally {
-                button.disabled = false;
+                button.disabled = false; // Re-enable the button after the process
             }
         });
+
+        
+        document.getElementById('dashboardBtn').addEventListener('click', async () => {
+            window.location.href = 'https://earthhomecareph.astute.services/';  // Redirect to the specified URL
+        });
+        
+        
+        
+        // Function to handle "Order Again"
+        async function processOrder() {
+            const button = document.getElementById('acceptOrderBtn');
+            // Re-trigger the order process (similar to initial submission)
+            button.disabled = true;
+            await document.getElementById('acceptOrderBtn').click();  // Trigger the same logic as the first time
+        }
+        
         
 
         const handleOrderClick = (event) => {
@@ -471,6 +541,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     initialize();
 });
+
+const fetchStockData = async () => {
+    try {
+        const response = await fetch("https://earthph.sdevtech.com.ph/stocks/getStock", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        const data = await response.json();
+        return data.stocks || [];
+    } catch (error) {
+        console.error("Error fetching stock data:", error);
+        return [];
+    }
+};
+
 
 const paymentModeDropdown = document.getElementById('paymentMode');
 const paymentMethodSpan = document.getElementById('paymentMethod');
