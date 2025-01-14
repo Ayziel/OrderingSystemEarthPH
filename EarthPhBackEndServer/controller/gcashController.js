@@ -58,7 +58,15 @@ exports.updateGCash = async (req, res) => {
             return res.status(404).json({ message: 'No GCash record found for this user.' });
         }
 
-        gcash.cash = (parseFloat(gcash.cash) + parseFloat(totalAmount)).toString();
+        // Ensure both values are numbers
+        const currentCash = parseFloat(gcash.cash);
+        const amountToAdd = parseFloat(totalAmount);
+
+        if (isNaN(currentCash) || isNaN(amountToAdd)) {
+            return res.status(400).json({ message: 'Invalid cash values provided.' });
+        }
+
+        gcash.cash = (currentCash + amountToAdd).toString();
         await gcash.save();
 
         return res.status(200).json({ message: 'GCash record updated.', gcash });
