@@ -5,7 +5,7 @@ const cors = require('cors');
 require('dotenv').config(); // Ensure dotenv is configured
 
 // Import routes
-const gCashRoutes = require('./EarthPhBackEndServer/routes/gcashRoutes');
+const gCashRoutes = require('./EarthPhBackEndServer/routes/gcashMoneyRoutes');
 const userRoutes = require('./EarthPhBackEndServer/routes/userRoutes');
 const orderRoutes = require('./EarthPhBackEndServer/routes/orderRoutes');
 const productRoutes = require('./EarthPhBackEndServer/routes/productRoutes');
