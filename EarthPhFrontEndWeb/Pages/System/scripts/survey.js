@@ -37,7 +37,7 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
                         row.appendChild(userNameCell);
 
                         const storeName = document.createElement('td');
-                        storeName.textContent = survey.store;
+                        storeName.textContent = survey.storeName;
                         row.appendChild(storeName);
 
                         // Add the insectControl value

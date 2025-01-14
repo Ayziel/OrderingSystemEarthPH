@@ -191,3 +191,69 @@
   background-color: #5a6268;
   border-color: #545b62;
 }
+
+
+/* General card styling */
+.gcash-card {
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Highlighted icon color */
+.color-highlight {
+  color: #007bff; /* Highlight color */
+}
+
+/* Card hover effect */
+.gcash-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background-color: #007bff;
+  color: #fff;
+}
+
+.gcash-card:hover .color-highlight {
+  color: #fff;
+}
+
+.gcash-card:hover h2,
+.gcash-card:hover p {
+  color: #fff;
+}
+
+/* Ripple effect on click */
+.gcash-card::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+  z-index: -1;
+}
+
+.gcash-card:active::after {
+  width: 200%;
+  height: 200%;
+}
+
+/* Media alignment tweaks */
+.media {
+  display: flex;
+  align-items: center;
+}
+
+.media-left {
+  margin-right: 15px;
+}
+

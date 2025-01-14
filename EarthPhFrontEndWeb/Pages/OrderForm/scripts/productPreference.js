@@ -38,7 +38,7 @@ document.getElementById('surveyForm').addEventListener('submit', async (event) =
         if (response.ok) {
             alert('Survey submitted successfully!');
             // Redirect to the order info page after successful submission
-            // window.location.href = "https://earthhomecareph.astute.services/OrderForm/Order-Info.html";
+             window.location.href = "https://earthhomecareph.astute.services/OrderForm/Order-Info.html";
         } else {
             alert('Failed to submit survey. Please try again.');
         }
