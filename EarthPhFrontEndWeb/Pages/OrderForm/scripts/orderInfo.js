@@ -280,9 +280,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (submitOrderButton) {
             submitOrderButton.addEventListener("click", (event) => {
+     
                 event.preventDefault();
                 receiptModal.style.display = "block";
+                handleGCashCheckAndCreate();
                 generateReceipt();
+
             });
         }
 
@@ -663,3 +666,128 @@ updatePaymentMethodDisplay();
 const storeNameElement = document.getElementById("storeName");
 const userData = JSON.parse(localStorage.getItem('orderData')) || {};
 storeNameElement.textContent = userData.storeName || 'EarthPH';
+
+
+const handleGCashCheckAndCreate = async () => {
+    try {
+        const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+        console.log("Matched user from localStorage:", matchedUser);
+
+        if (!matchedUser || !matchedUser.team || matchedUser.role !== "agent") {
+            console.log("Matched user not found or user is not an agent.");
+            return;
+            throw new Error("Matched user not found in localStorage or user is not an agent.");
+            
+        }
+
+        const userTeam = matchedUser.team;
+        console.log("User's Team:", userTeam);
+
+        // Fetch all users to find the team leader
+        const usersResponse = await fetch('https://earthph.sdevtech.com.ph/users/getUsers');
+        const data = await usersResponse.json(); // Parse the JSON once
+        console.log("Users fetched:", data);
+
+        const users = data.users;  // Access the 'users' array from the response
+        console.log("Users array:", users);
+
+        const teamLeader = users.find(user => user.team === userTeam && user.role === "teamLeader");
+        if (!teamLeader) {
+            alert(`No team leader found for team: ${userTeam}`);
+            console.log("No team leader found for team:", userTeam);
+            throw new Error("No team leader found.");
+        }
+
+        const teamLeaderUid = teamLeader.uid;
+        console.log("Team Leader UID:", teamLeaderUid);
+
+        // Check if the team leader already has GCash data
+        const gcashResponse = await fetch(`https://earthph.sdevtech.com.ph/gCash/getGcash/${teamLeaderUid}`);
+        console.log("GCash response status:", gcashResponse.status);
+
+        // Read the response body once
+        const gcashData = gcashResponse.status === 404 ? null : await gcashResponse.json();
+        console.log("GCash data for team leader:", gcashData);
+
+        const balance = parseFloat(document.getElementById('totalAmount').value);
+        console.log("Order balance fetched from input field:", balance);
+
+        if (!gcashData || !gcashData.gcash || gcashData.gcash.userUid !== teamLeaderUid) {
+            console.log("No matching GCash data or mismatch in UID, creating new GCash data.");
+
+            const newGcashData = {
+                userUid: teamLeaderUid,
+                balance: balance,
+                createdAt: new Date().toISOString(),
+            };
+
+            console.log("New GCash data to be created:", newGcashData);
+
+            const createResponse = await fetch('https://earthph.sdevtech.com.ph/gCash/createGCash', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+                },
+                body: JSON.stringify(newGcashData),
+            });
+
+            console.log("Create GCash response status:", createResponse.status);
+
+            const createData = await createResponse.json(); // Read the response body once
+            if (!createResponse.ok) {
+                console.log("Error creating GCash record:", createData);
+                throw new Error(`Failed to create GCash record: ${createData.message}`);
+            }
+
+            console.log("New GCash record created:", createData);
+            return createData; // Successfully created GCash record
+        } else {
+            console.log("GCash data found for team leader:", gcashData.gcash);
+
+            const updatedBalance = gcashData.gcash.balance + balance;
+            console.log("Updated balance after adding new order amount:", updatedBalance);
+
+            const updatedGcashData = {
+                userUid: teamLeaderUid,
+                totalAmount: document.getElementById("totalAmount").value,
+            };
+
+            console.log("Updated GCash data to be saved:", updatedGcashData);
+
+            // Check if all required fields are present
+            if (!updatedGcashData.userUid || updatedGcashData.totalAmount === undefined) {
+                console.log("Error: Missing required fields in GCash update data.");
+                throw new Error("Missing required fields in GCash update data.");
+            }
+
+            const updateResponse = await fetch('https://earthph.sdevtech.com.ph/gCash/updateGCash', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+                },
+                body: JSON.stringify(updatedGcashData),
+            });
+
+            console.log("Update GCash response status:", updateResponse.status);
+
+            const updateData = await updateResponse.json(); // Read the response body once
+            if (!updateResponse.ok) {
+                console.log("Error updating GCash record:", updateData);
+                throw new Error(`Failed to update GCash record: ${updateData.message}`);
+            }
+
+            console.log("GCash balance updated:", updateData);
+            return updateData; // Successfully updated GCash record
+        }
+    } catch (error) {
+        console.error("Error in GCash check and create process:", error);
+        throw error; // Reject the promise with the error
+    }
+};
+
+
+
+
+
