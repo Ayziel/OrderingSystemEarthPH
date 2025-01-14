@@ -22,15 +22,20 @@ exports.getGCashByUserUid = async (req, res) => {
 // Create a new GCash record
 exports.createGCash = async (req, res) => {
     try {
-        const { userUid } = req.body;
+        const { userUid, balance } = req.body;  // Accept the balance from the frontend
+
+        if (balance == null) {
+            return res.status(400).json({ message: 'Missing balance value.' });
+        }
 
         const existingGCash = await GCash.findOne({ userUid });
         if (existingGCash) {
             return res.status(400).json({ message: 'GCash record already exists for this user.' });
         }
 
+        // Create a new GCash record with the provided balance
         const newGCash = new GCash({
-            cash: 0,  // Set initial balance to 0
+            cash: balance,  // Use the balance passed from the frontend
             userUid,
         });
 
@@ -42,6 +47,7 @@ exports.createGCash = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error.' });
     }
 };
+
 
 
 // Update GCash by adding the order total to cash

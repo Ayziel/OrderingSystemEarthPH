@@ -640,9 +640,13 @@ const handleGCashCheckAndCreate = () => {
                     if (!data || !data.gcash || data.gcash.userUid !== userUid) {
                         console.log("No matching GCash data found for user UID:", userUid);
 
+                        // Hard-coded value for balance (100)
+                        const balance = 100;
+                        console.log("Creating new GCash data with balance:", balance); // Log to verify balance
+
                         const newGcashData = {
                             userUid: userUid,
-                            balance: parseFloat(document.getElementById('totalAmount').value), // Set balance to the totalAmount
+                            balance: balance, // Set balance to the hard-coded value (100)
                             createdAt: new Date().toISOString(),
                         };
 
@@ -672,7 +676,9 @@ const handleGCashCheckAndCreate = () => {
                     } else {
                         console.log("GCash data found for user:", data.gcash);
 
-                        const updatedBalance = data.gcash.balance + parseFloat(document.getElementById('totalAmount').value); // Add totalAmount to current balance
+                        // Add hard-coded value (100) to the current balance
+                        const updatedBalance = data.gcash.balance + 100; // Add 100 for testing
+                        console.log("Updated balance:", updatedBalance);
 
                         // Update GCash balance
                         const updatedGcashData = {
@@ -712,5 +718,7 @@ const handleGCashCheckAndCreate = () => {
         }
     });
 };
+
+
 
 
