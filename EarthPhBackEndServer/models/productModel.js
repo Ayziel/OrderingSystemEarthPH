@@ -45,8 +45,8 @@ const productSchema = new mongoose.Schema({
     type: Number, // Store the discount as a percentage (e.g., 10 for 10%)
     default: 0,   // Default is no discount
   },
-  quantity: {
-    type: Number,
+  size: {
+    type: String,
     required: false,
   },
   productImage: {

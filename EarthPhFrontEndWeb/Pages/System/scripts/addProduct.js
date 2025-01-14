@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const productCategory = document.querySelector('select').value;
         const manufacturer = document.querySelector('input[placeholder="Enter manufacturer"]').value;
         const price = Math.ceil(parseFloat(document.querySelector('input[placeholder="Enter Price"]').value));
-        const quantity = 1;
+        const size = document.querySelector('input[placeholder="Enter Size"]').value;
     
         // Get the selected store name and UID
         const storeSelect = document.querySelector('#store-name');
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             storeName,
             storeUid, // Include store UID
             price,
-            quantity,
+            size,
             productImage, // This will be a Base64 string if an image is uploaded
         };
     

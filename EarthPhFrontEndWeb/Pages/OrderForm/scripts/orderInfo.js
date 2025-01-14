@@ -61,15 +61,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     
         if (products.length === 0) {
-            productListElement.innerHTML = "<p>No products available.</p>";
+            productListElement.innerHTML = "<p>No products available. <a href='/add-product'>Add a product</a></p>";
             return;
         }
     
         products.forEach(product => {
             // Filter products based on storeUid
-            console.log("product.storeUid",product.storeUid);
-            console.log("storeUid",storeUid);
-            if (product.storeUid !== storeUid) {
+            if (product.storeUid !== storeUid && storeUid !== null) {
                 return; // Skip this product if it doesn't match the storeUid
             }
             
@@ -105,11 +103,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>`;
     
             productListElement.innerHTML += productHTML;
-            console.log("UID:", product.uid);
         });
     
         addQuantityButtonListeners();
     };
+    
+    
     populateProductList();
 
     const updateOrderComputation = () => {
@@ -134,6 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("listPrice").value = totalAmount.toFixed(2);
         document.getElementById("totalItems").value = totalItems;
         document.getElementById("totalAmount").value = totalAmount.toFixed(2);
+
     };
 
     const storeUid = localStorage.getItem('storeUid'); // Retrieve storeUid from localStorage
@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const productDetailsElement = document.getElementById("productDetails");
         const productDetailsModalElement = document.getElementById("productDetailsModal");
         const products = document.querySelectorAll(".product-container");
-    
+        
         let detailsHTML = "";
         let modalDetailsHTML = "";
         productDetails = [];
@@ -155,26 +155,39 @@ document.addEventListener("DOMContentLoaded", () => {
             const productUid = product.getAttribute('data-uid'); // Extract the uid from the data-uid attribute
     
             if (quantity > 0) {
-                const discountAmount = price * (discountPercentage / 100);
-                const discountedPrice = price - discountAmount;
-                const total = quantity * discountedPrice;
+                // Check if this product is already in productDetails array
+                const existingProduct = productDetails.find(item => item.product_uid === productUid);
     
-                productDetails.push({
-                    name: productName,
-                    price: discountedPrice,
-                    quantity: quantity,
-                    total: total,
-                    discount: discountPercentage,
-                    product_uid: productUid // Include product_uid
-                });
+                if (existingProduct) {
+                    // If product exists, update its quantity and total
+                    existingProduct.quantity += quantity;
+                    const discountAmount = price * (discountPercentage / 100);
+                    const discountedPrice = price - discountAmount;
+                    existingProduct.total += quantity * discountedPrice;
+                } else {
+                    // If the product doesn't exist in the order, add it to the array
+                    const discountAmount = price * (discountPercentage / 100);
+                    const discountedPrice = price - discountAmount;
+                    const total = quantity * discountedPrice;
     
+                    productDetails.push({
+                        name: productName,
+                        price: discountedPrice,
+                        quantity: quantity,
+                        total: total,
+                        discount: discountPercentage,
+                        product_uid: productUid // Include product_uid
+                    });
+                }
+    
+                // Add the HTML for displaying the product details in the list and modal
                 const itemHTML = `
                     <div class="product-detail">
                         <strong>${productName}</strong>
-                        <p>Price: $${discountedPrice.toFixed(2)}</p>
+                        <p>Price: ₱${(price - (price * (discountPercentage / 100))).toFixed(2)}</p>
                         <p>Discount: ${discountPercentage}%</p>
                         <p>Quantity: ${quantity}</p>
-                        <p>Total: $${total.toFixed(2)}</p>
+                        <p>Total: ₱${(quantity * (price - (price * (discountPercentage / 100)))).toFixed(2)}</p>
                         <hr>
                     </div>`;
     
@@ -185,6 +198,14 @@ document.addEventListener("DOMContentLoaded", () => {
     
         productDetailsElement.innerHTML = detailsHTML;
         productDetailsModalElement.innerHTML = modalDetailsHTML;
+    };
+    
+    const checkStockAvailability = (productUid, orderedQuantity) => {
+        const product = productDetails.find(item => item.product_uid === productUid);
+        if (!product) return true; // If the product doesn't exist in order, it's not restricted
+    
+        const currentStock = getStockLevelFromDatabase(productUid); // Retrieve the stock level for this product
+        return currentStock >= (product.quantity + orderedQuantity);
     };
     
 
@@ -227,23 +248,23 @@ document.addEventListener("DOMContentLoaded", () => {
             issueDateElement.textContent = currentDate;
 
             const itemsPurchasedElement = document.getElementById("productDetailsModal");
-            const totalAmountElement = document.getElementById("totalAmount");
+            const totalAmountElement = document.getElementById("modalTotalAmount");
 
             let itemsHTML = "";
             let totalAmount = 0;
-
+            console.log("productDetails", productDetails);
             productDetails.forEach(item => {
                 itemsHTML += `
                     <p><strong>${item.name}</strong><br>
-                       Price: $${item.price.toFixed(2)}<br>
+                       Price: ₱${item.price.toFixed(2)}<br>
                        Quantity: ${item.quantity}<br>
-                       Total: $${item.total.toFixed(2)}</p>
+                       Total: ₱${item.total.toFixed(2)}</p>
                        `;
                 totalAmount += item.total;
             });
 
             itemsPurchasedElement.innerHTML = itemsHTML;
-            totalAmountElement.textContent = `$${totalAmount.toFixed(2)}`;
+            totalAmountElement.textContent = `₱${totalAmount.toFixed(2)}`;
         };
 
         if (submitOrderButton) {
@@ -270,36 +291,66 @@ document.addEventListener("DOMContentLoaded", () => {
     const addQuantityButtonListeners = () => {
         const plusButtons = document.querySelectorAll(".plus-btn");
         const minusButtons = document.querySelectorAll(".minus-btn");
-
+    
         plusButtons.forEach(button => {
             button.addEventListener("click", (event) => {
                 event.preventDefault();
                 const quantityInput = button.closest(".quantity-controls").querySelector(".product-quantity");
+    
+                if (!quantityInput) {
+                    console.error("Product quantity input not found!");
+                    return;
+                }
+    
                 let quantity = parseInt(quantityInput.value) || 0;
                 quantityInput.value = quantity + 1;
-
-                updateOrderComputation();
-                updateProductDetails();
+    
+                if (typeof updateOrderComputation === 'function') {
+                    updateOrderComputation();
+                } else {
+                    console.warn("updateOrderComputation function is not defined.");
+                }
+    
+                if (typeof updateProductDetails === 'function') {
+                    updateProductDetails();
+                } else {
+                    console.warn("updateProductDetails function is not defined.");
+                }
             });
         });
-
+    
         minusButtons.forEach(button => {
             button.addEventListener("click", (event) => {
                 event.preventDefault();
                 const quantityInput = button.closest(".quantity-controls").querySelector(".product-quantity");
+    
+                if (!quantityInput) {
+                    console.error("Product quantity input not found!");
+                    return;
+                }
+    
                 let quantity = parseInt(quantityInput.value) || 0;
                 if (quantity > 0) {
                     quantityInput.value = quantity - 1;
                 }
-
-                updateOrderComputation();
-                updateProductDetails();
+    
+                if (typeof updateOrderComputation === 'function') {
+                    updateOrderComputation();
+                } else {
+                    console.warn("updateOrderComputation function is not defined.");
+                }
+    
+                if (typeof updateProductDetails === 'function') {
+                    updateProductDetails();
+                } else {
+                    console.warn("updateProductDetails function is not defined.");
+                }
             });
         });
     };
+    
 
     const initialize = () => {
-        populateProductList();
         handleModals();
         handleReceiptModal();
 
@@ -541,6 +592,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     initialize();
 });
+
+const fetchStockData = async () => {
+    try {
+        const response = await fetch("https://earthph.sdevtech.com.ph/stocks/getStock", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        const data = await response.json();
+        return data.stocks || [];
+    } catch (error) {
+        console.error("Error fetching stock data:", error);
+        return [];
+    }
+};
+
 
 const paymentModeDropdown = document.getElementById('paymentMode');
 const paymentMethodSpan = document.getElementById('paymentMethod');

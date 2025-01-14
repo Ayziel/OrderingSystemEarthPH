@@ -15,17 +15,17 @@ const usertoken = localStorage.getItem('authToken');
 console.log("userRole", userRole);
 console.log("usertoken", usertoken);
 
-function logAllLocalStorageItems() {
-    console.log("Items in localStorage:");
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i); // Get the key at index `i`
-        const value = localStorage.getItem(key); // Get the value associated with the key
-        console.log(`${key}: ${value}`);
-    }
-}
+// function logAllLocalStorageItems() {
+//     console.log("Items in localStorage:");
+//     for (let i = 0; i < localStorage.length; i++) {
+//         const key = localStorage.key(i); // Get the key at index `i`
+//         const value = localStorage.getItem(key); // Get the value associated with the key
+//         console.log(`${key}: ${value}`);
+//     }
+// }
 
-// Call the function
-logAllLocalStorageItems();
+// // Call the function
+// logAllLocalStorageItems();
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -75,13 +75,11 @@ function fetchOrders() {
             const parsedData = JSON.parse(matchedUserData);
             // Access the userUid from the matchedUser object
             currentUserUid = parsedData.uid; // Corrected line
-            console.log("currentUserUid", currentUserUid); // This will log the UID
         } catch (error) {
             console.error("Error parsing matchedUser data:", error);
         }
     }
     
-    console.log("currentUserUid", currentUserUid)
     // Step 2: Fetch the list of users
     fetch('https://earthph.sdevtech.com.ph/users/getUsers')
         .then(response => {
@@ -162,12 +160,10 @@ function processOrders(orders) {
                 productSales[product.name].quantity += product.quantity;
 
                 sales += product.quantity;
-                console.log("product name & quantity", product.name, product.quantity);
             });
         }
     });
 
-    console.log("Final product sales:", productSales); // CHANGE: Log the final aggregated product sales
     return { totalSales, sales, productSales };
 }
 
@@ -180,8 +176,6 @@ function sortAndDisplayTopProducts(productSales) {
     sortedProducts.forEach(([name, { id, quantity }], index) => {
         // Currently does nothing inside the loop
     });
-
-    console.log("Top 5 products by quantity sold:", sortedProducts); // CHANGE: Log the sorted top 5 products
 
     topSales = sortedProducts; // CHANGE: Assign the sorted top 5 products to topSales
     chart(); // CHANGE: Call the chart function to update the chart
@@ -305,7 +299,6 @@ function chart() {
                     return response.json(); // Convert the response to JSON format
                 })
                 .then(orderData => {
-                    console.log('Order data fetched:', orderData); // Log the fetched order data
                     if (!orderData || orderData.length === 0) {
                         console.log('No order data found.');
                         return;
@@ -342,8 +335,6 @@ function chart() {
                         return `${month} ${year}`; // Month and Year (e.g., December 2024)
                     });
 
-                    console.log('Generated labels:', labels);
-
                     // Step 6: Aggregate sales data by item name using a Map
                     const aggregatedSalesData = new Map();
 
@@ -378,7 +369,7 @@ function chart() {
                     // Convert the Map to an array of objects
                     let itemSalesData = Array.from(aggregatedSalesData, ([label, data]) => ({ label, data }));
 
-                    console.log('Item sales data before sorting:', itemSalesData);
+
 
                     // Step 7: Sort the itemSalesData array by total quantity in descending order
                     itemSalesData.sort((a, b) => {
@@ -387,7 +378,6 @@ function chart() {
                         return totalB - totalA;
                     });
 
-                    console.log('Item sales data after sorting:', itemSalesData);
 
                     // Step 8: Limit to top 5 items
                     itemSalesData = itemSalesData.slice(0, 5); // Limit to top 5 items
@@ -440,11 +430,6 @@ function chart() {
         });
 }
 
-
-
-
-
-
 function getBorderColor(index) {
     const colors = [
         'rgb(220, 53, 69)',   // Red
@@ -493,7 +478,6 @@ function processAndSendOrderData() {
                 return orderDate === today;
             });
 
-            console.log('Today\'s orders:', todaysOrders);
 
             if (todaysOrders.length === 0) {
                 console.log('No orders from today.');
@@ -532,8 +516,6 @@ function processAndSendOrderData() {
                 itemSales: []
             });
 
-            console.log('Aggregated data:', aggregatedData);
-
             // Sort the item sales array by totalAmount and get the top 5
             const top5Items = aggregatedData.itemSales
                 .sort((a, b) => b.totalAmount - a.totalAmount) // Sort by total amount in descending order
@@ -549,7 +531,6 @@ function processAndSendOrderData() {
                 itemSales: top5Items // Only send the top 5 items
             };
 
-            console.log('Chart data to be sent:', chartData);
 
             // First, delete existing chart data
             fetch('https://earthph.sdevtech.com.ph/chartData/deleteAll', {
@@ -568,7 +549,7 @@ function processAndSendOrderData() {
             })
             .then(response => response.json())
             .then(data => {
-                console.log('Chart data saved successfully:', data);
+        
                 updateUI(totalSales, sales);
                 // Reload the window to reflect the updates
                 window.location.reload();
@@ -636,7 +617,7 @@ function createChart(aggregatedData) {
                 tooltip: {
                     callbacks: {
                         label: function(tooltipItem) {
-                            return `$${tooltipItem.raw.toFixed(2)}`;
+                            return `₱${tooltipItem.raw.toFixed(2)}`;
                         }
                     }
                 }
@@ -657,9 +638,7 @@ async function fetchStoreCount() {
         }
         
         const data = await response.json();
-        
-        // Debugging the API response
-        console.log("API Response:", data);
+
 
         // Access the stores key and check its length
         if (data.stores && Array.isArray(data.stores)) {
@@ -695,64 +674,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // Fetch agent performance data
-fetch('https://earthph.sdevtech.com.ph/users/getUsers')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        const users = data.users;
-
-        // Filter users with role 'agent'
-        const agents = users.filter(user => user.role === "agent");
-
-        // Clear previous data in the table
-        document.getElementById('agent-performance').innerHTML = '';
-
-        // Populate agent performance table
-        agents.forEach(agent => {
-            const row = document.createElement('tr');
-
-            // Image (Random Picsum image)
-            const imageCell = document.createElement('td');
-            const img = document.createElement('img');
-            const randomImageId = Math.floor(Math.random() * 1000) + 1;  // Generate a random image ID
-            img.src = `https://picsum.photos/40/40?random=${randomImageId}`;  // Fetch a random 40x40 image
-            img.classList.add('agent-image');
-            imageCell.appendChild(img);
-            row.appendChild(imageCell);
-
-            // Agent Name
-            const nameCell = document.createElement('td');
-            const nameWrapper = document.createElement('div');
-            nameWrapper.classList.add('agent-name');
-            nameWrapper.textContent = `${agent.firstName} ${agent.lastName}`;
-            nameCell.appendChild(nameWrapper);
-            row.appendChild(nameCell);
-
-            // Team
-            const teamCell = document.createElement('td');
-            teamCell.textContent = agent.team;
-            row.appendChild(teamCell);
-
-            // Sales (Random placeholder for now: between 1000 - 5000)
-            const sales = Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000;
-            const salesCell = document.createElement('td');
-            salesCell.textContent = sales;
-            row.appendChild(salesCell);
-
-            // Overall Performance (Random placeholder for now)
-            const performanceCell = document.createElement('td');
-            const performance = ["Excellent", "Good", "Average"][Math.floor(Math.random() * 3)];  // Random performance label
-            performanceCell.textContent = performance;
-            row.appendChild(performanceCell);
-
-            // Append row to table
-            document.getElementById('agent-performance').appendChild(row);
-        });
-    })
 
 
         // Get the user role from localStorage

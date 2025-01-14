@@ -256,3 +256,52 @@ input[type="text"], select {
     height: 200px;
     object-fit: cover;
 }
+
+.product-price-box {
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff; /* Light gray background for the price box */
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Light shadow effect */
+    width: fit-content;
+}
+
+.product-price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50; /* Dark color for contrast */
+    text-align: center;
+}
+
+.product-price-box {
+    margin-top: 10px; /* Adds spacing above the price box */
+}
+
+
+.dashboardBtn {
+    background-color: #4CAF50;  /* Green color */
+    color: white;                /* Text color */
+    border: none;                /* Remove border */
+      /* Top/Bottom and Left/Right padding */
+    text-align: center;          /* Center the text */
+    text-decoration: none;       /* Remove underline */
+    display: inline-block;       /* Make it inline-block for layout */            /* Font size */
+    margin-top: 10px;            /* Margin above the button */
+    cursor: pointer;            /* Change cursor to pointer */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Subtle shadow */
+    transition: all 0.3s ease;   /* Smooth transition for hover effects */
+}
+
+.dashboardBtn:hover {
+    background-color: #45a049;  /* Darker green on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);  /* More pronounced shadow on hover */
+}
+
+.dashboardBtn:disabled {
+    background-color: #cccccc;  /* Gray color for disabled button */
+    cursor: not-allowed;        /* Change cursor to indicate it's disabled */
+    box-shadow: none;            /* Remove shadow on disabled button */
+}
