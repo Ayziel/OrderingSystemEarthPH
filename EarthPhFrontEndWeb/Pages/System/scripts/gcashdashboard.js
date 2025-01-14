@@ -47,49 +47,67 @@ logGCashData();
 
 // Function to open modal and show GCash data in a table format
 const openGCashModal = () => {
-    // Fetch GCash data for all users
-    fetch('https://earthph.sdevtech.com.ph/gCash/getAllGcash')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Failed to fetch all GCash data: ${response.statusText}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            const tableBody = document.getElementById('gcashTableBody');
-            tableBody.innerHTML = ''; // Clear any existing rows
+    // Fetch all users and GCash data
+    Promise.all([
+        fetch('https://earthph.sdevtech.com.ph/users/getUsers').then(response => response.json()),
+        fetch('https://earthph.sdevtech.com.ph/gCash/getAllGcash').then(response => response.json())
+    ])
+    .then(([usersData, gcashData]) => {
+        const tableBody = document.getElementById('gcashTableBody');
+        tableBody.innerHTML = ''; // Clear any existing rows
 
-            // Add the current user's GCash data as the first row
-            const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
-            if (matchedUser && matchedUser.uid) {
+        // Fetch matched user data from localStorage
+        const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+
+        if (!matchedUser) {
+            console.error("Matched user not found in localStorage");
+            return;
+        }
+
+        // Filter GCash data based on user's role
+        if (matchedUser.role === "Admin") {
+            // If Admin, show all TeamLeader's GCash data
+            gcashData.gcash.forEach(gcash => {
+                const user = usersData.users.find(user => user.uid === gcash.userUid && user.role === "teamLeader");
+
+                if (user) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.firstName} ${user.lastName}</td>
+                        <td>${user.team}</td>
+                        <td>${user.role}</td>
+                        <td>₱${gcash.cash || '0'}</td>
+                    `;
+                    tableBody.appendChild(row);
+                }
+            });
+        } else if (matchedUser.role === "teamLeader" || matchedUser.role === "agent") {
+            // If TeamLeader or Agent, show only their own GCash data
+            const currentUserGCash = gcashData.gcash.find(item => item.userUid === matchedUser.uid);
+            const currentUser = usersData.users.find(user => user.uid === matchedUser.uid);
+
+            if (currentUserGCash && currentUser) {
                 const currentUserRow = document.createElement('tr');
                 currentUserRow.innerHTML = `
-                    <td>Your GCash (UID: ${matchedUser.uid})</td>
-                    <td>₱${data.gcash.find(item => item.userUid === matchedUser.uid)?.cash || '0'}</td>
+                    <td>Your GCash (${currentUser.firstName} ${currentUser.lastName})</td>
+                    <td>${currentUser.team}</td>
+                    <td>${currentUser.role}</td>
+                    <td>₱${currentUserGCash.cash || '0'}</td>
                 `;
                 tableBody.appendChild(currentUserRow);
             }
+        }
 
-            // Add other users' GCash data to the table
-            data.gcash.forEach(gcash => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${gcash.userUid}</td>
-                    <td>₱${gcash.cash || '0'}</td>
-                `;
-                tableBody.appendChild(row);
-            });
-
-            // Show the modal
-            $('#gcashModal').modal('show');
-        })
-        .catch(error => {
-            console.error("Error fetching all GCash data:", error);
-            document.getElementById('gcashModalContent').textContent = 'Error loading GCash data.';
-            $('#gcashModal').modal('show');
-        });
+        // Show the modal
+        $('#gcashModal').modal('show');
+    })
+    .catch(error => {
+        console.error("Error fetching data:", error);
+        document.getElementById('gcashModalContent').textContent = 'Error loading GCash or Users data.';
+        $('#gcashModal').modal('show');
+    });
 };
-
 
 // Add click event to the GCash card
 document.getElementById('gcashCard').addEventListener('click', openGCashModal);
+

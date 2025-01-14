@@ -693,5 +693,3 @@ document.addEventListener('DOMContentLoaded', () => {
             overAllProfitText.textContent = 'Overall Sales';
             salesText.textContent = 'Sales';
         }
-
-
