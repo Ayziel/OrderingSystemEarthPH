@@ -63,8 +63,12 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
 
                         // Add the createdAt value
                         const createdAtCell = document.createElement('td');
-                        const createdAtDate = new Date(survey.createdAt);  // Convert the date to a human-readable format
-                        createdAtCell.textContent = createdAtDate.toLocaleString();  // Format the date
+                        const createdAtDate = new Date(survey.createdAt);  // Convert the date to a Date object
+
+                        // Format the date to "YYYY-MM-DD" format
+                        const formattedDate = createdAtDate.toLocaleDateString();  // This gives you the date in a human-readable format without time
+                        
+                        createdAtCell.textContent = formattedDate;
                         row.appendChild(createdAtCell);
 
                         // Append the row to the table body
