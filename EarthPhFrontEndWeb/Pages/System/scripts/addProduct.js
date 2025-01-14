@@ -68,8 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (response.ok) {
                 alert('Product created successfully');
-                // Optionally, reset the form after successful submission
-                productForm.reset();
+                location.reload(); // Reload the page after success
             } else {
                 alert('Error creating product: ' + result.message);
             }
@@ -89,18 +88,6 @@ function convertToBase64(file) {
         reader.onload = () => resolve(reader.result);
         reader.onerror = error => reject(error);
     });
-}
-
-
-function syncDiscountWithInput() {
-    const discountDropdown = document.getElementById('discountDropdown');
-    const discountInput = document.getElementById('discountInput');
-    const originalValue = parseFloat(discountInput.value);
-
-    // Update input box with the selected percentage value
-    if (discountDropdown.value !== '') {
-        discountInput.value = (originalValue * discountDropdown.value / 100).toFixed(2);
-    }
 }
 
 function syncDiscountWithInput() {
@@ -161,8 +148,6 @@ function populateStoresDropdown(stores) {
     });
 }
 
-
-// Call getStores function when the page loads
 window.onload = function() {
     getStores();
 }

@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const storeData = JSON.parse(localStorage.getItem('storeData')); // Parse the storeData object
         const products = await fetchProducts();
         const productListElement = document.getElementById("product-list");
-        const storeUid = storeData ? storeData.uid : null;
+        const storeUid = storeData ? storeData.uid : null; //null
     
         if (!productListElement) {
             console.error("Product list element not found!");
@@ -70,7 +70,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (product.storeUid !== storeUid && storeUid !== null) {
                 return; // Skip this product if it doesn't match the storeUid
             }
-    
+            
+
+            //console.log("Productsss:", product);
             const discountOptions = Array.from({ length: 9 }, (_, i) => `<option value="${i * 10}">${i * 10}%</option>`).join('');
     
             const productHTML = `
@@ -357,7 +359,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.getElementById('acceptOrderBtn').addEventListener('click', async () => {
             const button = document.getElementById('acceptOrderBtn');
-        
+
             // Check if the button is already in the "Continue" state
             if (button.textContent === "Continue") {
                 console.warn('Order already accepted. Preventing duplicate submission.');
@@ -386,6 +388,16 @@ document.addEventListener("DOMContentLoaded", () => {
         
             const user = JSON.parse(localStorage.getItem('orderData')) || {};
         
+            //////// TEST
+            /*
+            user.agentName = "Agent Name";;
+            user.teamLeaderName = "Team Leader Name";
+            user.area = "Area";
+            user.storeName = "McDonalds";
+            user.tin = "123123123";
+            */
+            ////////
+
             const orderData = {
                 agentName: user.agentName,
                 teamLeaderName: user.teamLeaderName,
@@ -400,7 +412,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 remarks: document.getElementById('remarks').value,
                 paymentImage: document.getElementById('paymentMode').value === 'credit' ? base64PaymentImage : "No Image",
                 uid: orderUid,
-                storeUid: storeData.uid,
+                storeUid: storeData.uid, //none
                 userUid: matchedUser.uid,
                 products: updatedProducts.length > 0 ? updatedProducts : [{
                     name: 'No product selected',
@@ -454,7 +466,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (response.ok) {
                     const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));  // Retrieve matched user from localStorage
                     const parentUid = matchedUser ? matchedUser.uid : "defaultParentUid";  // Use the uid from matchedUser or a default value
-                
+
                     const stockPromises = orderData.products.map(async (product) => {
                         // Log the contents of each product
                         console.log('STOCK PRODUCTS:', product);
@@ -466,22 +478,82 @@ document.addEventListener("DOMContentLoaded", () => {
                             product_name: product.name,
                             quantity: product.quantity
                         };
-                    
-                        const stockResponse = await fetch('https://earthph.sdevtech.com.ph/stocks/createStock', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${localStorage.getItem('authToken')}`
-                            },
-                            body: JSON.stringify(stockData)
-                        });
-                    
-                        const stockResult = await stockResponse.json();
-                        console.log('Stock response:', stockResult);
-                    
-                        if (!stockResponse.ok) {
-                            throw new Error(`Failed to create stock for product ${product.name}: ${stockResult.message}`);
-                        }
+                        
+                        console.log("Parent_uid:", stockData.parent_uid, "Product_uid:", stockData.product_uid);
+                        // Search if same parent_uid/product_uid pair already exists in the stocks
+                        fetch('https://earthph.sdevtech.com.ph/stocks/getStock')
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(async data => {
+                            console.log("Full Response:", data);
+
+                            const stocks = data.stocks || data; // Adjust this if the array is inside a property
+
+                            if (!Array.isArray(stocks)) {
+                                console.error("The response is not an array");
+                                return;
+                            }
+
+
+
+                            // Compare the parent_uid and product_uid of each stock
+
+                            const newStock = stocks.find((stock) => stock.parent_uid == parentUid && stock.product_uid == product.product_uid);
+                            console.log(newStock);
+                            
+                            if(newStock){
+                                console.log("Match found - updating...");
+
+                                const updatedStock = {
+                                    uid: newStock.uid,
+                                    quantity: (parseInt(product.quantity, 10) + parseInt(newStock.quantity, 10))
+                                }
+
+                                fetch('https://earthph.sdevtech.com.ph/stocks/updateStock', {
+                                    method: 'PUT',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify(updatedStock)
+                                })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error(`HTTP error! status: ${response.status}`);
+                                    }
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    console.log("Updated Stock:", data);
+                                    //location.reload(); // Refresh the page
+                                })
+                                .catch(error => {
+                                    console.error('Error updating stock:', error);
+                                    alert('Failed to update stock. Please try again later.');
+                                });
+                                return;
+                            } else {
+                                // If no match found, create new stock entry
+                                console.log("No match found - creating new stock entry...");
+                                const stockResponse = await fetch('https://earthph.sdevtech.com.ph/stocks/createStock', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        Authorization: `Bearer ${localStorage.getItem('authToken')}`
+                                    },
+                                    body: JSON.stringify(stockData)
+                                });
+                            
+                                const stockResult = await stockResponse.json();
+                                console.log('Stock response:', stockResult);
+                            
+                                if (!stockResponse.ok) {
+                                    throw new Error(`Failed to create stock for product ${product.name}: ${stockResult.message}`);
+                                }
+                            }
+                        })
+                        .catch(error => console.error('Error fetching stocks:', error));
                     });
         
                     await Promise.all(stockPromises);
