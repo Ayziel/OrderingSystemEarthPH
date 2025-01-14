@@ -29,6 +29,10 @@ const storeSchema = new mongoose.Schema({
     type: String,
     required: true // Optional status field
   },
+  tin: {
+    type: String,
+    required: true // Optional status field
+  },
   createdAt: {
     type: Date,
     default: Date.now // Automatically set creation date
