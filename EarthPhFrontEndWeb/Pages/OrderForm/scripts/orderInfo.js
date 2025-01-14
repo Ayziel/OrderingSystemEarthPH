@@ -361,7 +361,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 remarks: document.getElementById('remarks').value,
                 paymentImage: document.getElementById('paymentMode').value === 'credit' ? base64PaymentImage : "No Image",
                 uid: orderUid,
-                storeUid: storeData.uid,
+                storeUid: storeData, //none
                 userUid: matchedUser.uid,
                 products: updatedProducts.length > 0 ? updatedProducts : [{
                     name: 'No product selected',
@@ -447,13 +447,10 @@ document.addEventListener("DOMContentLoaded", () => {
                                 return;
                             }
 
-                            if (stocks.length === 0) {
-                                console.log('No stocks found.');
-                                return;
-                            }
+
 
                             // Compare the parent_uid and product_uid of each stock
-                            
+
                             const newStock = stocks.find((stock) => stock.parent_uid == parentUid && stock.product_uid == product.product_uid);
                             console.log(newStock);
                             
@@ -560,6 +557,3 @@ updatePaymentMethodDisplay();
 const storeNameElement = document.getElementById("storeName");
 const userData = JSON.parse(localStorage.getItem('orderData')) || {};
 storeNameElement.textContent = userData.storeName || 'EarthPH';
-
-
-
