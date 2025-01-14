@@ -1,3 +1,6 @@
+let orderData = JSON.parse(localStorage.getItem('orderData'));
+console.log("STORENAME TEST",orderData.storeName)
+
 document.getElementById('surveyForm').addEventListener('submit', async (event) => {
     event.preventDefault(); // Prevent the default form submission (page refresh)
     let matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
@@ -35,7 +38,7 @@ document.getElementById('surveyForm').addEventListener('submit', async (event) =
         if (response.ok) {
             alert('Survey submitted successfully!');
             // Redirect to the order info page after successful submission
-            window.location.href = "https://earthhomecareph.astute.services/OrderForm/Order-Info.html";
+            // window.location.href = "https://earthhomecareph.astute.services/OrderForm/Order-Info.html";
         } else {
             alert('Failed to submit survey. Please try again.');
         }
