@@ -1,8 +1,3 @@
-const userRole = localStorage.getItem('userRole');
-const usertoken = localStorage.getItem('authToken');
-console.log("userRole", userRole);
-console.log("usertoken", usertoken);
-
 // Fetch the users data from the server
 fetch('https://earthph.sdevtech.com.ph/users/getUsers')
     .then(response => {
@@ -11,146 +6,78 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
         }
         return response.json();
     })
-    .then(data => {
-        const users = data.users;
+    .then(userData => {
+        const users = userData.users;
+        console.log("Users Data:", users);
 
-        // Filter users with the role "teamLeader"
-        const teamLeaders = users.filter(user => user.role === 'teamLeader');
+        // Fetch the survey data from the server
+        fetch('https://earthph.sdevtech.com.ph/survey/getSurveys')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(surveyData => {
+                const surveys = surveyData.surveys;
+                console.log("Survey Data:", surveys);
 
-        // Clear previous data in the table body
-        document.getElementById('agent-data').innerHTML = '';
+                // Loop through each survey and match with the user UID
+                surveys.forEach(survey => {
+                    // Find the user that matches the survey's userUid
+                    const matchingUser = users.find(user => user.uid === survey.userUid);
 
-        // Loop through each agent and populate the table rows
-        users.forEach(user => {
-            if (user.role !== 'agent') return; // Skip if the user is not an agent
+                    if (matchingUser) {
+                        // Create a new row for each survey and append user details
+                        const row = document.createElement('tr');
 
-            // Create a new row for each agent
-            const row = document.createElement('tr');
+                        // Add the userName value
+                        const userNameCell = document.createElement('td');
+                        userNameCell.textContent = matchingUser.userName;
+                        row.appendChild(userNameCell);
 
-            // Name (combine first and last names)
-            const nameCell = document.createElement('td');
-            nameCell.textContent = `${user.firstName} ${user.lastName}`;
-            row.appendChild(nameCell);
+                        // Add the insectControl value
+                        const insectControlCell = document.createElement('td');
+                        insectControlCell.textContent = survey.insectControl;
+                        row.appendChild(insectControlCell);
 
-            // Find the team leader for the current user's team
-            const teamLeader = teamLeaders.find(leader => leader.team === user.team);
-            const teamLeaderName = teamLeader ? `${teamLeader.firstName} ${teamLeader.lastName}` : 'Unknown';
+                        // Add the rodentControl value
+                        const rodentControlCell = document.createElement('td');
+                        rodentControlCell.textContent = survey.rodentControl;
+                        row.appendChild(rodentControlCell);
 
-            const teamLeaderCell = document.createElement('td');
-            teamLeaderCell.textContent = user.team;
-            row.appendChild(teamLeaderCell);
+                        // Add the fabricSpray value
+                        const fabricSprayCell = document.createElement('td');
+                        fabricSprayCell.textContent = survey.fabricSpray;
+                        row.appendChild(fabricSprayCell);
 
-            // Status (Always ONLINE)
-            const statusCell = document.createElement('td');
-            statusCell.textContent = user.phoneNumber;
-            row.appendChild(statusCell);
+                        // Add the airConCleaner value
+                        const airConCleanerCell = document.createElement('td');
+                        airConCleanerCell.textContent = survey.airConCleaner;
+                        row.appendChild(airConCleanerCell);
 
-            const button = document.createElement('td');
-            button.textContent = 'Click me';
-            button.style.padding = '10px';
-            button.style.backgroundColor = '#66bb6a';
-            button.style.color = 'white';
-            button.style.textAlign = 'center';
-            button.style.cursor = 'pointer';
-            button.style.borderRadius = '5px';
-            button.style.transition = 'background-color 0.3s ease';
-            button.style.backgroundColor = 'green !important'; // Apply background color with !important
+                        // Add the petCare value
+                        const petCareCell = document.createElement('td');
+                        petCareCell.textContent = survey.petCare;
+                        row.appendChild(petCareCell);
 
-            button.addEventListener('mouseover', () => {
-                button.style.backgroundColor = '#28a745'; 
+                        // Add the createdAt value
+                        const createdAtCell = document.createElement('td');
+                        const createdAtDate = new Date(survey.createdAt);  // Convert the date to a human-readable format
+                        createdAtCell.textContent = createdAtDate.toLocaleString();  // Format the date
+                        row.appendChild(createdAtCell);
+
+                        // Append the row to the table body
+                        document.getElementById('survey-data').appendChild(row);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching survey data:', error);
+                alert('Failed to fetch survey data. Please check your server.');
             });
-            
-            button.addEventListener('mouseout', () => {
-                button.style.backgroundColor = '#66bb6a';
-            });
-            
-            row.appendChild(button);
-
-            // Add click event to open the modal with the user data
-            row.onclick = function () {
-                openModal(user);
-            };
-
-            // Append the row to the table body
-            document.getElementById('agent-data').appendChild(row);
-        });
     })
     .catch(error => {
-        console.error('Error fetching data:', error);
-        alert('Failed to fetch agent data. Please check your server.');
+        console.error('Error fetching users data:', error);
+        alert('Failed to fetch users data. Please check your server.');
     });
-
-// Function to open modal and populate data
-function openModal(user) {
-    document.getElementById('modal-firstName').textContent = user.firstName;
-    document.getElementById('modal-lastName').textContent = user.lastName;
-    document.getElementById('modal-phoneNumber').textContent = user.phoneNumber;
-    document.getElementById('modal-email').textContent = user.email;
-    document.getElementById('modal-team').textContent = user.team;
-    document.getElementById('modal-role').textContent = user.role;
-
-    // Show the modal
-    document.getElementById('userModal').style.display = "flex";
-}
-
-// Close the modal when the close button is clicked
-document.querySelector('.close').onclick = function () {
-    document.getElementById('userModal').style.display = "none";
-}
-
-// Close the modal if the user clicks outside of it
-window.onclick = function (event) {
-    if (event.target === document.getElementById('userModal')) {
-        document.getElementById('userModal').style.display = "none";
-    }
-}
-
-// Function to export data
-function exportUserData() {
-    fetch('https://earthph.sdevtech.com.ph/users/getUsers')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const users = data.users;
-
-            // Filter users with the role "agent"
-            const agents = users.filter(user => user.role === 'agent');
-
-            // Prepare the headers based on the keys you want to export
-            const headers = ["First Name", "Last Name", "Phone Number", "Email", "Team", "Role"];
-
-            // Prepare the data by mapping the agents to the format
-            const formattedData = agents.map(user => [
-                user.firstName,
-                user.lastName,
-                user.phoneNumber,
-                user.email,
-                user.team,
-                user.role
-            ]);
-
-            // Add headers as the first row
-            formattedData.unshift(headers);
-
-            // Create a worksheet from the data
-            const ws = XLSX.utils.aoa_to_sheet(formattedData);
-
-            // Create a workbook with the worksheet
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "User Data");
-
-            // Export the workbook to an Excel file
-            XLSX.writeFile(wb, 'User_Data.xlsx');
-        })
-        .catch(error => {
-            console.error('Error exporting data:', error);
-            alert('Failed to export user data. Please try again later.');
-        });
-}
-
-// Add event listener to export button
-document.getElementById('export-btn').addEventListener('click', exportUserData);

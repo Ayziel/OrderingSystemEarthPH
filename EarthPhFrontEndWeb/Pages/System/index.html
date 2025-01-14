@@ -5,19 +5,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!----======== CSS ======== -->
+    <!--======== CSS ======== -->
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/navbar.css">
+    <link rel="stylesheet" href="./styles/gcash.css">
     <link rel="stylesheet" href="./styles/agentPerformance.css">
     <link href="./styles/dashboard/css/style.css" rel="stylesheet">
     <link href="./styles/dashboard/css/helper.css" rel="stylesheet">
-     <!-- Bootstrap Core CSS -->
+    <!-- Bootstrap Core CSS -->
     <link href="./styles/dashboard/css/lib/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <!----===== Icons ===== -->
+    <!--===== Icons ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+
+    
     <title>EarthPH</title>
 </head>
 <body>
@@ -50,7 +58,7 @@
               </a>
             </li>
             <li class="item">
-              <a id="newOrderLink" href="https://earthhomecareph.astute.services/OrderForm/Agent-Info.html" class="nav_link sublink">
+              <a id="newOrderLink" href="https://earthhomecareph.astute.services/OrderForm/Agent-Info.html" class="nav_link sublink" target="_blank">
                 <span class="navlink_icon">
                   <i class="bx bx-credit-card"></i>
                 </span>
@@ -101,7 +109,7 @@
               <ul class="menu_items submenu">
                   <a href="https://earthhomecareph.astute.services/System/Agent-Name.html" class="nav_link sublink">By Name</a>
                   <a href="https://earthhomecareph.astute.services/System/Agent-Leader.html" class="nav_link sublink">By Team Leader</a>
-                  <!-- <a href="https://earthhomecareph.astute.services/System/stock-list.html" class="nav_link sublink">Stocks</a> -->
+                  <a href="https://earthhomecareph.astute.services/System/stock-list.html" class="nav_link sublink">Stocks</a> 
               </ul>
             </li>
             <li class="item">
@@ -117,6 +125,7 @@
                 <a href="https://earthhomecareph.astute.services/System/Add-Agent.html" class="nav_link sublink">Add Agent</a>
                 <a href="https://earthhomecareph.astute.services/System/Add-Product.html" class="nav_link sublink">Add Products</a>
                 <a href="https://earthhomecareph.astute.services/System/Add-Store.html" class="nav_link sublink">Add Store</a>
+                <a href="https://earthhomecareph.astute.services/System/survey.html" class="nav_link sublink">Survey</a>
               </ul>
             </li>
             <!-- end -->
@@ -197,19 +206,8 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="col-md-3">
-                        <div class="card p-30">
-                            <div class="media">
-                                <div class="media-left meida media-middle">
-                                    <span><i class="fa fa-user f-s-40 color-danger"></i></span>
-                                </div>
-                                <div class="media-body media-text-right">
-                                    <h2 id="customers">0</h2>
-                                    <p class="m-b-0">Customer</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
+                    
+                    
                 </div>
 
                 <div class="row bg-white m-l-0 m-r-0 box-shadow ">
@@ -298,24 +296,17 @@
                   </tbody>
               </table>
           </div>
-          
-          
-          
-              
-
             </div>
         </div>
-        <!-- End Page wrapper  -->
-         
     </div>
-    <!-- End Wrapper -->
-    <!--Menu sidebar -->
 
 
-    <!-- scripit init-->
+
+    
 
     <script src="./scripts/script.js"></script>
     <script src="./scripts/dashboard.js"></script>
     <script src="./scripts/agentPerformance.js"></script>
+    <!-- <script src="./scripts/gcashdashboard.js"></script> -->
 </body>
 </html>

@@ -133,6 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("listPrice").value = totalAmount.toFixed(2);
         document.getElementById("totalItems").value = totalItems;
         document.getElementById("totalAmount").value = totalAmount.toFixed(2);
+        document.getElementById("totalAmountReceipt").innerText = `₱${totalAmount.toFixed(2)}`;
 
     };
 

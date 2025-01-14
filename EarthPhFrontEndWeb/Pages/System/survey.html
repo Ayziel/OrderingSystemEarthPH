@@ -46,7 +46,7 @@
           </a>
         </li>
         <li class="item">
-          <a id="newOrderLink" href="https://earthhomecareph.astute.services/OrderForm/Agent-Info.html" class="nav_link sublink">
+          <a id="newOrderLink" href="https://earthhomecareph.astute.services/OrderForm/Agent-Info.html" class="nav_link sublink" target="_blank">
             <span class="navlink_icon">
               <i class="bx bx-credit-card"></i>
             </span>
@@ -113,6 +113,7 @@
             <a href="https://earthhomecareph.astute.services/System/Add-Agent.html" class="nav_link sublink">Add Agent</a>
             <a href="https://earthhomecareph.astute.services/System/Add-Product.html" class="nav_link sublink">Add Products</a>
             <a href="https://earthhomecareph.astute.services/System/Add-Store.html" class="nav_link sublink">Add Store</a>
+            <a href="https://earthhomecareph.astute.services/System/survey.html" class="nav_link sublink">Survey</a>
           </ul>
         </li>
         <!-- end -->
@@ -144,7 +145,7 @@
         <button id="export-btn" class="export">Export to Excel</button>
         <div class="activity">
             <div class="title">
-                <span class="text">Agents</span>
+                <span class="text">Preferences</span>
             </div>
     
             <div class="activity-data">
@@ -152,13 +153,16 @@
                 <table class="product-table">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Team</th>
-                            <th>Number</th>
-                            <th>Buttons</th>
+                            <th>User Name</th>
+                            <th>insectControl</th>
+                            <th>rodentControl</th>
+                            <th>FabricSpray</th>
+                            <th>AirConCleaner</th>
+                            <th>PetCare</th>
+                            <th>Created at</th>
                         </tr>
                     </thead>
-                    <tbody id="agent-data">
+                    <tbody id="survey-data">
                         <!-- Dynamic agent data will be inserted here -->
                     </tbody>
                 </table>
@@ -166,27 +170,7 @@
         </div>
     </div>
   </section>
-
-
-  <!-- Modal for displaying store details -->
-  <div id="surveyModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Preferences</h2>
-        <table>
-            <tbody>
-                <tr><td>First Name:</td><td id="modal-firstName"></td></tr>
-                <tr><td>Last Name:</td><td id="modal-lastName"></td></tr>
-                <tr><td>Phone Number:</td><td id="modal-phoneNumber"></td></tr>
-                <tr><td>Email:</td><td id="modal-email"></td></tr>
-                <tr><td>Team:</td><td id="modal-team"></td></tr>
-                <tr><td>Role:</td><td id="modal-role"></td></tr>
-            </tbody>
-        </table>
-    </div>
-  </div>
-
     <script src="./scripts/script.js"></script>
-    <script src="./scripts/allStores.js"></script>
+    <script src="./scripts/survey.js"></script>
 </body>
 </html>

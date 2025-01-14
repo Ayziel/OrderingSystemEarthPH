@@ -5,6 +5,7 @@ const cors = require('cors');
 require('dotenv').config(); // Ensure dotenv is configured
 
 // Import routes
+
 const userRoutes = require('./EarthPhBackEndServer/routes/userRoutes');
 const orderRoutes = require('./EarthPhBackEndServer/routes/orderRoutes');
 const productRoutes = require('./EarthPhBackEndServer/routes/productRoutes');
@@ -12,6 +13,7 @@ const chartDataRoutes = require('./EarthPhBackEndServer/routes/chartDataRoutes')
 const storeRoutes = require('./EarthPhBackEndServer/routes/storeRoutes');
 const surveyRoutes = require('./EarthPhBackEndServer/routes/surveyRoutes');
 const stockRoutes = require('./EarthPhBackEndServer/routes/stockRoutes');
+const gCashRoutes = require('./EarthPhBackEndServer/routes/gcashMoneyRoutes');
 const app = express();
 
 app.use(cors()); // Enable CORS for all routes
@@ -40,6 +42,7 @@ app.use('/chartData', chartDataRoutes);
 app.use('/stores', storeRoutes);
 app.use('/survey', surveyRoutes);
 app.use('/stocks', stockRoutes);
+app.use('/gcash', gCashRoutes);
 
 // Error handling middleware (if needed)
 app.use((err, req, res, next) => {

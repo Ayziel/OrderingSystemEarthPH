@@ -43,7 +43,7 @@
           </a>
         </li>
         <li class="item">
-          <a id="newOrderLink" href="https://earthhomecareph.astute.services/OrderForm/Agent-Info.html" class="nav_link sublink">
+          <a id="newOrderLink" href="https://earthhomecareph.astute.services/OrderForm/Agent-Info.html" class="nav_link sublink" target="_blank">
             <span class="navlink_icon">
               <i class="bx bx-credit-card"></i>
             </span>
@@ -94,7 +94,7 @@
           <ul class="menu_items submenu">
               <a href="https://earthhomecareph.astute.services/System/Agent-Name.html" class="nav_link sublink">By Name</a>
               <a href="https://earthhomecareph.astute.services/System/Agent-Leader.html" class="nav_link sublink">By Team Leader</a>
-              <!-- <a href="https://earthhomecareph.astute.services/System/stock-list.html" class="nav_link sublink">Stocks</a> -->
+              <a href="https://earthhomecareph.astute.services/System/stock-list.html" class="nav_link sublink">Stocks</a> 
           </ul>
         </li>
         <li class="item">
@@ -110,6 +110,7 @@
             <a href="https://earthhomecareph.astute.services/System/Add-Agent.html" class="nav_link sublink">Add Agent</a>
             <a href="https://earthhomecareph.astute.services/System/Add-Product.html" class="nav_link sublink">Add Products</a>
             <a href="https://earthhomecareph.astute.services/System/Add-Store.html" class="nav_link sublink">Add Store</a>
+            <a href="https://earthhomecareph.astute.services/System/survey.html" class="nav_link sublink">Survey</a>
           </ul>
         </li>
         <!-- end -->
@@ -226,14 +227,19 @@
                 
                 
                 <!-- Image upload input -->
-                <div class="column">
-                    <div class="input-box">
-                        <label for="productImageInput" class="file-upload-btn">
-                            Choose Product Image
-                        </label>
-                        <input type="file" id="productImageInput" name="productImage" accept="image/*" style="display: none;" />
-                    </div>
-                </div> 
+                <div class="input-box">
+                  <label for="productImageInput" class="file-upload-btn">
+                      Choose Product Image
+                  </label>
+                  <input 
+                      type="file" 
+                      id="productImageInput" 
+                      name="productImage" 
+                      accept="image/*" 
+                      style="display: none;" 
+                      onchange="handleImageUpload(event)" />
+                  <p id="imageFeedback" style="color: red; margin-top: 5px; display: none;"></p>
+              </div>
                 
                 <button type="submit">Submit</button>
             </form>

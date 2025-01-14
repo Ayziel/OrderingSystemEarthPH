@@ -35,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (productImageInput.files.length > 0) {
             const file = productImageInput.files[0];
             productImage = await convertToBase64(file);
+            // Show an alert confirming the image upload
+
         }
     
         // Create a data object to send in the request
@@ -68,8 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (response.ok) {
                 alert('Product created successfully');
-                // Optionally, reset the form after successful submission
-                productForm.reset();
+                location.reload(); // Reload the page after success
             } else {
                 alert('Error creating product: ' + result.message);
             }
@@ -89,18 +90,6 @@ function convertToBase64(file) {
         reader.onload = () => resolve(reader.result);
         reader.onerror = error => reject(error);
     });
-}
-
-
-function syncDiscountWithInput() {
-    const discountDropdown = document.getElementById('discountDropdown');
-    const discountInput = document.getElementById('discountInput');
-    const originalValue = parseFloat(discountInput.value);
-
-    // Update input box with the selected percentage value
-    if (discountDropdown.value !== '') {
-        discountInput.value = (originalValue * discountDropdown.value / 100).toFixed(2);
-    }
 }
 
 function syncDiscountWithInput() {
@@ -161,8 +150,21 @@ function populateStoresDropdown(stores) {
     });
 }
 
+function handleImageUpload(event) {
+    const file = event.target.files[0]; // Get the selected file
+    const feedbackElement = document.getElementById('imageFeedback'); // Red text element
 
-// Call getStores function when the page loads
+    if (file) {
+        feedbackElement.textContent = `Image "${file.name}" has been selected.`;
+        feedbackElement.style.display = 'block'; // Show the red text
+        feedbackElement.style.color = 'green'; // Change the text color to green
+    } else {
+        feedbackElement.textContent = '';
+        feedbackElement.style.display = 'none'; // Hide the red text
+    }
+}
+
 window.onload = function() {
     getStores();
 }
+
