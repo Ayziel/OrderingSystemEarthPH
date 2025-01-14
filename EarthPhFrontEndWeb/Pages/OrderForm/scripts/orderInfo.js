@@ -361,7 +361,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 remarks: document.getElementById('remarks').value,
                 paymentImage: document.getElementById('paymentMode').value === 'credit' ? base64PaymentImage : "No Image",
                 uid: orderUid,
-                storeUid: storeData, //none
+                storeUid: storeData.uid, //none
                 userUid: matchedUser.uid,
                 products: updatedProducts.length > 0 ? updatedProducts : [{
                     name: 'No product selected',
