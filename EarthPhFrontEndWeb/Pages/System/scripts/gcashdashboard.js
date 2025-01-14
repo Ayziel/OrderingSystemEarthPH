@@ -2,7 +2,16 @@ const logGCashData = () => {
     return new Promise((resolve, reject) => {
         // Fetch matched user from localStorage
         const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
-        
+        if(matchedUser.role === "agent") {
+            document.getElementById('gcashWidget').style.display = 'none';
+            const elements = document.querySelectorAll('.col-md-3');
+
+            // Loop through each element and change its class to "col-md-4"
+            elements.forEach(element => {
+                element.classList.remove('col-md-3');
+                element.classList.add('col-md-4');
+            });
+        }
         if (matchedUser && matchedUser.uid) {
             const userUid = matchedUser.uid;
             console.log("User UID for GCash data logging:", userUid);
@@ -58,6 +67,8 @@ const openGCashModal = () => {
     .then(([usersData, gcashData]) => {
         console.log('Fetched users and GCash data:', usersData, gcashData); // Log the fetched data
 
+
+        let userqualification = "";
         // Clear existing rows in all tables
         const adminTableBody = document.getElementById('adminTableBody');
         adminTableBody.innerHTML = ''; // Clear any existing rows in the admin table
@@ -68,6 +79,8 @@ const openGCashModal = () => {
         // Fetch matched user data from localStorage
         const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
 
+
+
         if (!matchedUser) {
             console.error("Matched user not found in localStorage");
             return;
@@ -75,8 +88,15 @@ const openGCashModal = () => {
 
         console.log('Matched User:', matchedUser); // Log matched user data
 
+        if (matchedUser.role === "Admin") {
+            userqualification = "teamLeader";
+        }
+        else if (matchedUser.role === "teamLeader") { 
+            userqualification = "Admin";
+        }
+
         usersData.users.forEach(user => {   
-            if (user.role === "Admin") {
+            if (user.role === userqualification) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${user.firstName} ${user.lastName}</td>
@@ -124,7 +144,7 @@ const openGCashModal = () => {
                         }
 
                         fetch('https://earthph.sdevtech.com.ph/gCash/sendGCash', {
-                            method: 'POST',
+                            method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
@@ -158,7 +178,7 @@ const openGCashModal = () => {
         if (matchedUser.role === "Admin") {
             const adminGCash = gcashData.gcash.find(item => item.userUid === matchedUser.uid);
             const adminUser = usersData.users.find(user => user.uid === matchedUser.uid);
-
+        
             if (adminGCash && adminUser) {
                 const adminRow = document.createElement('tr');
                 adminRow.innerHTML = `
@@ -169,13 +189,21 @@ const openGCashModal = () => {
                 `;
                 tableBody.appendChild(adminRow);
             }
-
+        
+            // Sort the users so Admins appear first
+            const sortedUsers = usersData.users.sort((a, b) => {
+                // Admins come first, then others
+                if (a.role === "Admin" && b.role !== "Admin") return -1;
+                if (a.role !== "Admin" && b.role === "Admin") return 1;
+                return 0; // Maintain relative order for the same roles
+            });
+        
             // Log rows being appended for other users with GCash data
-            gcashData.gcash.forEach(gcash => {
-                if (gcash.userUid !== matchedUser.uid) {
-                    const user = usersData.users.find(user => user.uid === gcash.userUid);
-
-                    if (user) {
+            sortedUsers.forEach(user => {
+                if (user.uid !== matchedUser.uid) {
+                    const gcash = gcashData.gcash.find(gcash => gcash.userUid === user.uid);
+        
+                    if (gcash) {
                         const row = document.createElement('tr');
                         row.innerHTML = ` 
                             <td>${user.firstName} ${user.lastName}</td>
@@ -187,7 +215,8 @@ const openGCashModal = () => {
                     }
                 }
             });
-        } else if (matchedUser.role === "teamLeader" || matchedUser.role === "agent") {
+        }
+         else if (matchedUser.role === "teamLeader" || matchedUser.role === "agent") {
             const currentUserGCash = gcashData.gcash.find(item => item.userUid === matchedUser.uid);
             const currentUser = usersData.users.find(user => user.uid === matchedUser.uid);
 
