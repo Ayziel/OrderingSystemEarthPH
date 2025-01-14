@@ -41,7 +41,7 @@ app.use('/chartData', chartDataRoutes);
 app.use('/stores', storeRoutes);
 app.use('/survey', surveyRoutes);
 app.use('/stocks', stockRoutes);
-app.use('/gCash', gCashRoutes);
+app.use('/gcash', gCashRoutes);
 
 // Error handling middleware (if needed)
 app.use((err, req, res, next) => {
