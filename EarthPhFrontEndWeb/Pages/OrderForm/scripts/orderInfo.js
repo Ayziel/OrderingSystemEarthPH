@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             </div>
                             <div class="product-size-total">
                                 <select class="product-size-select" data-sku="${product.productSKU}">
-                                    <option value="${product.price}" data-price="${product.price}">${product.price}</option>
+                                    <option value="${product.price}" data-price="${product.price}">$${product.price}</option>
                                 </select>
                             </div>
                             <div class="discount-dropdown">
