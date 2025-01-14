@@ -12,7 +12,7 @@ const chartDataRoutes = require('./EarthPhBackEndServer/routes/chartDataRoutes')
 const storeRoutes = require('./EarthPhBackEndServer/routes/storeRoutes');
 const surveyRoutes = require('./EarthPhBackEndServer/routes/surveyRoutes');
 const stockRoutes = require('./EarthPhBackEndServer/routes/stockRoutes');
-const gCashRoutes = require('./EarthPhBackEndServer/routes/gCashRoutes');
+const gCashRoutes = require('./EarthPhBackEndServer/routes/gcashRoutes');
 const app = express();
 
 app.use(cors()); // Enable CORS for all routes
