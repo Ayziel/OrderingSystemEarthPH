@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const gcashController = require('../controllers/gcashController');
+const gcashController = require('../controller/gcashController');
 
 // Routes for GCash operations
 router.post('/createGCash', gcashController.createGCash); // Create new GCash record
