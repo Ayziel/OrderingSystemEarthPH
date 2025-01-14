@@ -1,4 +1,6 @@
-document.getElementById('submit-button').addEventListener('click', async () => {
+document.getElementById('surveyForm').addEventListener('submit', async (event) => {
+    event.preventDefault(); // Prevent the default form submission (page refresh)
+    let matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
     const form = document.getElementById('surveyForm');
     const formData = new FormData(form);
 
@@ -9,6 +11,7 @@ document.getElementById('submit-button').addEventListener('click', async () => {
         fabricSpray: formData.get('fabricSpray'),
         airConCleaner: formData.get('airConCleaner'),
         petCare: formData.get('petCare'),
+        userUid: matchedUser.uid,
         // Add selected products (you can update this part depending on your UI)
         selectedProducts: getSelectedProducts()
     };
@@ -27,7 +30,8 @@ document.getElementById('submit-button').addEventListener('click', async () => {
 
         if (response.ok) {
             alert('Survey submitted successfully!');
-            form.reset(); // Reset the form after submission
+            // Redirect to the order info page after successful submission
+            window.location.href = "https://earthhomecareph.astute.services/OrderForm/Order-Info.html";
         } else {
             alert('Failed to submit survey. Please try again.');
         }
@@ -35,8 +39,6 @@ document.getElementById('submit-button').addEventListener('click', async () => {
         console.error('Error submitting survey:', error);
         alert('An error occurred. Please try again.');
     }
-
-    window.location.href = "https://earthhomecareph.astute.services/OrderForm/Order-Info.html";
 });
 
 // Function to get selected products from the form (modify based on your form elements)
@@ -44,10 +46,5 @@ function getSelectedProducts() {
     // Example: Assuming there are checkboxes or a multi-select dropdown for products
     const selectedProductCheckboxes = document.querySelectorAll('input[name="selectedProducts"]:checked');
     const selectedProducts = Array.from(selectedProductCheckboxes).map(checkbox => checkbox.value);
-     alert('Survey has been submitted!');
-  
-    // Redirect to the order info page
-  
     return selectedProducts;
-    
 }

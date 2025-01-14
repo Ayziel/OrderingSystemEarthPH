@@ -17,21 +17,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Remove the filtering for today's orders
-            // const today = new Date().toISOString().split('T')[0];
-            // const todaysOrders = orders.filter(order => {
-            //     const orderDate = new Date(order.orderDate).toISOString().split('T')[0];
-            //     return orderDate === today;
-            // });
+            const today = new Date();
+            const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+            const startOfWeek = new Date(today);
+            const endOfWeek = new Date(today);
 
-            // if (todaysOrders.length === 0) {
-            //     console.log('No orders from today.');
-            //     return;
-            // }
+            // Adjust startOfWeek to the previous Monday
+            startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+            startOfWeek.setHours(0, 0, 0, 0);
 
-            // Sort all orders by order date
-            orders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
-            populateOrders(orders);
+            // Adjust endOfWeek to the upcoming Sunday
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
+            endOfWeek.setHours(23, 59, 59, 999);
+
+            const weekOrders = orders.filter(order => {
+                const orderDate = new Date(order.orderDate);
+                return orderDate >= startOfWeek && orderDate <= endOfWeek;
+            });
+
+            if (weekOrders.length === 0) {
+                console.log('No orders from this week.');
+                return;
+            }
+
+            weekOrders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
+            populateOrders(weekOrders);
         })
         .catch(error => console.error('Error fetching orders:', error));
 });
@@ -155,23 +165,16 @@ function openModal(order) {
                     ${order.products
                         .map(
                             (product, index) => `
-                            <tr>
-                                <td>${product.name}</td>
-                                <td>
-                                    <input type="number" class="product-price" value="${product.price}" disabled data-index="${index}" />
-                                </td>
-                                <td>
-                                    <input type="number" class="product-quantity" value="${product.quantity}" disabled data-index="${index}" />
-                                </td>
-                                <td class="product-total" id="product-total-${index}">
-                                    ₱${product.total.toFixed(2)}
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>${product.name}</td>
+                            <td>₱${product.price.toFixed(2)}</td>
+                            <td>${product.quantity}</td>
+                            <td>₱${(product.price * product.quantity).toFixed(2)}</td>
+                        </tr>
                         `)
                         .join('')}
                 </tbody>
             </table>
-            <button id="edit-button">Edit</button>
             <button id="save-button" style="display: none;">Save</button>
         `;
     } else {

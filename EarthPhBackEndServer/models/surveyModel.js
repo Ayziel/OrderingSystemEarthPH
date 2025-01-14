@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const surveySchema = new mongoose.Schema({
+  userUid: {
+    type: String,
+    required: true
+  },
   insectControl: {
     type: String,
     required: true
