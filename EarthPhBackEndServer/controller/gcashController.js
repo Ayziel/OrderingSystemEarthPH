@@ -1,27 +1,66 @@
-const Order = require('../models/gCash'); // import the model
+const GCash = require('../models/gcashModel');
 
-// Create a new gCash entry
-const createGcash = async (req, res) => {
+// Get GCash by userUid
+exports.getGCashByUserUid = async (req, res) => {
     try {
-        const { cash, userUid } = req.body;
+        const { userUid } = req.params;
 
-        // Check if required fields are provided
-        if (!cash || !userUid) {
-            return res.status(400).json({ message: 'Cash and UserUid are required' });
+        const gcash = await GCash.findOne({ userUid });
+        if (!gcash) {
+            return res.status(404).json({ message: 'No GCash record found for this user.' });
         }
 
-        // Create new entry
-        const newOrder = new Order({
-            cash,
-            userUid
-        });
-
-        await newOrder.save(); // Save the new entry to the database
-        res.status(201).json({ message: 'gCash entry created successfully', order: newOrder });
+        return res.status(200).json({ message: 'GCash record found.', gcash });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error fetching GCash:', error);
+        return res.status(500).json({ message: 'Internal server error.' });
     }
 };
 
-module.exports = createGcash;
+// Create a new GCash record
+exports.createGCash = async (req, res) => {
+    try {
+        const { userUid } = req.body;
+
+        const existingGCash = await GCash.findOne({ userUid });
+        if (existingGCash) {
+            return res.status(400).json({ message: 'GCash record already exists for this user.' });
+        }
+
+        const newGCash = new GCash({
+            cash: '0',
+            userUid,
+        });
+
+        await newGCash.save();
+
+        return res.status(201).json({ message: 'New GCash record created.', gcash: newGCash });
+    } catch (error) {
+        console.error('Error creating GCash:', error);
+        return res.status(500).json({ message: 'Internal server error.' });
+    }
+};
+
+// Update GCash by adding the order total to cash
+exports.updateGCash = async (req, res) => {
+    try {
+        const { userUid, totalAmount } = req.body;
+
+        if (!userUid || totalAmount == null) {
+            return res.status(400).json({ message: 'Missing required fields.' });
+        }
+
+        const gcash = await GCash.findOne({ userUid });
+        if (!gcash) {
+            return res.status(404).json({ message: 'No GCash record found for this user.' });
+        }
+
+        gcash.cash = (parseFloat(gcash.cash) + parseFloat(totalAmount)).toString();
+        await gcash.save();
+
+        return res.status(200).json({ message: 'GCash record updated.', gcash });
+    } catch (error) {
+        console.error('Error updating GCash:', error);
+        return res.status(500).json({ message: 'Internal server error.' });
+    }
+};

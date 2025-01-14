@@ -2,13 +2,9 @@ const express = require('express');
 const router = express.Router();
 const gcashController = require('../controllers/gcashController');
 
-// Create a new gCash entry
-router.post('/gcash', gcashController.createGcash);
-
-// Show gCash entry for a specific userUid
-router.get('/gcash/:userUid', gcashController.showGcash);
-
-// Update gCash entry for a specific userUid
-router.put('/gcash/:userUid', gcashController.updateGcash);
+// Routes for GCash operations
+router.post('/createGCash', gcashController.createGCash); // Create new GCash record
+router.get('/getGCash/:userUid', gcashController.getGCashByUserUid); // Get GCash by userUid
+router.put('/updateGCash', gcashController.updateGCash); // Update GCash record
 
 module.exports = router;

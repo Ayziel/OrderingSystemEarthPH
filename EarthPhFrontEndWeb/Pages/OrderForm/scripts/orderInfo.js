@@ -358,6 +358,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const stockUid = uuid.v4();
 
         document.getElementById('acceptOrderBtn').addEventListener('click', async () => {
+            handleGCashCheckAndCreate();
             const button = document.getElementById('acceptOrderBtn');
 
             // Check if the button is already in the "Continue" state
@@ -628,3 +629,66 @@ updatePaymentMethodDisplay();
 const storeNameElement = document.getElementById("storeName");
 const userData = JSON.parse(localStorage.getItem('orderData')) || {};
 storeNameElement.textContent = userData.storeName || 'EarthPH';
+
+const handleGCashCheckAndCreate = () => {
+    // Retrieve matchedUser from localStorage
+    const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+
+    // Log matchedUser object for debugging
+    console.log("Matched User from localStorage:", matchedUser);
+
+    // Check if matchedUser exists and contains the uid
+    if (matchedUser && matchedUser.uid) {
+        const userUid = matchedUser.uid;
+        console.log("User UID:", userUid);
+
+        // Fetch GCash data using the userUid
+        fetch(`https://earthph.sdevtech.com.ph/gCash/getGcash/${userUid}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log("GCash Data Fetch Result:", data); // Log the fetched GCash data
+
+                if (data && data.userUid === userUid) {
+                    console.log("User GCash data matched:", data);
+                    // Proceed with handling the GCash data (e.g., updating the UI)
+                } else {
+                    console.log("No matching GCash data found for user UID:", userUid);
+
+                    // If no match, create a new GCash record
+                    const newGcashData = {
+                        userUid: userUid,
+                        // Add any other data you need for the new GCash record here
+                        balance: 0,  // Example field, adjust as per your GCash model
+                        createdAt: new Date().toISOString(),
+                    };
+
+                    // Log the new GCash data to be created
+                    console.log("Creating new GCash data:", newGcashData);
+
+                    // Send a POST request to create a new GCash record
+                    fetch('https://earthph.sdevtech.com.ph/gCash/createGCash', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+                        },
+                        body: JSON.stringify(newGcashData)
+                    })
+                    .then(response => response.json())
+                    .then(newData => {
+                        console.log("New GCash record created:", newData);
+                        // Proceed with handling the newly created GCash record
+                    })
+                    .catch(error => {
+                        console.error("Error creating new GCash record:", error);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching GCash data:", error);
+            });
+    } else {
+        console.log("No matchedUser found in localStorage");
+    }
+};
+
