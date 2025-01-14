@@ -296,12 +296,6 @@ function openModal(order) {
     });
 }
 
-
-
-
-
-
-
 function updateOrderStatus(orderId, status) {
     fetch(`https://earthph.sdevtech.com.ph/orders/updateOrders/${orderId}`, {
         method: 'PUT',
@@ -321,3 +315,4 @@ function updateOrderStatus(orderId, status) {
     })
     .catch(error => console.error('Error updating order:', error));
 }
+

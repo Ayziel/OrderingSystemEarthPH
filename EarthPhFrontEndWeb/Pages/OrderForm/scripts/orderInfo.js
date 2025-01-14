@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("listPrice").value = totalAmount.toFixed(2);
         document.getElementById("totalItems").value = totalItems;
         document.getElementById("totalAmount").value = totalAmount.toFixed(2);
-
+        document.getElementById("totalAmountReceipt").innerText = `₱${totalAmount.toFixed(2)}`;
     };
 
     const storeUid = localStorage.getItem('storeUid'); // Retrieve storeUid from localStorage
@@ -374,14 +374,14 @@ document.addEventListener("DOMContentLoaded", () => {
             button.disabled = true;
         
             // Await GCash creation/check before proceeding
-            // try {
-            //     await handleGCashCheckAndCreate(); // Ensure GCash data is created or fetched before proceeding
-            // } catch (error) {
-            //     console.error("GCash process failed:", error);
-            //     alert("Failed to process GCash data. Please try again.");
-            //     button.disabled = false;
-            //     return; // Exit early if GCash fails
-            // }
+            try {
+                await handleGCashCheckAndCreate(); // Ensure GCash data is created or fetched before proceeding
+            } catch (error) {
+                console.error("GCash process failed:", error);
+                alert("Failed to process GCash data. Please try again.");
+                button.disabled = false;
+                return; // Exit early if GCash fails
+            }
         
             // The rest of your order submission logic...
             const updatedProducts = productDetails.map(product => {
@@ -606,7 +606,6 @@ const fetchStockData = async () => {
 
 const paymentModeDropdown = document.getElementById('paymentMode');
 const paymentMethodSpan = document.getElementById('paymentMethod');
-
 const updatePaymentMethodDisplay = () => {
     const selectedPaymentMode = paymentModeDropdown.value;
 
@@ -620,7 +619,107 @@ const storeNameElement = document.getElementById("storeName");
 const userData = JSON.parse(localStorage.getItem('orderData')) || {};
 storeNameElement.textContent = userData.storeName || 'EarthPH';
 
+const handleGCashCheckAndCreate = () => {
+    return new Promise((resolve, reject) => {
+        const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+        if (matchedUser && matchedUser.uid) {
+            const userUid = matchedUser.uid;
+            console.log("User UID:", userUid);
 
+            fetch(`https://earthph.sdevtech.com.ph/gCash/getGcash/${userUid}`)
+                .then(response => {
+                    if (response.status === 404) {
+                        console.log("No GCash data found for this user, creating a new one.");
+                        return null; // Proceed to create a new record
+                    } else if (!response.ok) {
+                        throw new Error(`Failed to fetch GCash data: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data || !data.gcash || data.gcash.userUid !== userUid) {
+                        console.log("No matching GCash data found for user UID:", userUid);
+
+                        // Hard-coded value for balance (100)
+                
+                        const balance = parseFloat(document.getElementById('totalAmount').value);
+                        const newGcashData = {
+                            userUid: userUid,
+                            balance: balance, // Set balance to the hard-coded value (100)
+                            createdAt: new Date().toISOString(),
+                        };
+
+                        console.log("Creating new GCash data:", newGcashData);
+
+                        return fetch('https://earthph.sdevtech.com.ph/gCash/createGCash', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+                            },
+                            body: JSON.stringify(newGcashData),
+                        }).then(response => {
+                            if (!response.ok) {
+                                return response.json().then(errorData => {
+                                    throw new Error(`Failed to create GCash record: ${errorData.message}`);
+                                });
+                            }
+                            return response.json();
+                        }).then(newData => {
+                            console.log("New GCash record created:", newData);
+                            resolve(newData); // Successfully created GCash record
+                        }).catch(error => {
+                            console.error("Error creating new GCash record:", error);
+                            reject(error); // Reject the promise on failure
+                        });
+                    } else {
+                        console.log("GCash data found for user:", data.gcash);
+
+                        // Add hard-coded value (100) to the current balance
+               
+                        console.log("GCASH", userUid);
+                        const updatedBalance = parseFloat(document.getElementById('totalAmount').value); // Add 100 for testing
+                        console.log("Updated balance:", updatedBalance);
+
+                        // Update GCash balance
+                        const updatedGcashData = {
+                            userUid: userUid,
+                            totalAmount: updatedBalance,
+                        };
+                        console.log("Updating GCash data:", updatedGcashData);
+
+                        return fetch('https://earthph.sdevtech.com.ph/gCash/updateGCash', {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+                            },
+                            body: JSON.stringify(updatedGcashData),
+                        }).then(response => {
+                            if (!response.ok) {
+                                return response.json().then(errorData => {
+                                    throw new Error(`Failed to update GCash record: ${errorData.message}`);
+                                });
+                            }
+                            return response.json();
+                        }).then(updatedData => {
+                            console.log("GCash balance updated:", updatedData);
+                            resolve(updatedData); // Successfully updated GCash record
+                        }).catch(error => {
+                            console.error("Error updating GCash record:", error);
+                            reject(error); // Reject the promise on failure
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching GCash data:", error);
+                    reject(error); // Reject on fetch error
+                });
+        } else {
+            reject("Matched user not found in localStorage.");
+        }
+    });
+};
 
 
 
