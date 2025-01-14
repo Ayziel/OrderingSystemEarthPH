@@ -123,7 +123,6 @@ const openGCashModal = () => {
                             return;
                         }
 
-                        // Send funds using the controller
                         fetch('https://earthph.sdevtech.com.ph/gCash/sendGCash', {
                             method: 'POST',
                             headers: {
