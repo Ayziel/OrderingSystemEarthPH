@@ -81,3 +81,20 @@ exports.updateGCash = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error.' });
     }
 };
+
+
+// Get all GCash records
+exports.getAllGCash = async (req, res) => {
+    try {
+        // Fetch all GCash records
+        const gcashRecords = await GCash.find();
+        if (gcashRecords.length === 0) {
+            return res.status(404).json({ message: 'No GCash records found.' });
+        }
+
+        return res.status(200).json({ message: 'GCash records found.', gcash: gcashRecords });
+    } catch (error) {
+        console.error('Error fetching all GCash records:', error);
+        return res.status(500).json({ message: 'Internal server error.' });
+    }
+};

@@ -641,9 +641,8 @@ const handleGCashCheckAndCreate = () => {
                         console.log("No matching GCash data found for user UID:", userUid);
 
                         // Hard-coded value for balance (100)
-                        const balance = 100;
-                        console.log("Creating new GCash data with balance:", balance); // Log to verify balance
-
+                
+                        const balance = parseFloat(document.getElementById('totalAmount').value);
                         const newGcashData = {
                             userUid: userUid,
                             balance: balance, // Set balance to the hard-coded value (100)
@@ -677,14 +676,17 @@ const handleGCashCheckAndCreate = () => {
                         console.log("GCash data found for user:", data.gcash);
 
                         // Add hard-coded value (100) to the current balance
-                        const updatedBalance = data.gcash.balance + 100; // Add 100 for testing
+               
+                        console.log("GCASH", userUid);
+                        const updatedBalance = parseFloat(document.getElementById('totalAmount').value); // Add 100 for testing
                         console.log("Updated balance:", updatedBalance);
 
                         // Update GCash balance
                         const updatedGcashData = {
                             userUid: userUid,
-                            balance: updatedBalance,
+                            totalAmount: updatedBalance,
                         };
+                        console.log("Updating GCash data:", updatedGcashData);
 
                         return fetch('https://earthph.sdevtech.com.ph/gCash/updateGCash', {
                             method: 'PUT',
