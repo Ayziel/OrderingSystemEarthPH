@@ -18,6 +18,8 @@ exports.getGCashByUserUid = async (req, res) => {
 };
 
 // Create a new GCash record
+// Create a new GCash record
+// Create a new GCash record
 exports.createGCash = async (req, res) => {
     try {
         const { userUid } = req.body;
@@ -28,7 +30,7 @@ exports.createGCash = async (req, res) => {
         }
 
         const newGCash = new GCash({
-            cash: '0',
+            cash: 0,  // Set initial balance to 0
             userUid,
         });
 
@@ -40,6 +42,7 @@ exports.createGCash = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error.' });
     }
 };
+
 
 // Update GCash by adding the order total to cash
 exports.updateGCash = async (req, res) => {
