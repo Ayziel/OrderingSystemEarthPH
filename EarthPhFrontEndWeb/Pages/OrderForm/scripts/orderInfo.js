@@ -200,14 +200,24 @@ document.addEventListener("DOMContentLoaded", () => {
         productDetailsModalElement.innerHTML = modalDetailsHTML;
     };
     
-    const checkStockAvailability = (productUid, orderedQuantity) => {
+    const checkStockAvailability = async (productUid, orderedQuantity) => {
         const product = productDetails.find(item => item.product_uid === productUid);
+        const maxStock = 99;
         if (!product) return true; // If the product doesn't exist in order, it's not restricted
-    
-        const currentStock = getStockLevelFromDatabase(productUid); // Retrieve the stock level for this product
-        return currentStock >= (product.quantity + orderedQuantity);
+     
+        const currentStock = await getStockLevelFromDatabase(productUid); // Await the stock level for this product
+        console.log("maxStock: ", maxStock, " compareQuan: ", currentStock+orderedQuantity);
+        console.log(maxStock >= (currentStock + orderedQuantity));
+        return maxStock >= (currentStock + orderedQuantity); // Compare current stock with the ordered quantity
     };
-    
+     
+    const getStockLevelFromDatabase = async (productUid) => {
+        const stockData = await fetchStockData(); // Wait for the stock data to be fetched
+        const productStock = stockData.find(stock => stock.product_uid === productUid);
+        console.log(productStock);
+        return productStock ? productStock.quantity : 0; // Return the stock quantity or 0 if not found
+    };
+     
 
     const handleModals = () => {
         const addItemButton = document.getElementById("addItemBtn");
@@ -303,7 +313,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
     
                 let quantity = parseInt(quantityInput.value) || 0;
-                quantityInput.value = quantity + 1;
+                if(!checkExceedsStock()){
+                    quantityInput.value = quantity + 1;
+                }
     
                 if (typeof updateOrderComputation === 'function') {
                     updateOrderComputation();
@@ -349,6 +361,28 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
     
+    const checkExceedsStock = () => {
+        const products = document.querySelectorAll(".product-container");
+        let exceeds = [];
+
+        console.log(products);
+        products.forEach(async product => {
+            const productUid = product.getAttribute('data-uid'); // Extract the uid from the data-uid attribute
+            const quantity = parseInt(product.querySelector(".product-quantity").value) || 0;
+            //console.log("productUid: " + productUid + " quantity: " + quantity);
+            //console.log (!checkStockAvailability(productUid, quantity))
+            const isAvailable = await checkStockAvailability(productUid, quantity);
+
+            if(!isAvailable){
+                //exceeds.push (`${product.querySelector("strong").innerText}`);
+                alert(`The following products exceeded stock restrictions (>99): ${product.querySelector("strong").innerText}`);
+                product.querySelector(".product-quantity").value = 0;
+                return true;
+            }
+        });
+        return false;
+    }
+
 
     const initialize = () => {
         handleModals();
