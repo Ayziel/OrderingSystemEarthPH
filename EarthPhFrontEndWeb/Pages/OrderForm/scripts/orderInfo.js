@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const storeData = JSON.parse(localStorage.getItem('storeData')); // Parse the storeData object
         const products = await fetchProducts();
         const productListElement = document.getElementById("product-list");
-        const storeUid = storeData ? storeData.uid : null; //null
+        const storeUid = storeData ? storeData.uid : null;
     
         if (!productListElement) {
             console.error("Product list element not found!");
@@ -70,9 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (product.storeUid !== storeUid && storeUid !== null) {
                 return; // Skip this product if it doesn't match the storeUid
             }
-            
-
-            //console.log("Productsss:", product);
+    
             const discountOptions = Array.from({ length: 9 }, (_, i) => `<option value="${i * 10}">${i * 10}%</option>`).join('');
     
             const productHTML = `
@@ -358,9 +356,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const stockUid = uuid.v4();
 
         document.getElementById('acceptOrderBtn').addEventListener('click', async () => {
-            handleGCashCheckAndCreate();
             const button = document.getElementById('acceptOrderBtn');
-
+        
             // Check if the button is already in the "Continue" state
             if (button.textContent === "Continue") {
                 console.warn('Order already accepted. Preventing duplicate submission.');
@@ -389,16 +386,6 @@ document.addEventListener("DOMContentLoaded", () => {
         
             const user = JSON.parse(localStorage.getItem('orderData')) || {};
         
-            //////// TEST
-            /*
-            user.agentName = "Agent Name";;
-            user.teamLeaderName = "Team Leader Name";
-            user.area = "Area";
-            user.storeName = "McDonalds";
-            user.tin = "123123123";
-            */
-            ////////
-
             const orderData = {
                 agentName: user.agentName,
                 teamLeaderName: user.teamLeaderName,
@@ -413,7 +400,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 remarks: document.getElementById('remarks').value,
                 paymentImage: document.getElementById('paymentMode').value === 'credit' ? base64PaymentImage : "No Image",
                 uid: orderUid,
-                storeUid: storeData.uid, //none
+                storeUid: storeData.uid,
                 userUid: matchedUser.uid,
                 products: updatedProducts.length > 0 ? updatedProducts : [{
                     name: 'No product selected',
@@ -467,7 +454,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (response.ok) {
                     const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));  // Retrieve matched user from localStorage
                     const parentUid = matchedUser ? matchedUser.uid : "defaultParentUid";  // Use the uid from matchedUser or a default value
-
+                
                     const stockPromises = orderData.products.map(async (product) => {
                         // Log the contents of each product
                         console.log('STOCK PRODUCTS:', product);
@@ -479,82 +466,22 @@ document.addEventListener("DOMContentLoaded", () => {
                             product_name: product.name,
                             quantity: product.quantity
                         };
-                        
-                        console.log("Parent_uid:", stockData.parent_uid, "Product_uid:", stockData.product_uid);
-                        // Search if same parent_uid/product_uid pair already exists in the stocks
-                        fetch('https://earthph.sdevtech.com.ph/stocks/getStock')
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                            return response.json();
-                        })
-                        .then(async data => {
-                            console.log("Full Response:", data);
-
-                            const stocks = data.stocks || data; // Adjust this if the array is inside a property
-
-                            if (!Array.isArray(stocks)) {
-                                console.error("The response is not an array");
-                                return;
-                            }
-
-
-
-                            // Compare the parent_uid and product_uid of each stock
-
-                            const newStock = stocks.find((stock) => stock.parent_uid == parentUid && stock.product_uid == product.product_uid);
-                            console.log(newStock);
-                            
-                            if(newStock){
-                                console.log("Match found - updating...");
-
-                                const updatedStock = {
-                                    uid: newStock.uid,
-                                    quantity: (parseInt(product.quantity, 10) + parseInt(newStock.quantity, 10))
-                                }
-
-                                fetch('https://earthph.sdevtech.com.ph/stocks/updateStock', {
-                                    method: 'PUT',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify(updatedStock)
-                                })
-                                .then(response => {
-                                    if (!response.ok) {
-                                        throw new Error(`HTTP error! status: ${response.status}`);
-                                    }
-                                    return response.json();
-                                })
-                                .then(data => {
-                                    console.log("Updated Stock:", data);
-                                    //location.reload(); // Refresh the page
-                                })
-                                .catch(error => {
-                                    console.error('Error updating stock:', error);
-                                    alert('Failed to update stock. Please try again later.');
-                                });
-                                return;
-                            } else {
-                                // If no match found, create new stock entry
-                                console.log("No match found - creating new stock entry...");
-                                const stockResponse = await fetch('https://earthph.sdevtech.com.ph/stocks/createStock', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        Authorization: `Bearer ${localStorage.getItem('authToken')}`
-                                    },
-                                    body: JSON.stringify(stockData)
-                                });
-                            
-                                const stockResult = await stockResponse.json();
-                                console.log('Stock response:', stockResult);
-                            
-                                if (!stockResponse.ok) {
-                                    throw new Error(`Failed to create stock for product ${product.name}: ${stockResult.message}`);
-                                }
-                            }
-                        })
-                        .catch(error => console.error('Error fetching stocks:', error));
+                    
+                        const stockResponse = await fetch('https://earthph.sdevtech.com.ph/stocks/createStock', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${localStorage.getItem('authToken')}`
+                            },
+                            body: JSON.stringify(stockData)
+                        });
+                    
+                        const stockResult = await stockResponse.json();
+                        console.log('Stock response:', stockResult);
+                    
+                        if (!stockResponse.ok) {
+                            throw new Error(`Failed to create stock for product ${product.name}: ${stockResult.message}`);
+                        }
                     });
         
                     await Promise.all(stockPromises);
@@ -629,66 +556,3 @@ updatePaymentMethodDisplay();
 const storeNameElement = document.getElementById("storeName");
 const userData = JSON.parse(localStorage.getItem('orderData')) || {};
 storeNameElement.textContent = userData.storeName || 'EarthPH';
-
-const handleGCashCheckAndCreate = () => {
-    // Retrieve matchedUser from localStorage
-    const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
-
-    // Log matchedUser object for debugging
-    console.log("Matched User from localStorage:", matchedUser);
-
-    // Check if matchedUser exists and contains the uid
-    if (matchedUser && matchedUser.uid) {
-        const userUid = matchedUser.uid;
-        console.log("User UID:", userUid);
-
-        // Fetch GCash data using the userUid
-        fetch(`https://earthph.sdevtech.com.ph/gCash/getGcash/${userUid}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log("GCash Data Fetch Result:", data); // Log the fetched GCash data
-
-                if (data && data.userUid === userUid) {
-                    console.log("User GCash data matched:", data);
-                    // Proceed with handling the GCash data (e.g., updating the UI)
-                } else {
-                    console.log("No matching GCash data found for user UID:", userUid);
-
-                    // If no match, create a new GCash record
-                    const newGcashData = {
-                        userUid: userUid,
-                        // Add any other data you need for the new GCash record here
-                        balance: 0,  // Example field, adjust as per your GCash model
-                        createdAt: new Date().toISOString(),
-                    };
-
-                    // Log the new GCash data to be created
-                    console.log("Creating new GCash data:", newGcashData);
-
-                    // Send a POST request to create a new GCash record
-                    fetch('https://earthph.sdevtech.com.ph/gCash/createGCash', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${localStorage.getItem('authToken')}`
-                        },
-                        body: JSON.stringify(newGcashData)
-                    })
-                    .then(response => response.json())
-                    .then(newData => {
-                        console.log("New GCash record created:", newData);
-                        // Proceed with handling the newly created GCash record
-                    })
-                    .catch(error => {
-                        console.error("Error creating new GCash record:", error);
-                    });
-                }
-            })
-            .catch(error => {
-                console.error("Error fetching GCash data:", error);
-            });
-    } else {
-        console.log("No matchedUser found in localStorage");
-    }
-};
-

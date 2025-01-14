@@ -104,6 +104,6 @@ const orderSchema = new mongoose.Schema({
     }]
 });
 
-const Order = mongoose.models.Order || mongoose.model('Order', orderSchema); // This will only define the model if it doesn't already exist
+const Order = mongoose.model('Order', orderSchema);
 
 module.exports = Order;
