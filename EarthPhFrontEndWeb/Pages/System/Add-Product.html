@@ -227,14 +227,19 @@
                 
                 
                 <!-- Image upload input -->
-                <div class="column">
-                    <div class="input-box">
-                        <label for="productImageInput" class="file-upload-btn">
-                            Choose Product Image
-                        </label>
-                        <input type="file" id="productImageInput" name="productImage" accept="image/*" style="display: none;" />
-                    </div>
-                </div> 
+                <div class="input-box">
+                  <label for="productImageInput" class="file-upload-btn">
+                      Choose Product Image
+                  </label>
+                  <input 
+                      type="file" 
+                      id="productImageInput" 
+                      name="productImage" 
+                      accept="image/*" 
+                      style="display: none;" 
+                      onchange="handleImageUpload(event)" />
+                  <p id="imageFeedback" style="color: red; margin-top: 5px; display: none;"></p>
+              </div>
                 
                 <button type="submit">Submit</button>
             </form>
