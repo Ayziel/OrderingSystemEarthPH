@@ -11,6 +11,6 @@ const gCashSchema = new mongoose.Schema({
     },
 });
 
-const Order = mongoose.model('Order', gCashSchema);
+const Gcash = mongoose.model('gcash', gCashSchema);
 
-module.exports = Order;
+module.exports = Gcash;
