@@ -1,80 +1,65 @@
-const Order = require('../models/gCash'); // import the gCash model
+// Import the model
+const ChartData = require('../models/chartDataModel');
 
-// Create a new gCash entry
-const createGcash = async (req, res) => {
+// Create new chart data entry (updated version)
+exports.createChartData = async (req, res) => {
+    console.log('Received request to create chart data');
     try {
-        const { cash, userUid } = req.body;
+        // Destructure the incoming data, including the itemSales array
+        const { date, totalSales, totalAmount, totalItems, totalDiscount, totalOrders, itemSales } = req.body;
 
-        // Check if required fields are provided
-        if (!cash || !userUid) {
-            return res.status(400).json({ message: 'Cash and UserUid are required' });
+        // Ensure itemSales is an array and each item has the correct structure
+        if (!Array.isArray(itemSales)) {
+            return res.status(400).json({ message: "itemSales should be an array" });
         }
 
-        // Create new entry
-        const newOrder = new Order({
-            cash,
-            userUid
+        // Create new chart data document
+        const newChartData = new ChartData({
+            date,
+            totalSales,
+            totalAmount,
+            totalItems,
+            totalDiscount,
+            totalOrders,
+            itemSales  // Add the itemSales array to the chart data
         });
+        console.log('New chart data created:', newChartData);
 
-        await newOrder.save(); // Save the new entry to the database
-        res.status(201).json({ message: 'gCash entry created successfully', order: newOrder });
+        // Save the new chart data
+        const savedChartData = await newChartData.save();
+
+        res.status(201).json({
+            message: 'Chart data created successfully',
+            chartData: savedChartData,
+        });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error creating chart data:', error);
+        res.status(500).json({
+            message: 'Error creating chart data',
+            error: error.message,
+        });
     }
 };
 
-// Show gCash entry for a specific userUid
-const showGcash = async (req, res) => {
+// Fetch all chart data
+exports.getChartData = async (req, res) => {
     try {
-        const { userUid } = req.params;
-
-        // Find the gCash entry by userUid
-        const order = await Order.findOne({ userUid });
-
-        if (!order) {
-            return res.status(404).json({ message: 'gCash entry not found' });
-        }
-
-        res.status(200).json({ order });
+        const chartData = await ChartData.find(); // Retrieve all chart data
+        res.status(200).json(chartData);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({
+            message: 'Error fetching chart data',
+            error: error.message,
+        });
     }
 };
 
-// Update gCash entry for a specific userUid
-const updateGcash = async (req, res) => {
+exports.deleteAll = async (req, res) => {
     try {
-        const { userUid } = req.params;
-        const { cash } = req.body;
-
-        // Check if the new cash value is provided
-        if (!cash) {
-            return res.status(400).json({ message: 'Cash value is required' });
-        }
-
-        // Find and update the gCash entry
-        const updatedOrder = await Order.findOneAndUpdate(
-            { userUid },
-            { cash },
-            { new: true }
-        );
-
-        if (!updatedOrder) {
-            return res.status(404).json({ message: 'gCash entry not found' });
-        }
-
-        res.status(200).json({ message: 'gCash entry updated successfully', order: updatedOrder });
+        await ChartData.deleteMany({});
+        res.status(200).json({ message: 'All chart data deleted successfully' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Error deleting chart data', error });
     }
-};
-
-// Export all functions in the controller
-module.exports = {
-    createGcash,
-    showGcash,
-    updateGcash
 };
