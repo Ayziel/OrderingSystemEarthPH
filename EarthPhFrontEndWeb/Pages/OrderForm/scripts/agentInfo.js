@@ -66,7 +66,7 @@ function populateUserData(matchedUser, users) {
     console.log('Matched User:', matchedUser);
 
     // Populate area field with matched user's address
-    document.getElementById('area').value = matchedUser.address;
+
 
     // Populate team leader name field if available
     const teamLeader = findTeamLeader(users, matchedUser.team);
@@ -186,6 +186,7 @@ function populateStoresDropdown(stores) {
         option.textContent = store.name;
         option.setAttribute('data-uid', store.uid); // Store the store uid in a data attribute
         option.setAttribute('data-tin', store.tin); // Store the store's TIN in a data attribute
+        option.setAttribute('data-address', store.address); // Store the store's TIN in a data attribute
         option.setAttribute('data-store', JSON.stringify(store)); // Store the entire store object in a data attribute
         storeSelect.appendChild(option);
     });
@@ -203,7 +204,9 @@ function populateStoresDropdown(stores) {
             
             // Now update the TIN field with the selected store's TIN
             const storeTIN = selectedOption.getAttribute('data-tin');
+            const storeAddress = selectedOption.getAttribute('data-address');
             document.getElementById('tin').value = storeTIN; // Set the TIN field value to the selected store's TIN
+            document.getElementById('area').value = storeAddress;
             console.log('Updated TIN:', storeTIN); // Log the updated TIN for debugging
         }
     });
