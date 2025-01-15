@@ -2,7 +2,7 @@ const Order = require('../models/orderModel'); // Ensure the path is correct
 
 exports.createOrder = async (req, res) => {
     try {
-        const orderData = req.body; // This should be the full data object you sent from the frontend
+        const orderData = req.body; // Full data object sent from the frontend
 
         // Validate required fields
         if (!orderData.agentName || !orderData.teamLeaderName || !orderData.area || !orderData.products || !orderData.storeUid || !orderData.userUid) {
@@ -14,7 +14,7 @@ exports.createOrder = async (req, res) => {
             return res.status(400).json({ message: 'Payment image is required for GCash payment.' });
         }
 
-        // Parse listPrice and totalAmount
+        // Parse listPrice and totalAmount if needed
         let listPrice = typeof orderData.listPrice === 'string' 
             ? parseFloat(orderData.listPrice.replace('₱', '').replace(',', '')) 
             : orderData.listPrice || 0;
@@ -25,22 +25,15 @@ exports.createOrder = async (req, res) => {
 
         let totalItems = parseInt(orderData.totalItems) || 0;  // Ensure totalItems is an integer
 
-        // Log the parsed values for debugging
-        console.log('Parsed values:', listPrice, totalAmount, totalItems);
-
-        // Handle products array and default description
-        const updatedProducts = orderData.products.map(product => {
-            // Apply discount to the price before calculating the total for each product
-            const discountedPrice = product.price * (1 - (product.discount / 100));  // Discount applied as percentage
-            const total = discountedPrice * product.quantity;
-
-            return {
-                ...product,
-                price: discountedPrice,  // Set the discounted price for the product
-                total: total,  // Set the total based on discounted price
-                product_uid: product.product_uid  // Ensure product_uid is included
-            };
-        });
+        // Use products as they are provided
+        const products = orderData.products.map(product => ({
+            name: product.name,
+            price: product.price,
+            quantity: product.quantity,
+            total: product.total,
+            description: product.description || 'No description available',
+            product_uid: product.product_uid // Ensure product_uid is included
+        }));
 
         // Create a new order instance using the data from the frontend
         const newOrder = new Order({
@@ -51,16 +44,15 @@ exports.createOrder = async (req, res) => {
             storeName: orderData.storeName,
             tin: orderData.tin,
             listPrice: listPrice,
-            discount: parseFloat(orderData.discount) || 0,
             totalItems: totalItems,
             totalAmount: totalAmount,
             paymentMode: orderData.paymentMode,
             paymentImage: orderData.paymentImage || 'noImageYet',  // Ensure paymentImage is set
             remarks: orderData.remarks,
-            products: updatedProducts,
+            products: products,
             uid: orderData.uid,
-            storeUid: orderData.storeUid, // CHANGE: Add storeUid
-            userUid: orderData.userUid, // CHANGE: Add userUid
+            storeUid: orderData.storeUid,
+            userUid: orderData.userUid,
             status: 'Pending' // Set default status to 'Pending'
         });
 
