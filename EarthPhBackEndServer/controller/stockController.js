@@ -75,7 +75,6 @@ async function updateStock(req, res) {
         console.error('Error updating stock:', err);
         res.status(500).json({ message: 'Error updating stock', error: err });
     }
-    console.log("Payload being sent:", updatedStock);
 }
 
 
