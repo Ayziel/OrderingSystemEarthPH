@@ -314,14 +314,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (submitOrderButton) {
             submitOrderButton.addEventListener("click", (event) => {
-     
                 event.preventDefault();
+                
+                // Get the selected payment mode from the dropdown
+                const paymentMode = document.getElementById("paymentMode").value;
+        
+                // If payment mode is GCash, call handleGCashCheckAndCreate
+                if (paymentMode === "credit") {
+                    console.log("Payment made by GCash.");
+                    handleGCashCheckAndCreate();
+                } else {
+                    // If not GCash, log as cash
+                    console.log("Payment made by cash.");
+                }
+                
+                // Display receipt modal and generate receipt regardless of payment mode
                 receiptModal.style.display = "block";
-                handleGCashCheckAndCreate();
                 generateReceipt();
-
             });
         }
+        
 
         if (closeReceiptButton) {
             closeReceiptButton.addEventListener("click", () => {

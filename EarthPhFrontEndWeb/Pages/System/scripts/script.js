@@ -160,3 +160,6 @@ if (matchedUser && matchedUser.role !== 'agent') {
       stocksLink.style.display = 'none';  // Hide the link
   }
 }
+
+document.getElementById('agent-name-nav-bar').innerText = (matchedUser.firstName + " " + matchedUser.lastName) || 'Agent Name';
+
