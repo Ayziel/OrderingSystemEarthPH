@@ -105,9 +105,6 @@ function populateStocks(stocks) {
 
 });
 
-
-
-
 function openStockModal(stock) {
     const modal = document.getElementById('stock-modal');
     const modalContent = modal.querySelector('.modal-content');
