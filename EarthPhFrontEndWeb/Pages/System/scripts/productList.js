@@ -160,6 +160,48 @@ function updateProductData(productId, updatedProduct) {
     console.log(`Updating product ${productId}:`, updatedProduct);
 }
 
+
+
+
+document.getElementById('delete-product').addEventListener('click', async () => {
+    const productSKU = modalProductName.getAttribute('data-sku'); // Ensure the product SKU is stored and retrieved
+
+    if (!productSKU) {
+        alert('Product SKU is missing. Cannot delete.');
+        return;
+    }
+
+    const confirmation = confirm('Are you sure you want to delete this product?');
+    if (!confirmation) return;
+
+    try {
+        const response = await fetch('https://earthph.sdevtech.com.ph/products/deleteProduct', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${usertoken}`, // Include token if required for authentication
+            },
+            body: JSON.stringify({ productSKU }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert('Product deleted successfully.');
+            modal.style.display = 'none'; // Close the modal
+            window.location.reload(); // Refresh the product list
+        } else {
+            console.error('Error deleting product:', data.message);
+            alert(`Failed to delete product: ${data.message}`);
+        }
+    } catch (error) {
+        console.error('Error deleting product:', error);
+        alert('An error occurred while deleting the product.');
+    }
+});
+
+
+
 function exportToExcel() {
     console.log("Exporting products to Excel...");
 

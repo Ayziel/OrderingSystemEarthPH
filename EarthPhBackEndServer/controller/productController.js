@@ -90,5 +90,29 @@ async function updateProduct(req, res) {
   }
 }
 
+async function deleteProduct(req, res) {
+    console.log('DELETE /deleteProduct route hit');
+  
+    const { productSKU } = req.body; // Assuming you are sending the SKU to identify the product
+  
+    try {
+        // Find the product by SKU and delete it
+        const deletedProduct = await ProductModel.findOneAndDelete({ productSKU });
+  
+        if (!deletedProduct) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+  
+        res.json({ 
+            message: 'Product deleted successfully',
+            product: deletedProduct // Optional: Include the deleted product details
+        });
+    } catch (err) {
+        console.error('Error deleting product:', err);
+        res.status(500).json({ message: 'Error deleting product', error: err });
+    }
+  }
+  
 
-module.exports = { getProduct, createProduct, updateProduct };
+
+module.exports = { getProduct, createProduct, updateProduct, deleteProduct };
