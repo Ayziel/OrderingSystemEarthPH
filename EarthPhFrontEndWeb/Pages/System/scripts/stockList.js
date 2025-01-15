@@ -13,16 +13,11 @@ document.addEventListener('DOMContentLoaded', () => {
     logAllLocalStorageItems();
 
     // Retrieve the saved data from localStorage
-    const localStorageData = localStorage.getItem('orderData'); // Retrieve the stored order data from localStorage
+
     const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
     console.log("Matched Usersss:", matchedUser.uid);
     let userUID = null;
 
-    if (localStorageData) {
-        try {
-            // Parse the JSON string from localStorage
-            const orderData = JSON.parse(localStorageData);
-            console.log("Order Data from localStorage:", orderData);
 
             // Access and set the user UID from matchedUser
             if (matchedUser && matchedUser.uid) {
@@ -31,20 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 console.warn("No user UID found in the matchedUser.");
             }
-        } catch (error) {
-            console.error("Error parsing localStorage data:", error);
-        }
-    } else {
-        console.warn("No 'orderData' found in localStorage.");
-    }
-
-    // Function to filter stocks based on user UID
-    // function filterStocksByUserUID(stocks, userUID) {
-    //     return stocks.filter(stock => stock.parent_uid === userUID);
-    // }
 
     function populateStocks(stocks) {
-        const ordersBody = document.querySelector('orders-body-stock');
+        const ordersBody = document.querySelector('.orders-body');
         ordersBody.innerHTML = ''; // Clear previous rows
         console.log("Stocks:", stocks);
         console.log("UserUID", userUID);
@@ -74,36 +58,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fetch the stock data from the API
     fetch('https://earthph.sdevtech.com.ph/stocks/getStock')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Full Response:", data);
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Full Response:", data);
 
-            let stocks = data.stocks || data; // Adjust this if the array is inside a property
+        // Get the matchedUser from local storage
+        const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+        const userUid = matchedUser ? matchedUser.uid : null;
 
-            if (!Array.isArray(stocks)) {
-                console.error("The response is not an array");
-                return;
-            }
+        // Get the stocks (adjust this if needed)
+        let stocks = data.stocks || data; // Adjust this if the array is inside a property
 
-            if (stocks.length === 0) {
-                console.log('No stocks found.');
-                return;
-            }
+        if (userUid) {
+            // Filter stocks based on matching uid
+            stocks = stocks.filter(stock => stock.parent_uid === userUid);
+        }
 
-            // Apply the filter before populating stocks
-            if (userUID) {
-                stocks = filterStocksByUserUID(stocks, userUID);
-            }
+        // Sort stocks by store_name
+        stocks.sort((a, b) => a.store_name.localeCompare(b.store_name));
 
-            stocks.sort((a, b) => a.store_name.localeCompare(b.store_name));
-            populateStocks(stocks);
-        })
-        .catch(error => console.error('Error fetching stocks:', error));
+        // Populate the stocks
+        populateStocks(stocks);
+    })
+    .catch(error => console.error('Error fetching stocks:', error));
 
 });
 
