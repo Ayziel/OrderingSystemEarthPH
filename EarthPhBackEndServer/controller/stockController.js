@@ -45,7 +45,7 @@ async function createStock(req, res) {
 
 // Controller to update an existing stock record
 async function updateStock(req, res) {
-    console.log('PUT /updateStock route hit');
+    // console.log('PUT /updateStock route hit');
 
     const { uid, product_uid, store_name, product_name, quantity, stock } = req.body;
 
@@ -75,7 +75,8 @@ async function updateStock(req, res) {
         console.error('Error updating stock:', err);
         res.status(500).json({ message: 'Error updating stock', error: err });
     }
+    console.log("Payload being sent:", updatedStock);
 }
-console.log("Payload being sent:", updatedStock);
+
 
 module.exports = { getStock, createStock, updateStock };
