@@ -203,20 +203,20 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const checkStockAvailability = async (productUid, orderedQuantity) => {
         const product = productDetails.find(item => item.product_uid === productUid);
-        const maxStock = 99;
+        //const maxStock = 99;
         if (!product) return true; // If the product doesn't exist in order, it's not restricted
      
         const currentStock = await getStockLevelFromDatabase(productUid); // Await the stock level for this product
-        console.log("maxStock: ", maxStock, " compareQuan: ", currentStock+orderedQuantity);
-        console.log(maxStock >= (currentStock + orderedQuantity));
-        return maxStock >= (currentStock + orderedQuantity); // Compare current stock with the ordered quantity
+        console.log("Stock: ", currentStock.stock, " total orders: ", currentStock.quantity+orderedQuantity);
+        console.log(currentStock.stock >= (currentStock.quantity+orderedQuantity));
+        return currentStock.stock >= (currentStock.quantity+orderedQuantity); // Compare current stock with the ordered quantity
     };
      
     const getStockLevelFromDatabase = async (productUid) => {
         const stockData = await fetchStockData(); // Wait for the stock data to be fetched
         const productStock = stockData.find(stock => stock.product_uid === productUid);
         console.log(productStock);
-        return productStock ? productStock.quantity : 0; // Return the stock quantity or 0 if not found
+        return productStock ? productStock : 0; // Return the stock or 0 if not found
     };
      
 
@@ -366,7 +366,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const products = document.querySelectorAll(".product-container");
         let exceeds = [];
 
-        console.log(products);
+        //console.log(products);
         products.forEach(async product => {
             const productUid = product.getAttribute('data-uid'); // Extract the uid from the data-uid attribute
             const quantity = parseInt(product.querySelector(".product-quantity").value) || 0;
@@ -376,7 +376,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if(!isAvailable){
                 //exceeds.push (`${product.querySelector("strong").innerText}`);
-                alert(`The following products exceeded stock restrictions (>99): ${product.querySelector("strong").innerText}`);
+                alert(`The following products exceeded stock limit: ${product.querySelector("strong").innerText}`);
                 product.querySelector(".product-quantity").value = 0;
                 return true;
             }
@@ -424,13 +424,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const user = JSON.parse(localStorage.getItem('orderData')) || {};
         
             //////// TEST
-            /*
+            
             user.agentName = "Agent Name";;
             user.teamLeaderName = "Team Leader Name";
             user.area = "Area";
             user.storeName = "McDonalds";
             user.tin = "123123123";
-            */
+            
             ////////
 
             const orderData = {
