@@ -1,32 +1,26 @@
 {
-  "name": "EarthPH Order Form",
+  "name": "Product Preference Survey",
   "short_name": "Agent-info",
-  "start_url": "/System/login.html",
-   "description": "EarthPh app",
+  "start_url": "/Agent-Info.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "./images/icon-128x128.png",
+      "src": "./images/128x128-EarthPh.png",
       "sizes": "128x128",
-      "type": "image/png"
-    },
-    {
-      "src": "./images/144.png",
-      "sizes": "144x144",
       "type": "image/png"
     }
   ],
   "screenshots": [
     {
-      "src": "./images/screenshot-1.png",
+      "src": "./images/485x800-EarthPh.png",
       "sizes": "485x800",
       "type": "image/png"
     },
     {
-      "src": "./images/screenshot-desktop.png",
+      "src": "./images/1916x975-EarthPh.png",
       "sizes": "1916x975",
       "type": "image/png",
       "form_factor": "wide"
