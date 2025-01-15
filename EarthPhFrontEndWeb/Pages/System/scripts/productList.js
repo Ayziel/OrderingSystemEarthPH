@@ -161,44 +161,52 @@ function updateProductData(productId, updatedProduct) {
 }
 
 
+deleteProductButton = document.getElementById('delete-product');
 
+// Add an event listener to the delete button
+deleteProductButton.addEventListener('click', () => {
+    // Get the product details from the modal
+    const modalProductName = document.getElementById('modal-product-name').textContent;
+    const modalProductDescription = document.getElementById('modal-product-description').textContent;
+    const modalProductBrand = document.getElementById('modal-product-brand').textContent;
 
-document.getElementById('delete-product').addEventListener('click', async () => {
-    const productSKU = modalProductName.getAttribute('data-sku'); // Ensure the product SKU is stored and retrieved
-
-    if (!productSKU) {
-        alert('Product SKU is missing. Cannot delete.');
+    if (!modalProductName || !modalProductDescription || !modalProductBrand) {
+        alert('No product selected to delete!');
         return;
     }
 
-    const confirmation = confirm('Are you sure you want to delete this product?');
-    if (!confirmation) return;
+    // Confirm deletion
+    const confirmDelete = confirm(`Are you sure you want to delete "${modalProductName}"?`);
+    if (!confirmDelete) return;
 
-    try {
-        const response = await fetch('https://earthph.sdevtech.com.ph/products/deleteProduct', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${usertoken}`, // Include token if required for authentication
-            },
-            body: JSON.stringify({ productSKU }),
+    // Send DELETE request with all three fields
+    fetch('https://earthph.sdevtech.com.ph/products/deleteProduct', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            productName: modalProductName,
+            productDescription: modalProductDescription,
+            productBrand: modalProductBrand
+        }),  // Send all three fields for deletion
+    })
+        .then(response => {
+            if (response.ok) {
+                alert('Product deleted successfully!');
+                modal.style.display = 'none'; // Close modal
+                location.reload(); // Refresh the page or update UI
+            } else {
+                throw new Error('Failed to delete product.');
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting product:', error);
+            alert('An error occurred while deleting the product.');
         });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            alert('Product deleted successfully.');
-            modal.style.display = 'none'; // Close the modal
-            window.location.reload(); // Refresh the product list
-        } else {
-            console.error('Error deleting product:', data.message);
-            alert(`Failed to delete product: ${data.message}`);
-        }
-    } catch (error) {
-        console.error('Error deleting product:', error);
-        alert('An error occurred while deleting the product.');
-    }
 });
+
+
 
 
 

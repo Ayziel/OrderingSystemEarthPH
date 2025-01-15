@@ -90,19 +90,24 @@ async function updateProduct(req, res) {
   }
 }
 
+
 async function deleteProduct(req, res) {
     console.log('DELETE /deleteProduct route hit');
-  
-    const { productSKU } = req.body; // Assuming you are sending the SKU to identify the product
-  
+
+    const { productName, productDescription, productBrand } = req.body; // Accepting all three fields
+
     try {
-        // Find the product by SKU and delete it
-        const deletedProduct = await ProductModel.findOneAndDelete({ productSKU });
-  
+        // Find the product by all three fields and delete it
+        const deletedProduct = await ProductModel.findOneAndDelete({
+            productName,
+            productDescription,
+            productBrand
+        });
+
         if (!deletedProduct) {
             return res.status(404).json({ message: 'Product not found' });
         }
-  
+
         res.json({ 
             message: 'Product deleted successfully',
             product: deletedProduct // Optional: Include the deleted product details
@@ -111,7 +116,8 @@ async function deleteProduct(req, res) {
         console.error('Error deleting product:', err);
         res.status(500).json({ message: 'Error deleting product', error: err });
     }
-  }
+}
+
   
 
 
