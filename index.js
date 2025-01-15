@@ -2,10 +2,10 @@ const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-// const fetch = require('node-fetch'); // To make API requests to Movider
 require('dotenv').config(); // Ensure dotenv is configured
 
 // Import routes
+
 const userRoutes = require('./EarthPhBackEndServer/routes/userRoutes');
 const orderRoutes = require('./EarthPhBackEndServer/routes/orderRoutes');
 const productRoutes = require('./EarthPhBackEndServer/routes/productRoutes');
@@ -14,7 +14,6 @@ const storeRoutes = require('./EarthPhBackEndServer/routes/storeRoutes');
 const surveyRoutes = require('./EarthPhBackEndServer/routes/surveyRoutes');
 const stockRoutes = require('./EarthPhBackEndServer/routes/stockRoutes');
 const gCashRoutes = require('./EarthPhBackEndServer/routes/gcashMoneyRoutes');
-
 const app = express();
 
 app.use(cors()); // Enable CORS for all routes
@@ -33,69 +32,6 @@ app.use(express.static(path.join(__dirname, 'EarthPhFrontEndWeb/Pages')));
 // Root route to redirect to index.html inside 'Pages/System'
 app.get('/', (req, res) => {
     res.redirect('/System/index.html');
-});
-
-// Movider API Configuration
-const MOVIDER_API_KEY = process.env.MOVIDER_API_KEY;
-const MOVIDER_API_SECRET = process.env.MOVIDER_API_SECRET;
-
-// Route to send SMS verification code
-app.post('/send-sms', async (req, res) => {
-    const { phone_number } = req.body;
-
-    try {
-        const response = await fetch('https://api.movider.co/sms/verify/send', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${MOVIDER_API_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                phone_number: phone_number
-            })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            res.json({ success: true, message: 'Verification code sent' });
-        } else {
-            res.status(500).json({ success: false, message: 'Failed to send code' });
-        }
-    } catch (error) {
-        console.error('Error sending SMS:', error);
-        res.status(500).json({ success: false, message: 'Server error while sending SMS' });
-    }
-});
-
-// Route to verify SMS code
-app.post('/verify-sms', async (req, res) => {
-    const { phone_number, verification_code } = req.body;
-
-    try {
-        const response = await fetch('https://api.movider.co/sms/verify/verify', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${MOVIDER_API_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                phone_number: phone_number,
-                verification_code: verification_code
-            })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            res.json({ success: true, message: 'Verification successful' });
-        } else {
-            res.status(400).json({ success: false, message: 'Invalid code' });
-        }
-    } catch (error) {
-        console.error('Error verifying SMS:', error);
-        res.status(500).json({ success: false, message: 'Server error while verifying SMS' });
-    }
 });
 
 // Use Routes
