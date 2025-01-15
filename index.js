@@ -34,6 +34,14 @@ app.get('/', (req, res) => {
     res.redirect('/System/index.html');
 });
 
+app.get("/System/service-worker.js", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "", "service-worker.js"));
+});
+
+app.get("/System/manifest.json", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "", "manifest.json"));
+});
+
 // Use Routes
 app.use('/users', userRoutes);
 app.use('/orders', orderRoutes); 

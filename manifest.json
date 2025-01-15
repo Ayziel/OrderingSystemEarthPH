@@ -1,30 +1,35 @@
 {
-    "name": "Product Preference Survey",
-    "short_name": "Agent-info",
-    "start_url": "/Agent-Info.html",
-    "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#4CAF50",
-    "orientation": "portrait-primary",
-    "icons": [
-      {
-        "src": "./images/icon-128x128.png",
-        "sizes": "128x128",
-        "type": "image/png"
-      }
-    ],
-    "screenshots": [
-      {
-        "src": "./images/screenshot-1.png",
-        "sizes": "485x800",
-        "type": "image/png"
-      },
-      {
-        "src": "./images/screenshot-desktop.png",
-        "sizes": "1916x975",
-        "type": "image/png",
-        "form_factor": "wide"
-      }
-    ]
-  }
-  
+  "name": "EarthPH Order Form",
+  "short_name": "Agent-info",
+  "start_url": "/System/login.html",
+   "description": "EarthPh app",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4CAF50",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./images/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "./images/144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./images/screenshot-1.png",
+      "sizes": "485x800",
+      "type": "image/png"
+    },
+    {
+      "src": "./images/screenshot-desktop.png",
+      "sizes": "1916x975",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
+}
