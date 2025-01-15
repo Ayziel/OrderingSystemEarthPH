@@ -207,7 +207,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!product) return true; // If the product doesn't exist in order, it's not restricted
      
         const currentStock = await getStockLevelFromDatabase(productUid); // Await the stock level for this product
+        if(!currentStock.stock) return true; // If no existing stocks found, it's not restricted
+
         console.log("Stock: ", currentStock.stock, " total orders: ", currentStock.quantity+orderedQuantity);
+        console.log ("Current orders: ", currentStock.quantity, " New Orders: ", orderedQuantity)
         console.log(currentStock.stock >= (currentStock.quantity+orderedQuantity));
         return currentStock.stock >= (currentStock.quantity+orderedQuantity); // Compare current stock with the ordered quantity
     };
@@ -215,7 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const getStockLevelFromDatabase = async (productUid) => {
         const stockData = await fetchStockData(); // Wait for the stock data to be fetched
         const productStock = stockData.find(stock => stock.product_uid === productUid);
-        console.log(productStock);
+        //console.log(productStock);
         return productStock ? productStock : 0; // Return the stock or 0 if not found
     };
      
@@ -317,7 +320,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
     
                 let quantity = parseInt(quantityInput.value) || 0;
-                if(!checkExceedsStock()){
+                if(!(checkExceedsStock())){
                     quantityInput.value = quantity + 1;
                 }
     
@@ -367,13 +370,11 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const checkExceedsStock = () => {
         const products = document.querySelectorAll(".product-container");
-        let exceeds = [];
 
-        //console.log(products);
         products.forEach(async product => {
             const productUid = product.getAttribute('data-uid'); // Extract the uid from the data-uid attribute
-            const quantity = parseInt(product.querySelector(".product-quantity").value) || 0;
-            //console.log("productUid: " + productUid + " quantity: " + quantity);
+            const quantity = parseInt(product.querySelector(".product-quantity").value)+1 || 1;
+            //console.log("New Orders: " + quantity);
             //console.log (!checkStockAvailability(productUid, quantity))
             const isAvailable = await checkStockAvailability(productUid, quantity);
 
@@ -514,7 +515,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             product_uid: product.product_uid ? product.product_uid : "test",  // Correctly reference the uid from the product object
                             store_name: orderData.storeName,
                             product_name: product.name,
-                            quantity: product.quantity
+                            quantity: product.quantity,
+                            stock: product.stock ? product.stock : 10
                         };
                         
                         console.log("Parent_uid:", stockData.parent_uid, "Product_uid:", stockData.product_uid);
