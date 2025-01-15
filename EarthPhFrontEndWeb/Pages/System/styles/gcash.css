@@ -1,3 +1,259 @@
 .modal-dialog {
     min-width: 800px!important;
 }
+
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 700px;
+  }
+  
+  /* Agent Table Styles */
+  #gcashTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  #gcashTable th, #gcashTable td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  #gcashTable th {
+    background-color: #f2f2f2;
+  }
+  
+  /* Modal Overlay Styles */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Dark background */
+  
+  }
+  
+.modal-sendFunds {
+  display: none;
+  align-items: center;
+  padding: 30px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);  /* Adjusts the modal to be perfectly centered */
+  z-index: 1050; /* Ensure it's above other content */
+  border-radius: 0.5;
+  background-color: rgba(0, 0, 0, 0.808);
+  height: 100%;
+  width: 100%;
+}
+
+.modal-content-send-funds {
+  background-color: #ffffff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 700px;
+  box-shadow:  0 0 10px rgba(0, 0, 0, 1);
+}
+
+.modal-header-send-funds {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.modal-body-send-funds {
+  padding: 10px;
+}
+
+.modal-footer-send-funds {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 10px;
+  margin-top: 10px;
+}
+
+.modal-body-send-funds {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.modal-body-send-funds label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  display: block;
+}
+
+#adminName {
+  font-weight: 700;
+  color: #007bff;
+}
+
+#sendFundsInput {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+#sendFundsInput:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.form-text {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+#sendFundsInputHelp {
+  margin-top: 8px;
+}
+
+.small {
+  font-size: 14px;
+}
+
+
+.modal-footer-send-funds {
+  padding: 15px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  border-radius: 0 0 8px 8px;
+}
+
+.modal-footer-send-funds .btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.modal-footer-send-funds .btn-primary {
+  background-color: #007bff;
+  border: 1px solid #007bff;
+  color: white;
+}
+
+.modal-footer-send-funds .btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.modal-footer-send-funds .btn-secondary {
+  background-color: #6c757d;
+  border: 1px solid #6c757d;
+  color: white;
+}
+
+.modal-footer-send-funds .btn-secondary:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+
+
+/* General card styling */
+.gcash-card {
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Highlighted icon color */
+.color-highlight {
+  color: #007bff; /* Highlight color */
+}
+
+/* Card hover effect */
+.gcash-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background-color: #007bff;
+  color: #fff;
+}
+
+.gcash-card:hover .color-highlight {
+  color: #fff;
+}
+
+.gcash-card:hover h2,
+.gcash-card:hover p {
+  color: #fff;
+}
+
+/* Ripple effect on click */
+.gcash-card::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+  z-index: -1;
+}
+
+.gcash-card:active::after {
+  width: 200%;
+  height: 200%;
+}
+
+/* Media alignment tweaks */
+.media {
+  display: flex;
+  align-items: center;
+}
+
+.media-left {
+  margin-right: 15px;
+}
+

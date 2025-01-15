@@ -22,7 +22,7 @@ async function createSurvey(req, res) {
   console.log('Request Body:', req.body); // Log the incoming data
 
   // Destructure the required fields from the request body
-  const { insectControl, rodentControl, fabricSpray, airConCleaner, petCare, selectedProducts, userUid } = req.body;
+  const { insectControl, rodentControl, fabricSpray, airConCleaner, petCare, selectedProducts, userUid, storeName } = req.body;
 
   if (!insectControl || !rodentControl || !fabricSpray || !airConCleaner || !petCare) {
     return res.status(400).json({ message: 'Missing required fields in survey data' });
@@ -45,7 +45,8 @@ async function createSurvey(req, res) {
     airConCleaner,
     petCare,
     selectedProducts,
-    userUid
+    userUid,
+    storeName
   });
 
   try {

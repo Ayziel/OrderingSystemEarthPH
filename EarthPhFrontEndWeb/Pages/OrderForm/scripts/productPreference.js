@@ -1,8 +1,14 @@
+let orderData = JSON.parse(localStorage.getItem('orderData'));
+console.log("STORENAME TEST",orderData.storeName)
+
 document.getElementById('surveyForm').addEventListener('submit', async (event) => {
     event.preventDefault(); // Prevent the default form submission (page refresh)
     let matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+    let orderData = JSON.parse(localStorage.getItem('orderData'));
     const form = document.getElementById('surveyForm');
     const formData = new FormData(form);
+
+    
 
     // Collect data from the form
     const surveyData = {
@@ -12,6 +18,7 @@ document.getElementById('surveyForm').addEventListener('submit', async (event) =
         airConCleaner: formData.get('airConCleaner'),
         petCare: formData.get('petCare'),
         userUid: matchedUser.uid,
+        storeName: orderData.storeName,
         // Add selected products (you can update this part depending on your UI)
         selectedProducts: getSelectedProducts()
     };
@@ -31,7 +38,7 @@ document.getElementById('surveyForm').addEventListener('submit', async (event) =
         if (response.ok) {
             alert('Survey submitted successfully!');
             // Redirect to the order info page after successful submission
-            window.location.href = "https://earthhomecareph.astute.services/OrderForm/Order-Info.html";
+             window.location.href = "https://earthhomecareph.astute.services/OrderForm/Order-Info.html";
         } else {
             alert('Failed to submit survey. Please try again.');
         }

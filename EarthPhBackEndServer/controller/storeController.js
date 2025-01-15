@@ -17,7 +17,7 @@ async function getStores(req, res) {
 async function createOrUpdateStore(req, res) {
   console.log('Request Body:', req.body);
 
-  const { storeId, storeName, firstName, lastName, storeAddress, phoneNumber, workPhone, email, status, uid } = req.body;
+  const { storeId, storeName, firstName, lastName, storeAddress, phoneNumber, workPhone, email, status, uid, tin } = req.body;
 
   // If storeId is provided, it means we're updating an existing store
   try {
@@ -37,6 +37,7 @@ async function createOrUpdateStore(req, res) {
       store.phone = phoneNumber || store.phone;
       store.email = email || store.email;
       store.status = status || store.status;
+      store.tin = tin || store.tin;
 
       await store.save();
       return res.json({ message: 'Store updated successfully', store });
@@ -52,6 +53,7 @@ async function createOrUpdateStore(req, res) {
       email,
       status,
       uid,
+      tin
     });
 
     await store.save();

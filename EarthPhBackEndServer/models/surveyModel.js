@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const surveySchema = new mongoose.Schema({
+  storeName: {
+    type: String,
+    required: true
+  },
   userUid: {
     type: String,
     required: true

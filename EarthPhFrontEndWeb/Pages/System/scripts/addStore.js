@@ -2,7 +2,7 @@ const userRole = localStorage.getItem('userRole');
 const usertoken = localStorage.getItem('authToken');
 console.log("userRole", userRole);
 console.log("usertoken", usertoken);
-
+let tin = '';
 document.addEventListener('DOMContentLoaded', () => {
     const userForm = document.getElementById('userForm');
   
@@ -18,8 +18,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const phoneNumber = document.getElementById('phoneNumber').value;
         const email = document.getElementById('email').value;
         const uid = uuid.v4();
+
+        // Restrict input to only numbers and dashes, ensuring TIN format
+        document.getElementById('tin').addEventListener('keypress', function (event) {
+            // Allow numbers and dashes only
+            if (!/[\d\-]/.test(event.key)) {
+                event.preventDefault();
+            }
+        });
+
         // Check if any required fields are empty
-        if (!storeAddress || !storeName || !status || !firstName || !lastName || !phoneNumber || !email) {
+        if (!storeAddress || !storeName || !status || !firstName || !lastName || !phoneNumber || !email || !tin) {
             alert("Please fill in all fields.");
             return;
         }
@@ -36,7 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
             lastName,
             phoneNumber: parsedPhoneNumber,  // Use parsed phone number here
             email,
-            uid
+            uid,
+            tin
           };
           
         
@@ -70,4 +80,29 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('There was an error with the request.');
         }
     });
+});
+
+
+document.getElementById('tin').addEventListener('input', function (event) {
+    let value = event.target.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+    let formatted = '';
+
+    // Add dashes after every 3 digits
+    for (let i = 0; i < value.length; i += 3) {
+        if (formatted.length > 0) {
+            formatted += '-';
+        }
+        formatted += value.substring(i, i + 3);
+    }
+
+    // Limit to 12 digits (15 characters including dashes)
+    if (formatted.length > 15) {
+        formatted = formatted.substring(0, 15);
+    }
+
+    // Update the input field with the formatted TIN
+    event.target.value = formatted;
+
+    // Store the formatted value in the global variable
+    tin = formatted;
 });

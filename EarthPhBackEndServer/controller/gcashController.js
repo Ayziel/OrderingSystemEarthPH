@@ -98,3 +98,57 @@ exports.getAllGCash = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error.' });
     }
 };
+
+
+// Send GCash to another user
+exports.sendGCash = async (req, res) => {
+    try {
+        const { senderUid, receiverUid, amount } = req.body;
+
+        // Check for required fields
+        if (!senderUid || !receiverUid || amount == null) {
+            return res.status(400).json({ message: 'Missing required fields.' });
+        }
+
+        // Validate that the amount is a positive number
+        if (isNaN(amount) || amount <= 0) {
+            return res.status(400).json({ message: 'Invalid amount. It must be a positive number.' });
+        }
+
+        // Fetch the sender's GCash record
+        const senderGCash = await GCash.findOne({ userUid: senderUid });
+        if (!senderGCash) {
+            return res.status(404).json({ message: 'Sender GCash record not found.' });
+        }
+
+        // Fetch the receiver's GCash record
+        const receiverGCash = await GCash.findOne({ userUid: receiverUid });
+        if (!receiverGCash) {
+            return res.status(404).json({ message: 'Receiver GCash record not found.' });
+        }
+
+        // Ensure the sender has enough balance to send
+        const senderBalance = parseFloat(senderGCash.cash);
+        if (senderBalance < amount) {
+            return res.status(400).json({ message: 'Insufficient funds in sender account.' });
+        }
+
+        // Deduct the amount from the sender's GCash
+        senderGCash.cash = (senderBalance - amount).toString();
+        await senderGCash.save();
+
+        // Add the amount to the receiver's GCash
+        const receiverBalance = parseFloat(receiverGCash.cash);
+        receiverGCash.cash = (receiverBalance + amount).toString();
+        await receiverGCash.save();
+
+        return res.status(200).json({ 
+            message: 'GCash successfully sent.',
+            senderGCash,
+            receiverGCash
+        });
+    } catch (error) {
+        console.error('Error sending GCash:', error);
+        return res.status(500).json({ message: 'Internal server error.' });
+    }
+};

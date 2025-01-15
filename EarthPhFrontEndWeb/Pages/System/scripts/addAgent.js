@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const repeatPassword = document.getElementById('repeat_password').value;
         const role = document.getElementById('role').value;
         const uid = uuid.v4();
+
         // Validate fields
         if (!firstName || !lastName || !phoneNumber || !workPhone || !email || !address || !tin || !team || !userName || !password || !repeatPassword || !role) {
             console.log("Form validation failed: Missing required fields");
@@ -85,6 +86,27 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 console.log('User created successfully');
                 alert('User created successfully');
+
+                // Now, create GCash for the user
+                console.log("Initializing GCash creation...");
+                const gcashData = { userUid: uid, balance: 0 };
+                const gcashResponse = await fetch('https://earthph.sdevtech.com.ph/gCash/createGCash', {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(gcashData),
+                });
+
+                const gcashResult = await gcashResponse.json();
+                console.log("GCash Response from server:", gcashResult);
+                console.log("GCash Response status:", gcashResponse.status);
+
+                if (gcashResponse.ok) {
+                    console.log('GCash created successfully');
+                    alert('GCash initialized successfully for the user.');
+                } else {
+                    console.error('Error creating GCash:', gcashResult.message || 'No message');
+                    alert(`GCash creation failed: ${gcashResult.message || 'Unknown error'}`);
+                }
             } else {
                 console.log('Error creating user:', result.message || 'No message');
                 alert('Error creating user: ' + (result.message || 'Unknown error'));

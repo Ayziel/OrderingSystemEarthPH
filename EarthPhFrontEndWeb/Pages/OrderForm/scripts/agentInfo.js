@@ -68,9 +68,6 @@ function populateUserData(matchedUser, users) {
     // Populate area field with matched user's address
     document.getElementById('area').value = matchedUser.address;
 
-    // Populate TIN field with matched user's TIN
-    document.getElementById('tin').value = matchedUser.tin;
-
     // Populate team leader name field if available
     const teamLeader = findTeamLeader(users, matchedUser.team);
     if (teamLeader) {
@@ -188,6 +185,7 @@ function populateStoresDropdown(stores) {
         option.value = store._id;
         option.textContent = store.name;
         option.setAttribute('data-uid', store.uid); // Store the store uid in a data attribute
+        option.setAttribute('data-tin', store.tin); // Store the store's TIN in a data attribute
         option.setAttribute('data-store', JSON.stringify(store)); // Store the entire store object in a data attribute
         storeSelect.appendChild(option);
     });
@@ -202,9 +200,15 @@ function populateStoresDropdown(stores) {
         if (storeData) {
             localStorage.setItem('storeData', JSON.stringify(storeData)); // Store the entire store data in localStorage
             console.log('Selected store data:', storeData); // Log the store data for debugging
+            
+            // Now update the TIN field with the selected store's TIN
+            const storeTIN = selectedOption.getAttribute('data-tin');
+            document.getElementById('tin').value = storeTIN; // Set the TIN field value to the selected store's TIN
+            console.log('Updated TIN:', storeTIN); // Log the updated TIN for debugging
         }
     });
 }
+
 
 // Form validation before submission
 document.getElementById('orderForm').addEventListener('submit', (event) => {

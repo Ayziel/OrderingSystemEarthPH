@@ -24,8 +24,6 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     
-
-    
     <title>EarthPH</title>
 </head>
 <body>
@@ -58,7 +56,7 @@
               </a>
             </li>
             <li class="item">
-              <a id="newOrderLink" href="https://earthhomecareph.astute.services/OrderForm/Agent-Info.html" class="nav_link sublink" target="_blank">
+              <a id="newOrderLink" href="https://earthhomecareph.astute.services/OrderForm/Agent-Info.html" class="nav_link sublink">
                 <span class="navlink_icon">
                   <i class="bx bx-credit-card"></i>
                 </span>
@@ -109,7 +107,7 @@
               <ul class="menu_items submenu">
                   <a href="https://earthhomecareph.astute.services/System/Agent-Name.html" class="nav_link sublink">By Name</a>
                   <a href="https://earthhomecareph.astute.services/System/Agent-Leader.html" class="nav_link sublink">By Team Leader</a>
-                  <a href="https://earthhomecareph.astute.services/System/stock-list.html" class="nav_link sublink">Stocks</a> 
+                  <!-- <a href="https://earthhomecareph.astute.services/System/stock-list.html" class="nav_link sublink">Stocks</a> -->
               </ul>
             </li>
             <li class="item">
@@ -125,7 +123,6 @@
                 <a href="https://earthhomecareph.astute.services/System/Add-Agent.html" class="nav_link sublink">Add Agent</a>
                 <a href="https://earthhomecareph.astute.services/System/Add-Product.html" class="nav_link sublink">Add Products</a>
                 <a href="https://earthhomecareph.astute.services/System/Add-Store.html" class="nav_link sublink">Add Store</a>
-                <a href="https://earthhomecareph.astute.services/System/survey.html" class="nav_link sublink">Survey</a>
               </ul>
             </li>
             <!-- end -->
@@ -167,7 +164,7 @@
             <div class="container-fluid">
                 <!-- Start Page Content -->
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="card p-30">
                             <div class="media">
                                 <div class="media-left meida media-middle">
@@ -180,7 +177,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="card p-30">
                             <div class="media">
                                 <div class="media-left meida media-middle">
@@ -193,7 +190,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="card p-30">
                             <div class="media">
                                 <div class="media-left meida media-middle">
@@ -206,8 +203,19 @@
                             </div>
                         </div>
                     </div>
-                    
-                    
+                    <div class="col-md-3" id="gcashWidget">
+                        <div class="card p-30 gcash-card" id="gcashCard" data-toggle="modal" data-target="#gcashModal">
+                            <div class="media">
+                                <div class="media-left meida media-middle">
+                                    <span><i class="fa fa-wallet f-s-40 color-highlight"></i></span>
+                                </div>
+                                <div class="media-body media-text-right">
+                                    <h2 id="gcash">₱0</h2>
+                                    <p class="m-b-0">Gcash</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row bg-white m-l-0 m-r-0 box-shadow ">
@@ -300,13 +308,79 @@
         </div>
     </div>
 
+<div class="modal" id="gcashModal" tabindex="-1" role="dialog" aria-labelledby="gcashModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="gcashModalLabel">Gcash Information</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Table for displaying GCash records -->
+                <table id="gcashTable" class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Team</th>
+                            <th>Role</th>
+                            <th>Cash</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gcashTableBody">
+                        <!-- This will be populated dynamically -->
+                    </tbody>
+                </table>
+                <!-- Message if no data is found -->
+                <p id="gcashModalContent" style="display: none;">No GCash data available.</p>
+            </div>
+            <table id="adminTable" class="admin-table">
+              <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Team</th>
+                    <th>Role</th>
+                    <th>number</th>
+                </tr>
+            </thead>
+            <tbody id="adminTableBody">
+              <!-- This will be populated dynamically -->
+          </tbody>
+            </table>
 
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    
+<div class="modal-sendFunds" id="sendFundsModal" tabindex="-1" role="dialog" aria-labelledby="sendFundsModalLabel">
+    <div class="modal-dialog-send-funds" role="document">
+        <div class="modal-content-send-funds">
+            <div class="modal-header-send-funds">
+                <h5 class="modal-title-send-funds" id="sendFundsModalLabel">Send Funds to Admin</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body-send-funds">
+                <label for="sendFundsInput">Send money to <span id="adminName"></span></label>
+                <input type="number" id="sendFundsInput" placeholder="Enter amount to send" aria-describedby="sendFundsInputHelp">
+                <small id="sendFundsInputHelp" class="form-text text-muted">Enter the amount you wish to send to the admin.</small>
+            </div>
+            <div class="modal-footer-send-funds">
+                <button type="button" class="btn btn-primary" id="sendFundsBtn">Send Funds</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 
     <script src="./scripts/script.js"></script>
     <script src="./scripts/dashboard.js"></script>
     <script src="./scripts/agentPerformance.js"></script>
-    <!-- <script src="./scripts/gcashdashboard.js"></script> -->
+    <script src="./scripts/gcashdashboard.js"></script>
 </body>
 </html>
