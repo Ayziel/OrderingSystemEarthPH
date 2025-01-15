@@ -28,20 +28,6 @@ exports.createOrder = async (req, res) => {
         // Log the parsed values for debugging
         console.log('Parsed values:', listPrice, totalAmount, totalItems);
 
-        // Handle products array and default description
-        const updatedProducts = orderData.products.map(product => {
-            // Apply discount to the price before calculating the total for each product
-            const discountedPrice = product.price * (1 - (product.discount / 100));  // Discount applied as percentage
-            const total = discountedPrice * product.quantity;
-
-            return {
-                ...product,
-                price: discountedPrice,  // Set the discounted price for the product
-                total: total,  // Set the total based on discounted price
-                product_uid: product.product_uid  // Ensure product_uid is included
-            };
-        });
-
         // Create a new order instance using the data from the frontend
         const newOrder = new Order({
             agentName: orderData.agentName,
