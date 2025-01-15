@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EarthPh - 2FA SMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles/2fa.css">
+</head>
+<body>
+    <div class="form-container">
+        <div class="logo"></div>
+        <h2>EarthPh - SMS Verification</h2>
+        <form id="verifyForm">
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="text" name="phone" id="phone" placeholder="Enter your phone number" required>
+            </div>
+            <button type="button" id="sendCode">Send Verification Code</button>
+            
+            <div class="form-group">
+                <label for="verificationCode">Verification Code</label>
+                <input type="text" name="verificationCode" id="verificationCode" placeholder="Enter the verification code" required disabled>
+            </div>
+            
+            <button type="submit" id="verifyButton" disabled>Verify Code</button>
+        </form>
+    </div>
+
+    <script src="./scripts/2fa.js"></script>
+</body>
+</html>
