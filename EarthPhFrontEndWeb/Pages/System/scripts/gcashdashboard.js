@@ -29,7 +29,10 @@ const logGCashData = () => {
                         console.log("GCash data found for user:", data.gcash);
                         
                         // Update the #gcash element with the cash value (Peso sign)
-                        document.getElementById('gcash').textContent = `₱${(parseFloat(data.gcash.cash || '0')).toFixed(2)}`;
+                        document.getElementById('gcash').textContent = `₱${(parseFloat(data.gcash.cash || '0')).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+
+
+
                         // Use '₱0' if no cash value is found
                         
                         resolve(data.gcash);  // Resolve the promise with the GCash data
