@@ -60,6 +60,7 @@ function populateOrders(orders) {
             <td>${new Date(order.orderDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
             <td>${order.area || 'No location'}</td>
             <td>${order.totalAmount ? '₱ ' + order.totalAmount.toFixed(2) : 'No amount'}</td>
+            <td>${order.paymentMode ? order.paymentMode.charAt(0).toUpperCase() + order.paymentMode.slice(1) : 'No method'}</td>
             <td>
                 <select class="status-dropdown" data-order-id="${order._id}">
                     <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
