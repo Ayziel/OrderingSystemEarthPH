@@ -24,12 +24,6 @@
       "src": "./images/screenshot-1.png",
       "sizes": "485x800",
       "type": "image/png"
-    },
-    {
-      "src": "./images/screenshot-desktop.png",
-      "sizes": "1916x975",
-      "type": "image/png",
-      "form_factor": "wide"
     }
   ]
 }
