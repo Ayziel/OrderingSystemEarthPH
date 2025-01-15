@@ -429,11 +429,11 @@ document.addEventListener("DOMContentLoaded", () => {
         
             //////// TEST
             
-            user.agentName = "Agent Name";;
-            user.teamLeaderName = "Team Leader Name";
-            user.area = "Area";
-            user.storeName = "McDonalds";
-            user.tin = "123123123";
+            //user.agentName = "Agent Name";;
+            //user.teamLeaderName = "Team Leader Name";
+            //user.area = "Area";
+            //user.storeName = "McDonalds";
+            //user.tin = "123123123";
             
             ////////
 
