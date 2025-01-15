@@ -130,10 +130,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        document.getElementById("listPrice").value = totalAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        document.getElementById("listPrice").value = totalAmount.toFixed(2);
         document.getElementById("totalItems").value = totalItems;
-        document.getElementById("totalAmount").value = totalAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        document.getElementById("totalAmountReceipt").innerText = `₱${totalAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+        document.getElementById("totalAmount").value = totalAmount.toFixed(2);
+        document.getElementById("totalAmountReceipt").innerText = `₱${totalAmount.toFixed(2)}`;
 
     };
 
@@ -278,7 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             itemsPurchasedElement.innerHTML = itemsHTML;
-            totalAmountElement.textContent = `₱${totalAmount.toFixed(2)}`;
+            totalAmountElement.textContent = `₱${totalAmount}`;
         };
 
         if (submitOrderButton) {
