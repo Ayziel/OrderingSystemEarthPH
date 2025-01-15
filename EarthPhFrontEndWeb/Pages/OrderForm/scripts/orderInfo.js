@@ -130,10 +130,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        document.getElementById("listPrice").value = totalAmount.toFixed(2);
+        document.getElementById("listPrice").value = totalAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         document.getElementById("totalItems").value = totalItems;
-        document.getElementById("totalAmount").value = totalAmount.toFixed(2);
-        document.getElementById("totalAmountReceipt").innerText = `₱${totalAmount.toFixed(2)}`;
+        document.getElementById("totalAmount").value = totalAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        document.getElementById("totalAmountReceipt").innerText = `₱${totalAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
 
     };
 
@@ -272,7 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <p><strong>${item.name}</strong><br>
                        Price: ₱${item.price.toFixed(2)}<br>
                        Quantity: ${item.quantity}<br>
-                       Total: ₱${item.total.toFixed(2)}</p>
+                       Total: ₱${item.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                        `;
                 totalAmount += item.total;
             });

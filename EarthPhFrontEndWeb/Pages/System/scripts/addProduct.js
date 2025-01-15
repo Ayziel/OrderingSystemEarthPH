@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const manufacturer = document.querySelector('input[placeholder="Enter manufacturer"]').value;
         const price = Math.ceil(parseFloat(document.querySelector('input[placeholder="Enter Price"]').value));
         const size = document.querySelector('input[placeholder="Enter Size"]').value;
-    
         // Get the selected store name and UID
         const storeSelect = document.querySelector('#store-name');
         const storeName = storeSelect.value;
