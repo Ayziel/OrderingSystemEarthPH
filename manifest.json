@@ -18,12 +18,6 @@
       "src": "./images/485x800-EarthPh.png",
       "sizes": "485x800",
       "type": "image/png"
-    },
-    {
-      "src": "./images/1916x975-EarthPh.png",
-      "sizes": "1916x975",
-      "type": "image/png",
-      "form_factor": "wide"
     }
   ]
 }
