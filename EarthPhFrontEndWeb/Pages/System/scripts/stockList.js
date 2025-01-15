@@ -58,6 +58,7 @@ function populateStocks(stocks) {
             <td>${stock.store_name || 'No store name'}</td>
             <td>${stock.product_name || 'No product name'}</td>
             <td>${stock.quantity || '0'}</td>
+            <td>${stock.stock || '0'}</td>
         `;
 
         row.addEventListener('click', () => {
@@ -128,6 +129,10 @@ function openStockModal(stock) {
                 <th>Quantity</th>
                 <td><input type="number" id="edit-quantity" value="${stock.quantity || 0}" class="modal-input" disabled></td>
             </tr>
+                        <tr>
+                <th>stock</th>
+                <td><input type="number" id="edit-stock" value="${stock.stock || 0}" class="modal-input" disabled></td>
+            </tr>
         </table>
         <button id="edit-button" class="edit-button">Edit</button>
         <button id="save-button" style="display:none;" class="save-button">Save</button>
@@ -150,6 +155,7 @@ function openStockModal(stock) {
         document.getElementById('edit-store-name').disabled = false;
         document.getElementById('edit-product-name').disabled = false;
         document.getElementById('edit-quantity').disabled = false;
+        document.getElementById('edit-stock').disabled = false;
         document.getElementById('save-button').style.display = 'inline-block';
     });
 
@@ -159,7 +165,8 @@ function openStockModal(stock) {
             uid: stock.uid,
             store_name: document.getElementById('edit-store-name').value,
             product_name: document.getElementById('edit-product-name').value,
-            quantity: parseInt(document.getElementById('edit-quantity').value, 10)
+            quantity: parseInt(document.getElementById('edit-quantity').value, 10),
+            stock: parseInt(document.getElementById('edit-stock').value, 10)
         };
 
         saveStockToDatabase(updatedStock);
@@ -206,7 +213,7 @@ function exportStocksToExcel() {
 
             if (Array.isArray(stocks) && stocks.length > 0) {
                 const rows = [];
-                const headers = ["No.", "Store Name", "Product Name", "Quantity"];
+                const headers = ["No.", "Store Name", "Product Name", "Quantity", "Stock"];
                 rows.push(headers);
 
                 stocks.forEach((stock, index) => {
@@ -214,7 +221,8 @@ function exportStocksToExcel() {
                         index + 1,
                         stock.store_name,
                         stock.product_name,
-                        stock.quantity
+                        stock.quantity,
+                        stock.stock
                     ]);
                 });
 

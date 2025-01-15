@@ -514,7 +514,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             product_uid: product.product_uid ? product.product_uid : "test",  // Correctly reference the uid from the product object
                             store_name: orderData.storeName,
                             product_name: product.name,
-                            quantity: product.quantity
+                            quantity: product.quantity,
+                            stock: 10
                         };
                         
                         console.log("Parent_uid:", stockData.parent_uid, "Product_uid:", stockData.product_uid);

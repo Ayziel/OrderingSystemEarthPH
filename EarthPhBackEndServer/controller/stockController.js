@@ -47,7 +47,7 @@ async function createStock(req, res) {
 async function updateStock(req, res) {
     console.log('PUT /updateStock route hit');
 
-    const { uid, product_uid, store_name, product_name, stock } = req.body;
+    const { uid, product_uid, store_name, product_name, quantity, stock } = req.body;
 
     try {
         // Find the stock record by `uid` (or another identifier) and update it
@@ -76,5 +76,6 @@ async function updateStock(req, res) {
         res.status(500).json({ message: 'Error updating stock', error: err });
     }
 }
+console.log("Payload being sent:", updatedStock);
 
 module.exports = { getStock, createStock, updateStock };
