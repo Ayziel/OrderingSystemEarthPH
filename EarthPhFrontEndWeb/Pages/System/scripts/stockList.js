@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Retrieve the saved data from localStorage
     const localStorageData = localStorage.getItem('orderData'); // Retrieve the stored order data from localStorage
     const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+    console.log("Matched Usersss:", matchedUser.uid);
     let userUID = null;
 
     if (localStorageData) {
@@ -38,12 +39,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Function to filter stocks based on user UID
-    function filterStocksByUserUID(stocks, userUID) {
-        return stocks.filter(stock => stock.parent_uid === userUID);
-    }
+    // function filterStocksByUserUID(stocks, userUID) {
+    //     return stocks.filter(stock => stock.parent_uid === userUID);
+    // }
 
     function populateStocks(stocks) {
-        const ordersBody = document.querySelector('.orders-body');
+        const ordersBody = document.querySelector('orders-body-stock');
         ordersBody.innerHTML = ''; // Clear previous rows
         console.log("Stocks:", stocks);
         console.log("UserUID", userUID);
