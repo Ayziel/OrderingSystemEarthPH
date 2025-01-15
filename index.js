@@ -2,7 +2,7 @@ const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const fetch = require('node-fetch'); // To make API requests to Movider
+// const fetch = require('node-fetch'); // To make API requests to Movider
 require('dotenv').config(); // Ensure dotenv is configured
 
 // Import routes
