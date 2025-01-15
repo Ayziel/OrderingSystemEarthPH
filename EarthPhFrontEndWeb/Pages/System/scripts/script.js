@@ -123,3 +123,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('newOrderLink').style.display = 'none'; // Hide the New Order link
   }
 });
+
+const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+if (matchedUser && matchedUser.role !== 'agent') {
+  // Find the link for Stocks and hide it
+  const stocksLink = document.querySelector('a[href="https://earthhomecareph.astute.services/System/stock-list.html"]');
+  if (stocksLink) {
+      stocksLink.style.display = 'none';  // Hide the link
+  }
+}

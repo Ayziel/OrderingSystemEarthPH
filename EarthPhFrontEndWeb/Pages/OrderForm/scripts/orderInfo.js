@@ -203,20 +203,23 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const checkStockAvailability = async (productUid, orderedQuantity) => {
         const product = productDetails.find(item => item.product_uid === productUid);
-        const maxStock = 99;
+        //const maxStock = 99;
         if (!product) return true; // If the product doesn't exist in order, it's not restricted
      
         const currentStock = await getStockLevelFromDatabase(productUid); // Await the stock level for this product
-        console.log("maxStock: ", maxStock, " compareQuan: ", currentStock+orderedQuantity);
-        console.log(maxStock >= (currentStock + orderedQuantity));
-        return maxStock >= (currentStock + orderedQuantity); // Compare current stock with the ordered quantity
+        if(!currentStock.stock) return true; // If no existing stocks found, it's not restricted
+
+        console.log("Stock: ", currentStock.stock, " total orders: ", currentStock.quantity+orderedQuantity);
+        console.log ("Current orders: ", currentStock.quantity, " New Orders: ", orderedQuantity)
+        console.log(currentStock.stock >= (currentStock.quantity+orderedQuantity));
+        return currentStock.stock >= (currentStock.quantity+orderedQuantity); // Compare current stock with the ordered quantity
     };
      
     const getStockLevelFromDatabase = async (productUid) => {
         const stockData = await fetchStockData(); // Wait for the stock data to be fetched
         const productStock = stockData.find(stock => stock.product_uid === productUid);
-        console.log(productStock);
-        return productStock ? productStock.quantity : 0; // Return the stock quantity or 0 if not found
+        //console.log(productStock);
+        return productStock ? productStock : 0; // Return the stock or 0 if not found
     };
      
 
@@ -317,7 +320,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
     
                 let quantity = parseInt(quantityInput.value) || 0;
-                if(!checkExceedsStock()){
+                if(!(checkExceedsStock())){
                     quantityInput.value = quantity + 1;
                 }
     
@@ -367,19 +370,17 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const checkExceedsStock = () => {
         const products = document.querySelectorAll(".product-container");
-        let exceeds = [];
 
-        console.log(products);
         products.forEach(async product => {
             const productUid = product.getAttribute('data-uid'); // Extract the uid from the data-uid attribute
-            const quantity = parseInt(product.querySelector(".product-quantity").value) || 0;
-            //console.log("productUid: " + productUid + " quantity: " + quantity);
+            const quantity = parseInt(product.querySelector(".product-quantity").value)+1 || 1;
+            //console.log("New Orders: " + quantity);
             //console.log (!checkStockAvailability(productUid, quantity))
             const isAvailable = await checkStockAvailability(productUid, quantity);
 
             if(!isAvailable){
                 //exceeds.push (`${product.querySelector("strong").innerText}`);
-                alert(`The following products exceeded stock restrictions (>99): ${product.querySelector("strong").innerText}`);
+                alert(`The following products exceeded stock limit: ${product.querySelector("strong").innerText}`);
                 product.querySelector(".product-quantity").value = 0;
                 return true;
             }
@@ -426,15 +427,15 @@ document.addEventListener("DOMContentLoaded", () => {
         
             const user = JSON.parse(localStorage.getItem('orderData')) || {};
         
-            //////// TEST
-            /*
-            user.agentName = "Agent Name";;
-            user.teamLeaderName = "Team Leader Name";
-            user.area = "Area";
-            user.storeName = "McDonalds";
-            user.tin = "123123123";
-            */
-            ////////
+            // //////// TEST
+            
+            // user.agentName = "Agent Name";;
+            // user.teamLeaderName = "Team Leader Name";
+            // user.area = "Area";
+            // user.storeName = "McDonalds";
+            // user.tin = "123123123";
+            
+            // ////////
 
             const orderData = {
                 agentName: user.agentName,
@@ -515,7 +516,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             store_name: orderData.storeName,
                             product_name: product.name,
                             quantity: product.quantity,
-                            stock: 10
+                            stock: product.stock ? product.stock : 10
                         };
                         
                         console.log("Parent_uid:", stockData.parent_uid, "Product_uid:", stockData.product_uid);
