@@ -1,108 +1,108 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-function logAllLocalStorageItems() {
-    console.log("Items in localStorage:");
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i); // Get the key at index `i`
-        const value = localStorage.getItem(key); // Get the value associated with the key
-        console.log(`${key}: ${value}`);
+    function logAllLocalStorageItems() {
+        console.log("Items in localStorage:");
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i); // Get the key at index `i`
+            const value = localStorage.getItem(key); // Get the value associated with the key
+            console.log(`${key}: ${value}`);
+        }
     }
-}
 
-// Call the function
-logAllLocalStorageItems();
-
-
-
+    // Call the function
+    logAllLocalStorageItems();
 
     // Retrieve the saved data from localStorage
-// Retrieve the saved data from localStorage
-const localStorageData = localStorage.getItem('orderData'); // Retrieve the stored order data from localStorage
-const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
-let userUID = null;
+    const localStorageData = localStorage.getItem('orderData'); // Retrieve the stored order data from localStorage
+    const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+    let userUID = null;
 
-if (localStorageData) {
-    try {
-        // Parse the JSON string from localStorage
-        const orderData = JSON.parse(localStorageData);
-        console.log("Order Data from localStorage:", orderData);
+    if (localStorageData) {
+        try {
+            // Parse the JSON string from localStorage
+            const orderData = JSON.parse(localStorageData);
+            console.log("Order Data from localStorage:", orderData);
 
-        // Access and set the user UID from matchedUser
-        if (matchedUser && matchedUser.uid) {
-            userUID = matchedUser.uid;
-            console.log("User UID from matchedUser:", userUID);
-        } else {
-            console.warn("No user UID found in the matchedUser.");
+            // Access and set the user UID from matchedUser
+            if (matchedUser && matchedUser.uid) {
+                userUID = matchedUser.uid;
+                console.log("User UID from matchedUser:", userUID);
+            } else {
+                console.warn("No user UID found in the matchedUser.");
+            }
+        } catch (error) {
+            console.error("Error parsing localStorage data:", error);
         }
-    } catch (error) {
-        console.error("Error parsing localStorage data:", error);
+    } else {
+        console.warn("No 'orderData' found in localStorage.");
     }
-} else {
-    console.warn("No 'orderData' found in localStorage.");
-}
 
-function populateStocks(stocks) {
-    const ordersBody = document.querySelector('.orders-body');
-    ordersBody.innerHTML = ''; // Clear previous rows
-    console.log("Stocks:", stocks);
-    console.log("UserUID", userUID);
-    let globalCounter = 1;
+    // Function to filter stocks based on user UID
+    function filterStocksByUserUID(stocks, userUID) {
+        return stocks.filter(stock => stock.parent_uid === userUID);
+    }
 
-    // No filtering, just loop through all stocks
-    stocks.forEach(stock => {
-        const row = document.createElement('tr');
-        console.log("Stock parent_uid:", stock.parent_uid);
-        // Populate row with stock data
-        row.innerHTML = `
-            <td>${globalCounter++}</td>
-            <td>${stock.store_name || 'No store name'}</td>
-            <td>${stock.product_name || 'No product name'}</td>
-            <td>${stock.quantity || '0'}</td>
-            <td>${stock.stock || '0'}</td>
-        `;
+    function populateStocks(stocks) {
+        const ordersBody = document.querySelector('.orders-body');
+        ordersBody.innerHTML = ''; // Clear previous rows
+        console.log("Stocks:", stocks);
+        console.log("UserUID", userUID);
+        let globalCounter = 1;
 
-        row.addEventListener('click', () => {
-            openStockModal(stock); // Pass the stock object to the modal
+        // Loop through filtered stocks
+        stocks.forEach(stock => {
+            const row = document.createElement('tr');
+            console.log("Stock parent_uid:", stock.parent_uid);
+
+            // Populate row with stock data
+            row.innerHTML = `
+                <td>${globalCounter++}</td>
+                <td>${stock.store_name || 'No store name'}</td>
+                <td>${stock.product_name || 'No product name'}</td>
+                <td>${stock.quantity || '0'}</td>
+                <td>${stock.stock || '0'}</td>
+            `;
+
+            row.addEventListener('click', () => {
+                openStockModal(stock); // Pass the stock object to the modal
+            });
+
+            ordersBody.appendChild(row);
         });
-
-        ordersBody.appendChild(row);
-    });
-}
-
+    }
 
     // Fetch the stock data from the API
     fetch('https://earthph.sdevtech.com.ph/stocks/getStock')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Full Response:", data);
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Full Response:", data);
 
-        const stocks = data.stocks || data; // Adjust this if the array is inside a property
+            let stocks = data.stocks || data; // Adjust this if the array is inside a property
 
+            if (!Array.isArray(stocks)) {
+                console.error("The response is not an array");
+                return;
+            }
 
-        if (!Array.isArray(stocks)) {
-            console.error("The response is not an array");
-            return;
-        }
+            if (stocks.length === 0) {
+                console.log('No stocks found.');
+                return;
+            }
 
-        if (stocks.length === 0) {
-            console.log('No stocks found.');
-            return;
-        }
+            // Apply the filter before populating stocks
+            if (userUID) {
+                stocks = filterStocksByUserUID(stocks, userUID);
+            }
 
-        // Log each item in the stocks array
-         stocks.forEach(stock => {
-            console.log("Stock parent_uid:", stock.parent_uid); // CHANGE
-         });
-
-        stocks.sort((a, b) => a.store_name.localeCompare(b.store_name));
-        populateStocks(stocks);
-    })
-    .catch(error => console.error('Error fetching stocks:', error));
+            stocks.sort((a, b) => a.store_name.localeCompare(b.store_name));
+            populateStocks(stocks);
+        })
+        .catch(error => console.error('Error fetching stocks:', error));
 
 });
 
@@ -129,8 +129,8 @@ function openStockModal(stock) {
                 <th>Quantity</th>
                 <td><input type="number" id="edit-quantity" value="${stock.quantity || 0}" class="modal-input" disabled></td>
             </tr>
-                        <tr>
-                <th>stock</th>
+            <tr>
+                <th>Stock</th>
                 <td><input type="number" id="edit-stock" value="${stock.stock || 0}" class="modal-input" disabled></td>
             </tr>
         </table>
@@ -195,7 +195,6 @@ function saveStockToDatabase(updatedStock) {
             alert('Failed to update stock. Please try again later.');
         });
 }
-
 
 // Export stocks to Excel
 document.getElementById('export-btn').addEventListener('click', exportStocksToExcel);
