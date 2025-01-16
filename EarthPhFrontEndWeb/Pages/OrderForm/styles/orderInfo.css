@@ -305,3 +305,12 @@ input[type="text"], select {
     cursor: not-allowed;        /* Change cursor to indicate it's disabled */
     box-shadow: none;            /* Remove shadow on disabled button */
 }
+
+.NewOrderTitle {
+    text-align: center; /* Center text horizontally */
+    white-space: nowrap; /* Prevent text from wrapping to the next line */
+    overflow: hidden; /* Ensure it doesn't overflow the container */
+    text-overflow: ellipsis; /* Optional: add ellipsis if it's too long */
+    width: 100%; /* Ensure it spans the full container */
+    display: block; /* Ensure it behaves like a block-level element */
+}
