@@ -16,6 +16,16 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('No orders found.');
             return;
         }
+        
+        // Get the user data from localStorage
+        const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+        const userUid = matchedUser ? matchedUser.uid : null;
+        const userRole = matchedUser ? matchedUser.role : null;
+
+        // Only filter if role is 'agent'
+        if (userRole === 'agent' && userUid) {
+            orders = orders.filter(order => order.userUid === userUid);
+        }
 
         const today = new Date();
         const startOfDay = new Date(today);
