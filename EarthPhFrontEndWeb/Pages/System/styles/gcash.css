@@ -247,13 +247,4 @@
   height: 200%;
 }
 
-/* Media alignment tweaks */
-.media {
-  display: flex;
-  align-items: center;
-}
-
-.media-left {
-  margin-right: 15px;
-}
 

@@ -151,3 +151,4 @@ const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
 
 document.getElementById('agent-name-nav-bar').innerText = (matchedUser.firstName + " " + matchedUser.lastName) || 'Agent Name';
 
+document.getElementById('agent-role-nav-bar').innerText = (matchedUser.role) || 'Agent Role';

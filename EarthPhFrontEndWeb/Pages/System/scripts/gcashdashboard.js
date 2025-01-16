@@ -1,16 +1,78 @@
+const todaysOrders = () => {
+
+    fetch(`https://earthph.sdevtech.com.ph/orders/getOrders`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Failed to fetch orders data: ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Get the matched user data from localStorage
+        const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+        console.log("Matched User:", matchedUser);
+
+        // Check if the userUid from the order data matches the localStorage UID
+        let totalAmount = 0; // Variable to store the total amount of chosen items
+        let gcashAmount = 0;
+        // Loop through each order and check for matching userUid
+        data.forEach(order => {
+            if (order.userUid === matchedUser.uid) {
+                console.log("ORDERR", order.userUid);
+                console.log(`Order found for user UID: ${matchedUser.uid}`);
+
+                // Accumulate the totalAmount directly from the order (not an array)
+                totalAmount += order.totalAmount;
+
+                // You can update the #gcash element here with the totalAmount if needed
+                document.getElementById('todaysSales').innerHTML = `₱${totalAmount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+                console.log("CREEDITTT", order.paymentMode);
+                if(order.paymentMode == "credit") {
+                    gcashAmount += order.totalAmount;
+                    document.getElementById('gcash').innerHTML = `₱${totalAmount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+                }
+            }
+        });
+
+        // If no matching orders are found, you can set the totalAmount to 0
+        if (totalAmount === 0) {
+            console.log("No matching orders found for user UID.");
+            document.getElementById('todaysSales').textContent = '₱0';
+        }
+    })
+    .catch(error => {
+        console.error("Error fetching orders data:", error);
+    });
+};
+
+
+const matchedUsers = JSON.parse(localStorage.getItem('matchedUser'));
+console.log("Matched Usersssssssssssssssssssssssssssss:", matchedUsers);
+if (matchedUser.role === "agent") {
+    todaysOrders();
+} 
+else 
+{
+    document.getElementById('todaysSalesWidget').style.display = 'none';
+}
+
+
 const logGCashData = () => {
     return new Promise((resolve, reject) => {
         // Fetch matched user from localStorage
         const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
         if(matchedUser.role === "agent") {
-            document.getElementById('gcashWidget').style.display = 'none';
+            
             const elements = document.querySelectorAll('.col-md-3');
 
             // Loop through each element and change its class to "col-md-4"
             elements.forEach(element => {
                 element.classList.remove('col-md-3');
-                element.classList.add('col-md-4');
+                element.classList.add('col-md-2');
             });
+        }
+        else {
+            document.getElementById('todaysSales').style.display = 'none';
         }
         if (matchedUser && matchedUser.uid) {
             const userUid = matchedUser.uid;
