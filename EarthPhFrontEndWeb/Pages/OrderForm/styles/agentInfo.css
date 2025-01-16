@@ -74,14 +74,16 @@ button:hover {
 .header-container {
     display: flex; /* Use flexbox for the header */
     align-items: center; /* Center items vertically */
+    position: relative;
 }
 
 .icon-container {
     font-size: 24px; /* Adjust the size of the icon */
     color: #000; /* Change the color of the icon */
     cursor: pointer; /* Change cursor to pointer on hover */
-    margin-left: 140px; /* Space between icon and text */
+
     margin-bottom: 50px;
+
 }
 
 .icon-container:hover {
@@ -91,7 +93,7 @@ button:hover {
 h1 {
     font-size: 24px; /* Adjust the size of the text */
     color: #000; /* Change the color of the text */
-    padding-left: 185px; /* Remove default margin */
+    margin: auto;
 }
 
 
