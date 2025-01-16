@@ -68,6 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (response.ok) {
                 alert('Store created successfully');
+                // Reload the current window
+                window.location.reload();
             } else {
                 alert('Error creating store: ' + result.message);
             }
