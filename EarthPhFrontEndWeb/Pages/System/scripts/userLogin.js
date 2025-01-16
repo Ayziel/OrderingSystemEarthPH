@@ -120,3 +120,46 @@ document.getElementById('togglePassword').addEventListener('change', function ()
         passwordField.type = 'password';
     }
 });
+
+
+let deferredPrompt; // This will store the 'beforeinstallprompt' event
+
+// Listen for the 'beforeinstallprompt' event
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the default installation prompt from showing automatically
+    e.preventDefault();
+    // Store the event to trigger it later
+    deferredPrompt = e;
+
+    // Show the custom install button if it's not installed yet
+    document.getElementById('installButton').style.display = 'block';
+});
+
+// Handle the install button click
+document.getElementById('installButton').addEventListener('click', () => {
+    // Check if deferredPrompt is available (to prevent errors if it's undefined)
+    if (deferredPrompt) {
+        // Show the installation prompt when the user clicks the button
+        deferredPrompt.prompt();
+
+        // Wait for the user to respond to the prompt
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+            } else {
+                console.log('User dismissed the install prompt');
+            }
+            // Reset the deferred prompt to null after the user responds
+            deferredPrompt = null;
+        });
+    } else {
+        console.log("Install prompt is not available.");
+    }
+});
+
+// Event to hide the install button if the app is already installed
+window.addEventListener('appinstalled', () => {
+    console.log('PWA installed');
+    // Hide the install button after installation
+    document.getElementById('installButton').style.display = 'none';
+});
