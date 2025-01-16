@@ -59,10 +59,11 @@ function populateOrders(orders) {
             <td>${order.agentName || 'No agent name'}</td>
             <td>${new Date(order.orderDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
             <td>${order.area || 'No location'}</td>
+            <td>${order.totalItems || 'No items'}</td>
             <td>${order.totalAmount ? '₱ ' + order.totalAmount.toFixed(2) : 'No amount'}</td>
             <td>${order.paymentMode ? order.paymentMode.charAt(0).toUpperCase() + order.paymentMode.slice(1) : 'No method'}</td>
             <td>
-                <select class="status-dropdown" data-order-id="${order._id}">
+                <select class="status-dropdown" data-order-id="${order._id}" ${userRole === 'agent' ? 'disabled' : ''}>
                     <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
                     <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
                     <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>

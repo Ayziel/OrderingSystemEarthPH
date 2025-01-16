@@ -76,6 +76,7 @@ function populateOrders(orders) {
             <td>${order.agentName || 'No agent name'}</td>
             <td>${new Date(order.orderDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
             <td>${order.area || 'No location'}</td>
+            <td>${order.totalItems || 'No items'}</td>
             <td>${order.totalAmount ? '₱ ' + order.totalAmount.toFixed(2) : 'No amount'}</td>
                <td>
                     ${
