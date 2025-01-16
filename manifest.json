@@ -1,7 +1,7 @@
 {
   "name": "Product Preference Survey",
   "short_name": "EARTHPH",
-  "start_url": "/Agent-Info.html",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",
