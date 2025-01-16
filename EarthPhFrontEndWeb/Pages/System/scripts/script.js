@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hide all menu items except Dashboard and Agents
     sidebarMenu.querySelectorAll('.item').forEach(item => {
       const navlinkText = item.querySelector('.navlink')?.textContent.trim();
-      if (navlinkText !== 'Dashboard' && navlinkText !== 'Agents' && navlinkText !== 'New Order' && navlinkText !== 'Orders' && navlinkText !== 'Add Store') {
+      if (navlinkText !== 'Dashboard' && navlinkText !== 'Agents' && navlinkText !== 'New Order' && navlinkText !== 'Orders' && navlinkText !== 'Add Store' && navlinkText !== 'Stocks') {
         item.style.display = 'none'; // Hide other menu items
       }
     });
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hide other sections that are not relevant to team leaders
     sidebarMenu.querySelectorAll('.item').forEach(item => {
       const navlinkText = item.querySelector('.navlink')?.textContent.trim();
-      if (navlinkText !== 'Dashboard' && navlinkText !== 'Agents' && navlinkText !== 'Team Performance' && navlinkText !== 'Orders' && navlinkText !== 'Stores' && navlinkText !== 'New Order' && navlinkText !== 'Add Store') {
+      if (navlinkText !== 'Dashboard' && navlinkText !== 'Agents' && navlinkText !== 'Team Performance' && navlinkText !== 'Orders' && navlinkText !== 'Stores' && navlinkText !== 'New Order' && navlinkText !== 'Add Store' && navlinkText !== 'Stocks') {
         item.style.display = 'none'; // Hide sections that shouldn't be shown
       }
     });
