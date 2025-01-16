@@ -8,14 +8,19 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "./images/128x128-EarthPh.png",
+      "src": "./images/icon-128x128.png",
       "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "./images/144.png",
+      "sizes": "144x144",
       "type": "image/png"
     }
   ],
   "screenshots": [
     {
-      "src": "./images/485x800-EarthPh.png",
+      "src": "./images/screenshot-1.png",
       "sizes": "485x800",
       "type": "image/png"
     }

@@ -5,42 +5,56 @@ console.log("usertoken", usertoken);
 
 document.addEventListener('DOMContentLoaded', () => {
     fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(orders => {
-        if (!orders || orders.length === 0) {
-            console.log('No orders found.');
-            return;
-        }
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(orders => {
+            if (!orders || orders.length === 0) {
+                console.log('No orders found.');
+                return;
+            }
 
-        const today = new Date();
-        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-        const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-        
-        // Set startOfMonth and endOfMonth times for precise filtering
-        startOfMonth.setHours(0, 0, 0, 0);
-        endOfMonth.setHours(23, 59, 59, 999);
+            // Get the user data from localStorage
+            const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+            const userUid = matchedUser ? matchedUser.uid : null;
+            const userRole = matchedUser ? matchedUser.role : null;
 
-        const monthOrders = orders.filter(order => {
-            const orderDate = new Date(order.orderDate);
-            return orderDate >= startOfMonth && orderDate <= endOfMonth;
-        });
+            // Only filter if role is 'agent'
+            if (userRole === 'agent' && userUid) {
+                orders = orders.filter(order => order.userUid === userUid);
+            }
 
-        if (monthOrders.length === 0) {
-            console.log('No orders for the current month.');
-            return;
-        }
+            const today = new Date();
+            const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+            const startOfWeek = new Date(today);
+            const endOfWeek = new Date(today);
 
-        // Sort the month's orders by order date (ascending)
-        monthOrders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
-        populateOrders(monthOrders);
-    })
-    .catch(error => console.error('Error fetching orders:', error));
+            // Adjust startOfWeek to the previous Monday
+            startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+            startOfWeek.setHours(0, 0, 0, 0);
 
+            // Adjust endOfWeek to the upcoming Sunday
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
+            endOfWeek.setHours(23, 59, 59, 999);
+
+            // Filter orders to this week
+            const weekOrders = orders.filter(order => {
+                const orderDate = new Date(order.orderDate);
+                return orderDate >= startOfWeek && orderDate <= endOfWeek;
+            });
+
+            if (weekOrders.length === 0) {
+                console.log('No orders from this week.');
+                return;
+            }
+
+            weekOrders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
+            populateOrders(weekOrders);
+        })
+        .catch(error => console.error('Error fetching orders:', error));
 });
 
 function populateOrders(orders) {

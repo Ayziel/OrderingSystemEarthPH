@@ -17,6 +17,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // Get the user data from localStorage
+            const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+            const userUid = matchedUser ? matchedUser.uid : null;
+            const userRole = matchedUser ? matchedUser.role : null;
+
+            // Only filter if role is 'agent'
+            if (userRole === 'agent' && userUid) {
+                orders = orders.filter(order => order.userUid === userUid);
+            }
+
             const today = new Date();
             const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
             const startOfWeek = new Date(today);
@@ -30,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
             endOfWeek.setDate(startOfWeek.getDate() + 6);
             endOfWeek.setHours(23, 59, 59, 999);
 
+            // Filter orders to this week
             const weekOrders = orders.filter(order => {
                 const orderDate = new Date(order.orderDate);
                 return orderDate >= startOfWeek && orderDate <= endOfWeek;
@@ -46,11 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => console.error('Error fetching orders:', error));
 });
 
+
 function populateOrders(orders) {
     const ordersBody = document.querySelector('.orders-body');
     ordersBody.innerHTML = ''; // Clear previous rows
 
     let globalCounter = 1;
+    const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+    const userRole = matchedUser ? matchedUser.role : null; // Get the user role from localStorage
 
     orders.forEach(order => {
         const row = document.createElement('tr');
@@ -63,12 +77,19 @@ function populateOrders(orders) {
             <td>${new Date(order.orderDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
             <td>${order.area || 'No location'}</td>
             <td>${order.totalAmount ? '₱ ' + order.totalAmount.toFixed(2) : 'No amount'}</td>
-            <td>${order.paymentMode ? order.paymentMode.charAt(0).toUpperCase() + order.paymentMode.slice(1) : 'No method'}</td>
+               <td>
+                    ${
+                        order.paymentMode
+                            ? order.paymentMode === 'credit'
+                                ? 'GCash'
+                                : order.paymentMode.charAt(0).toUpperCase() + order.paymentMode.slice(1)
+                            : 'No method'
+                    }
+                </td>
             <td>
-                <select class="status-dropdown" data-order-id="${order._id}">
+                <select class="status-dropdown" data-order-id="${order._id}" ${userRole === 'agent' ? 'disabled' : ''}>
                     <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
                     <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
-                    <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
                     <option value="received" ${order.status === 'received' ? 'selected' : ''}>Received</option>
                 </select>
             </td>
@@ -92,8 +113,8 @@ function populateOrders(orders) {
     
         ordersBody.appendChild(row);
     });
-    
 }
+
 
 
 document.getElementById('export-btn').addEventListener('click', exportToExcel);

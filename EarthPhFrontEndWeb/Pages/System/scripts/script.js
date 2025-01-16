@@ -122,15 +122,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hide all menu items except Dashboard and Agents
     sidebarMenu.querySelectorAll('.item').forEach(item => {
       const navlinkText = item.querySelector('.navlink')?.textContent.trim();
-      if (navlinkText !== 'Dashboard' && navlinkText !== 'Agents' && navlinkText !== 'New Order') {
+      if (navlinkText !== 'Dashboard' && navlinkText !== 'Agents' && navlinkText !== 'New Order' && navlinkText !== 'Orders') {
         item.style.display = 'none'; // Hide other menu items
       }
     });
-
-    // Remove the entire Agent Performance section for agents
-    if (tableContainer) {
-      tableContainer.remove(); // Remove the container for agents
-    }
   }
 
   // Additional logic for teamLeader role
@@ -153,13 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
-if (matchedUser && matchedUser.role !== 'agent') {
-  // Find the link for Stocks and hide it
-  const stocksLink = document.querySelector('a[href="https://earthhomecareph.astute.services/System/stock-list.html"]');
-  if (stocksLink) {
-      stocksLink.style.display = 'none';  // Hide the link
-  }
-}
+
 
 document.getElementById('agent-name-nav-bar').innerText = (matchedUser.firstName + " " + matchedUser.lastName) || 'Agent Name';
 

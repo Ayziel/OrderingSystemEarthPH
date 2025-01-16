@@ -11,4 +11,6 @@ router.post('/createProduct', productController.createProduct);
 // Route to update a product
 router.put('/updateProduct', productController.updateProduct);  // Add this line for the PUT request
 
+router.delete('/deleteProduct', productController.deleteProduct);  // Add this line for the DELETE request
+
 module.exports = router;

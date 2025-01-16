@@ -160,6 +160,56 @@ function updateProductData(productId, updatedProduct) {
     console.log(`Updating product ${productId}:`, updatedProduct);
 }
 
+
+deleteProductButton = document.getElementById('delete-product');
+
+// Add an event listener to the delete button
+deleteProductButton.addEventListener('click', () => {
+    // Get the product details from the modal
+    const modalProductName = document.getElementById('modal-product-name').textContent;
+    const modalProductDescription = document.getElementById('modal-product-description').textContent;
+    const modalProductBrand = document.getElementById('modal-product-brand').textContent;
+
+    if (!modalProductName || !modalProductDescription || !modalProductBrand) {
+        alert('No product selected to delete!');
+        return;
+    }
+
+    // Confirm deletion
+    const confirmDelete = confirm(`Are you sure you want to delete "${modalProductName}"?`);
+    if (!confirmDelete) return;
+
+    // Send DELETE request with all three fields
+    fetch('https://earthph.sdevtech.com.ph/products/deleteProduct', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            productName: modalProductName,
+            productDescription: modalProductDescription,
+            productBrand: modalProductBrand
+        }),  // Send all three fields for deletion
+    })
+        .then(response => {
+            if (response.ok) {
+                alert('Product deleted successfully!');
+                modal.style.display = 'none'; // Close modal
+                location.reload(); // Refresh the page or update UI
+            } else {
+                throw new Error('Failed to delete product.');
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting product:', error);
+            alert('An error occurred while deleting the product.');
+        });
+});
+
+
+
+
+
 function exportToExcel() {
     console.log("Exporting products to Excel...");
 
