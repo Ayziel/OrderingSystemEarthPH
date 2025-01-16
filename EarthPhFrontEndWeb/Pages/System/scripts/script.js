@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hide all menu items except Dashboard and Agents
     sidebarMenu.querySelectorAll('.item').forEach(item => {
       const navlinkText = item.querySelector('.navlink')?.textContent.trim();
-      if (navlinkText !== 'Dashboard' && navlinkText !== 'Agents' && navlinkText !== 'New Order' && navlinkText !== 'Orders' && navlinkText !== 'Add Store' && navlinkText !== 'Stocks') {
+      if (navlinkText !== 'Dashboard' && navlinkText !== 'New Order' && navlinkText !== 'Orders' && navlinkText !== 'Add Store' && navlinkText !== 'Stocks') {
         item.style.display = 'none'; // Hide other menu items
       }
     });
