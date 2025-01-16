@@ -38,6 +38,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Sort today's orders by order date (ascending)
         todayOrders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
         populateOrders(todayOrders);
+
+        const exportButton = document.getElementById('export-btn');
+        exportButton.addEventListener('click', () => exportToExcel(todayOrders));
+
     })
     .catch(error => console.error('Error fetching orders:', error));
 
@@ -93,8 +97,6 @@ function populateOrders(orders) {
     
 }
 
-
-document.getElementById('export-btn').addEventListener('click', exportToExcel);
 
 const modal = document.getElementById('orderModal');
 function openModal(order) {
@@ -319,4 +321,38 @@ function updateOrderStatus(orderId, status) {
         }
     })
     .catch(error => console.error('Error updating order:', error));
+}
+
+
+function exportToExcel(orders) {
+    // Convert orders to worksheet format, including products
+    const data = orders.flatMap(order => {
+        return order.products.map(product => ({
+            OrderID: order._id,
+            Status: order.status,
+            AgentName: order.agentName,
+            TeamLeaderName: order.teamLeaderName,
+            StoreName: order.storeName,
+            StoreTIN: order.tin,
+            Area: order.area,
+            OrderDate: new Date(order.orderDate).toLocaleString(),
+            PaymentMode: order.paymentMode,
+            TotalItems: order.totalItems,
+            TotalAmount: order.totalAmount,
+            ProductName: product.name,
+            ProductDescription: product.description,
+            ProductPrice: product.price,
+            ProductDiscount: product.discount,
+            ProductQuantity: product.quantity,
+            ProductTotal: product.total,
+        }));
+    });
+
+    // Create a new workbook and add the data
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(data);
+    XLSX.utils.book_append_sheet(wb, ws, 'OrdersWithProducts');
+
+    // Export the workbook
+    XLSX.writeFile(wb, 'Orders_With_Products.xlsx');
 }
