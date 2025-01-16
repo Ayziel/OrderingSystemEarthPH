@@ -1,7 +1,7 @@
 {
   "name": "Product Preference Survey",
   "short_name": "EARTHPH",
-  "start_url": "./EarthPhFrontEndWeb/Pages/System/login.html",
+  "start_url": "https://earthhomecareph.astute.services/System/index.html",
   "description": "EarthPh app",
   "display": "standalone",
   "background_color": "#ffffff",
