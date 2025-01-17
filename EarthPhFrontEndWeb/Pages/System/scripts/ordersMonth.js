@@ -79,7 +79,15 @@ function populateOrders(orders) {
             <td>${order.area || 'No location'}</td>
             <td>${order.totalItems || 'No items'}</td>
             <td>${order.totalAmount ? '₱ ' + order.totalAmount.toFixed(2) : 'No amount'}</td>
-            <td>${order.paymentMode ? order.paymentMode.charAt(0).toUpperCase() + order.paymentMode.slice(1) : 'No method'}</td>
+            <td>
+                ${
+                    order.paymentMode
+                        ? order.paymentMode === 'credit'
+                            ? 'GCash'
+                            : order.paymentMode.charAt(0).toUpperCase() + order.paymentMode.slice(1)
+                        : 'No method'
+                }
+            </td>
             <td>
                 <select class="status-dropdown" data-order-id="${order._id}" ${userRole === 'agent' ? 'disabled' : ''}>
                     <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
