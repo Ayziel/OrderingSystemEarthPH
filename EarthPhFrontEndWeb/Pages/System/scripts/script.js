@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hide all menu items except Dashboard and Agents
     sidebarMenu.querySelectorAll('.item').forEach(item => {
       const navlinkText = item.querySelector('.navlink')?.textContent.trim();
-      if (navlinkText == 'Stores' || navlinkText == 'Agents' || navlinkText == 'Admin') {
+      if (navlinkText == 'Agents' || navlinkText == 'Admin') {
         item.style.display = 'none'; // Hide other menu items
       }
     });
