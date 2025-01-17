@@ -42,6 +42,7 @@ window.addEventListener("beforeinstallprompt", (event) => {
 }); 
 
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log("VIEW ORDER MODE",localStorage.getItem('isViewOrderMode'))
     const userID = localStorage.getItem('userID');
     console.log("UserID from localStorage:", userID);
 
@@ -142,7 +143,11 @@ document.getElementById('confirm-button').addEventListener('click', (event) => {
 
     // Redirect to the next page
     console.log('Redirecting to next page...');
-    window.location.href = 'https://earthhomecareph.astute.services/OrderForm/Product-Preference.html';
+    if (localStorage.getItem("isViewOrderMode") === "true") {
+    window.location.href = 'https://earthhomecareph.astute.services/OrderForm/Order-Info.html'
+    } else {
+        window.location.href = 'https://earthhomecareph.astute.services/OrderForm/Product-Preference.html';
+}
 });
 
 document.addEventListener('DOMContentLoaded', () => {

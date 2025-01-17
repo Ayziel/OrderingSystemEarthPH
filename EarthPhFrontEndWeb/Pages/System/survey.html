@@ -26,12 +26,11 @@
     <div class="navbar_content">
       <i class="bi bi-grid"></i>
       <i class='' id="darkLight"></i>
-      <p style="margin: auto; color: #007bff" id="agent-name-nav-bar">KHARL</p>
+      <p style="margin: auto; color: #007bff" ><span id="agent-name-nav-bar">KHARL </span> ( <span id="agent-role-nav-bar"> </span> )</p>
       <img src="https://picsum.photos/100" alt="" class="profile" />
       <button class="logout" id="logoutBtn">Logout</button>
     </div>
   </nav>
-  <!-- sidebar -->
   <nav class="sidebar">
     <div class="menu_content">
       <ul class="menu_items">
@@ -40,21 +39,29 @@
         <li class="item">
           <a href="https://earthhomecareph.astute.services/System/index.html" class="nav_link">
             <span class="navlink_icon">
-              <i class="bx bx-grid-alt"></i>
+              <i class="bx bx-line-chart"></i>
             </span>
             <span class="navlink">Dashboard</span>
           </a>
         </li>
         <li class="item">
-          <a id="newOrderLink" href="https://earthhomecareph.astute.services/OrderForm/Agent-Info.html" class="nav_link sublink" target="_blank">
+          <a id="newOrderLink" class="nav_link sublink" href="https://earthhomecareph.astute.services/OrderForm/Agent-Info.html" target="_blank">
             <span class="navlink_icon">
-              <i class="bx bx-credit-card"></i>
+              <i class="bx bx-receipt"></i>
             </span>
             <span class="navlink">New Order</span>
           </a>
         </li>
         <li class="item">
-          <a href="https://earthhomecareph.astute.services/System/Add-Store.html" class="nav_link sublink" target="_blank">
+          <a id="viewOrderLink" href="https://earthhomecareph.astute.services/OrderForm/Agent-Info.html" class="nav_link sublink">
+            <span class="navlink_icon">
+              <i class="bx bx-show"></i>
+            </span>
+            <span class="navlink">View Order</span>
+          </a>
+        </li>
+        <li class="item">
+          <a href="https://earthhomecareph.astute.services/System/Add-Store.html" class="nav_link sublink">
             <span class="navlink_icon">
               <i class="bx bx-building-house"></i>
             </span>
@@ -62,7 +69,7 @@
           </a>
         </li>
         <li class="item">
-            <a href="https://earthhomecareph.astute.services/System/stock-list.html" class="nav_link sublink" target="_blank">
+            <a href="https://earthhomecareph.astute.services/System/stock-list.html" class="nav_link sublink">
               <span class="navlink_icon">
                 <i class="bx bx-package"></i>
               </span>
@@ -186,6 +193,7 @@
     </div>
   </section>
     <script src="./scripts/script.js"></script>
+    <script src="./scripts/sideNavigation.js"></script>
     <script src="./scripts/survey.js"></script>
 </body>
 </html>

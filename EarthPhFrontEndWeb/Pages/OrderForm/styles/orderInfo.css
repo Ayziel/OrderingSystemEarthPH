@@ -13,6 +13,7 @@
     background-color: rgba(0,0,0,0.1);
     width: 100%;
     height: 100%;
+    overflow: auto;
 }
 
 .modal-content-receipt {
@@ -26,6 +27,7 @@
     width: 80%;
     max-width: 400px;
     text-align: center;
+    overflow: auto;
 }
 
 .receipt-details {
@@ -228,7 +230,7 @@ input[type="text"], select {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
     z-index: 9999; /* Ensure it stays above other content */
-    overflow: hidden;
+    overflow: auto;
 }
 
 /* Modal content styling */

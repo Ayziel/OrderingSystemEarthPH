@@ -17,22 +17,30 @@ const todaysOrders = () => {
         let gcashAmount = 0;
         // Loop through each order and check for matching userUid
         data.forEach(order => {
-            if (order.userUid === matchedUser.uid) {
-                console.log("ORDERR", order.userUid);
+            // Extract the order date
+            const orderDate = new Date(order.orderDate); // Assuming `createdAt` field exists in your order data
+            const today = new Date();
+        
+            // Check if the order's date matches today's date
+            const isToday = orderDate.toDateString() === today.toDateString();
+        
+            if (isToday && order.userUid === matchedUser.uid) {
                 console.log(`Order found for user UID: ${matchedUser.uid}`);
-
-                // Accumulate the totalAmount directly from the order (not an array)
+        
+                // Accumulate the totalAmount directly from the order
                 totalAmount += order.totalAmount;
-
-                // You can update the #gcash element here with the totalAmount if needed
+        
+                // Update the UI for today's sales
                 document.getElementById('todaysSales').innerHTML = `₱${totalAmount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
-                console.log("CREEDITTT", order.paymentMode);
-                if(order.paymentMode == "credit") {
+        
+                // Check if payment method is credit
+                if (order.paymentMode === "credit") {
                     gcashAmount += order.totalAmount;
-                    document.getElementById('gcash').innerHTML = `₱${totalAmount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+                    document.getElementById('gcash').innerHTML = `₱${gcashAmount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
                 }
             }
         });
+        
 
         // If no matching orders are found, you can set the totalAmount to 0
         if (totalAmount === 0) {

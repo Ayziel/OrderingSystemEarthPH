@@ -108,47 +108,8 @@ function logoutUser() {
 
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('authToken');
-  const userRole = localStorage.getItem('userRole'); // Assume userRole is stored in localStorage
-
   if (!token) {
     // Redirect to login if no token
     window.location.href = 'https://earthhomecareph.astute.services/System/login.html';
   }
-
-  const sidebarMenu = document.querySelector('.menu_items');
-  const tableContainer = document.querySelector('.table-container'); // Select the table container
-
-  if (userRole === 'agent') {
-    // Hide all menu items except Dashboard and Agents
-    sidebarMenu.querySelectorAll('.item').forEach(item => {
-      const navlinkText = item.querySelector('.navlink')?.textContent.trim();
-      if (navlinkText == 'Agents' || navlinkText == 'Admin') {
-        item.style.display = 'none'; // Hide other menu items
-      }
-    });
-  }
-
-  // Additional logic for teamLeader role
-  if (userRole === 'teamLeader') {
-    // Show Agent Performance section for teamLeader
-    if (tableContainer) {
-      tableContainer.style.display = 'block'; // Ensure it remains visible for team leaders
-    }
-
-    // Hide other sections that are not relevant to team leaders
-    sidebarMenu.querySelectorAll('.item').forEach(item => {
-      const navlinkText = item.querySelector('.navlink')?.textContent.trim();
-      if (navlinkText == 'Admin') {
-        item.style.display = 'none'; // Hide sections that shouldn't be shown
-      }
-    });
-// Hide the New Order link
-  }
 });
-
-const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
-
-
-document.getElementById('agent-name-nav-bar').innerText = (matchedUser.firstName + " " + matchedUser.lastName) || 'Agent Name';
-
-document.getElementById('agent-role-nav-bar').innerText = (matchedUser.role) || 'Agent Role';

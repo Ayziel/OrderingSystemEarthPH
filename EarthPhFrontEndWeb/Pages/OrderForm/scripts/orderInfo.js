@@ -9,6 +9,10 @@ let base64PaymentImage = "";
 
 document.addEventListener("DOMContentLoaded", () => {
 
+    if(localStorage.getItem('isViewOrderMode') === 'true'){
+        document.getElementById('acceptOrderBtn').disabled = true;
+    }
+
     paymentImageInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -443,7 +447,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const button = document.getElementById('acceptOrderBtn');
 
             // Check if the button is already in the "Continue" state
-            if (button.textContent === "Continue") {
+            if (button.textContent === "Order Again") {
                 console.warn('Order already accepted. Preventing duplicate submission.');
                 return;
             }
@@ -642,7 +646,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     await Promise.all(stockPromises);
         
                     // Change button to "Continue"
-                    button.textContent = "Continue";
+                    button.textContent = "Order Again";
                     button.style.backgroundColor = "#4CAF50";
                     button.style.color = "#fff";
         
