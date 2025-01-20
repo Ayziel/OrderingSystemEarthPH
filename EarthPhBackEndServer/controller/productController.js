@@ -14,13 +14,32 @@ async function getProduct(req, res) {
     }
   }
 
-async function createProduct(req, res) {
-  console.log('Request Body:', req.body); // Log the incoming data
-
-  const { productSKU, productName, productDescription, brand, productCategory, price, discount, size, storeName, productImage, manufacturer, uid, storeUid } = req.body;
-
-  // Create a new product instance
-  const newProduct = new ProductModel({
+  async function createProduct(req, res) {
+    console.log('Request Body:', req.body); // Log the incoming data
+  
+    // Destructure the incoming data
+    const { 
+      productSKU, 
+      productName, 
+      productDescription, 
+      brand, 
+      productCategory, 
+      price, 
+      discount, 
+      size, 
+      storeName, 
+      productImage, 
+      manufacturer, 
+      uid, 
+      storeUid 
+    } = req.body;
+  
+    // Ensure `storeName` and `storeUid` are arrays
+    const storeNameArray = Array.isArray(storeName) ? storeName : [storeName];
+    const storeUidArray = Array.isArray(storeUid) ? storeUid : [storeUid];
+  
+    // Create a new product instance
+    const newProduct = new ProductModel({
       productSKU,
       productName,
       productDescription,
@@ -29,30 +48,31 @@ async function createProduct(req, res) {
       price: parseFloat(price), // Convert the price to a float
       discount: parseFloat(discount) || 0, // Default discount to 0 if not provided
       manufacturer,
-      storeName,
+      storeName: storeNameArray, // Assign the array
       uid,
-      storeUid,
+      storeUid: storeUidArray, // Assign the array
       size,
       productImage, // Save the Base64 image string
-  });
-
-  console.log('New Product:', newProduct);
-
-  try {
+    });
+  
+    console.log('New Product:', newProduct);
+  
+    try {
       // Save the new product to the database
       await newProduct.save();
       res.json({ 
-          message: 'Product created successfully', 
-          product: {
-              ...newProduct.toObject(),
-              finalPrice: newProduct.price - (newProduct.price * (newProduct.discount / 100))
-          }
+        message: 'Product created successfully', 
+        product: {
+          ...newProduct.toObject(),
+          finalPrice: newProduct.price - (newProduct.price * (newProduct.discount / 100)), // Calculate final price
+        }
       });
-  } catch (err) {
+    } catch (err) {
       console.error('Error creating product:', err);
       res.status(500).json({ message: 'Error creating product', error: err });
-  }
+    }
 }
+  
 
 //Needs testing
 async function updateProduct(req, res) {

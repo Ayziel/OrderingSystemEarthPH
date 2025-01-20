@@ -2,7 +2,7 @@ const userRole = localStorage.getItem('userRole');
 const usertoken = localStorage.getItem('authToken');
 console.log("userRole", userRole);
 console.log("usertoken", usertoken);
-
+const chosenStoresArray = [];
 document.addEventListener('DOMContentLoaded', () => {
     const productForm = document.querySelector('.form');
     
@@ -24,8 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const size = document.querySelector('input[placeholder="Enter Size"]').value;
         // Get the selected store name and UID
         const storeSelect = document.querySelector('#store-name');
-        const storeName = storeSelect.value;
-        const storeUid = storeSelect.options[storeSelect.selectedIndex]?.getAttribute('data-uid'); // Get the UID from the selected option
+        const storeName = chosenStoresArray.map(store => store.name);  // Array of store names
+        const storeUid = chosenStoresArray.map(store => store.uid);  
     
         const uid = uuid.v4();
     
@@ -133,6 +133,11 @@ async function getStores() {
 }
 
 // Function to populate the dropdown with store data
+// Array to hold the chosen stores
+
+
+console.log("Chosen Stores Array:", chosenStoresArray);
+
 function populateStoresDropdown(stores) {
     const storeSelect = document.getElementById('store-name');
     
@@ -142,12 +147,74 @@ function populateStoresDropdown(stores) {
     // Populate dropdown with store data
     stores.forEach(store => {
         const option = document.createElement('option');
-        option.value = store.name;  // Store name as the display value
+        option.value = store.uid;  // Store UID as the value
         option.textContent = store.name; // Display store name
-        option.setAttribute('data-uid', store.uid); // Include store.uid in a data attribute
         storeSelect.appendChild(option);
     });
+
+    // Add event listener for selecting stores
+    storeSelect.addEventListener('change', function () {
+        addToChosenStores(storeSelect);
+    });
 }
+
+function addToChosenStores(storeSelect) {
+    const chosenStoresSelect = document.getElementById('store-chosen');
+    const selectedOption = storeSelect.options[storeSelect.selectedIndex];
+
+    if (!selectedOption || selectedOption.value === "") return; // Ignore if no store selected
+
+    // Check if the store is already in the chosen stores array
+    const existingStore = chosenStoresArray.find(
+        store => store.uid === selectedOption.value
+    );
+
+    if (existingStore) {
+        alert("This store is already added.");
+        return;
+    }
+
+    // Add the store to the chosen stores array
+    const newStore = {
+        uid: selectedOption.value,
+        name: selectedOption.textContent,
+    };
+    chosenStoresArray.push(newStore);
+
+    // Add the selected store to the "Stores Chosen" dropdown
+    const newOption = document.createElement('option');
+    newOption.value = newStore.uid; // Store UID
+    newOption.textContent = newStore.name; // Store Name
+    chosenStoresSelect.appendChild(newOption);
+    
+    // Optional: Reset the "Choose a Store" dropdown
+    storeSelect.value = "";
+
+    // Debugging: Log the chosen stores array
+    console.log("Chosen Stores Array:", chosenStoresArray);
+}
+
+function removeFromChosenStores(uid) {
+    const chosenStoresSelect = document.getElementById('store-chosen');
+
+    // Remove the store from the chosen stores array
+    const index = chosenStoresArray.findIndex(store => store.uid === uid);
+    if (index !== -1) {
+        chosenStoresArray.splice(index, 1);
+    }
+
+    // Remove the store from the dropdown
+    const optionToRemove = Array.from(chosenStoresSelect.options).find(
+        option => option.value === uid
+    );
+    if (optionToRemove) {
+        chosenStoresSelect.removeChild(optionToRemove);
+    }
+
+    // Debugging: Log the updated chosen stores array
+    console.log("Updated Chosen Stores Array:", chosenStoresArray);
+}
+
 
 function handleImageUpload(event) {
     const file = event.target.files[0]; // Get the selected file

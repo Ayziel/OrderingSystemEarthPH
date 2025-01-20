@@ -6,12 +6,12 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   storeUid: {
-    type: String,
-    required: true,
+    type: [String], // Changed to an array of strings
+    required: false,
   },
   storeName: {
-    type: String,
-    required: true,
+    type: [String], // Changed to an array of strings
+    required: false,
   },
   productSKU: {
     type: String,
