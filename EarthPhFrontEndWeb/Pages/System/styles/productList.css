@@ -34,3 +34,52 @@
 .dash-content {
     margin-top: 100px!important;
 }
+
+
+/* Edit button - Blue */
+#edit-product {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+#edit-product:hover {
+    background-color: #0056b3;
+}
+
+/* Save button - Green */
+#save-product {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+#save-product:hover {
+    background-color: #218838;
+}
+
+/* Delete button - Red */
+#delete-product {
+    padding: 10px 20px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+#delete-product:hover {
+    background-color: #c82333;
+}

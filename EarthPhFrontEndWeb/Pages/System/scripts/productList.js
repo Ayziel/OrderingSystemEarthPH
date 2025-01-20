@@ -42,7 +42,8 @@ function populateProducts(products) {
     const modalProductDiscount = document.getElementById('modal-product-discount'); // Added discount modal field
     const editProductButton = document.getElementById('edit-product');
     const saveProductButton = document.getElementById('save-product');
-
+    const productImageImage = document.getElementById('modal-product-image');
+    const productdiscount = document.getElementById('modal-product-discount');
     productList.innerHTML = ''; // Clear existing rows before populating
 
     let globalCounter = 1;
@@ -100,7 +101,31 @@ function populateProducts(products) {
                 modalProductDiscount.disabled = false; // Allow editing of discount
                 editProductButton.style.display = 'none';  // Hide the edit button after clicking
                 saveProductButton.style.display = 'inline';  // Show the save button
+                productdiscount.disabled = false;
+                productImageImage.disabled = false;
             };
+
+            const productImageInput = document.getElementById('modal-product-image');
+            let base64Image = '';
+            productImageInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                
+                if (file) {
+                    const reader = new FileReader();
+            
+                    reader.onloadend = function() {
+                        // Store the base64 string in the global variable
+                        base64Image = reader.result;
+            
+                        // Log the base64 string to verify it's being set
+                        console.log('Base64 Image:', base64Image);
+                    };
+            
+                    // Read the image file as a data URL (base64)
+                    reader.readAsDataURL(file);
+                }
+            });
+
 
             // Save the changes when the "Save" button is clicked
             saveProductButton.onclick = async () => {
@@ -111,8 +136,11 @@ function populateProducts(products) {
                     productDescription: modalProductDescription.textContent,
                     brand: modalProductBrand.textContent,
                     price: parseFloat(modalProductPrice.textContent.replace('₱', '').trim()),
-                    discount: parseFloat(modalProductDiscount.value) || 0 // Get the discount value
+                    discount: parseFloat(modalProductDiscount.value) || 0, // Get the discount value
+                    productImage: base64Image,
                 };
+
+                console.log("Updated Product:", updatedProduct);
 
                 try {
                     const response = await fetch('https://earthph.sdevtech.com.ph/products/updateProduct', {
@@ -135,7 +163,7 @@ function populateProducts(products) {
                 } catch (error) {
                     console.error('Error updating product:', error);
                 }
-                window.location.reload();
+                // window.location.reload();
             };
         });
 

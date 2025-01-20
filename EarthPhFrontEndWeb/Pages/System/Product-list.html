@@ -54,7 +54,7 @@
             <span class="navlink_icon">
               <i class="bx bx-show"></i>
             </span>
-            <span class="navlink">View Order</span>
+            <span class="navlink">View Store</span>
           </a>
         </li>
         <li class="item">
@@ -188,13 +188,20 @@
       <p><strong>Description:</strong> <span id="modal-product-description"></span></p>
       <p><strong>Brand:</strong> <span id="modal-product-brand"></span></p>
       <p><strong>Price:</strong> <span id="modal-product-price"></span></p>
-      <p><strong>Discount:</strong> <input type="number" id="modal-product-discount" min="0" max="100" step="1" value="0"> %</p>
+      <p><strong>Discount:</strong> <input type="number" id="modal-product-discount" min="0" max="100" step="1" value="0" disabled> %</p>
+
+      <!-- New image input for editing the image -->
+      <p><strong>Product Image:</strong></p>
+      <input type="file" id="modal-product-image" accept="image/*" disabled>
+      <br><br>
+
       <button id="edit-product" class="edit-product">Edit</button>
       <button id="save-product" class="save-product">Save</button>
-      <button id="delete-product" class="delete-product">Delete</button>
+      <button id="delete-product" class="delete-product" style="display: none;">Delete</button>
   </div>
-
 </div>
+
+
     <script src="./scripts/script.js"></script>
     <script src="./scripts/sideNavigation.js"></script>
     <script src="./scripts/productList.js"></script>

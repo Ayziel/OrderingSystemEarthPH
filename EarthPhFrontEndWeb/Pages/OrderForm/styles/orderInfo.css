@@ -316,3 +316,13 @@ input[type="text"], select {
     width: 100%; /* Ensure it spans the full container */
     display: block; /* Ensure it behaves like a block-level element */
 }
+
+
+@media print {
+    #printReceiptBtn,
+    #acceptOrderBtn,
+    .close-receipt,
+    .go-to-dashboard {
+        display: none !important;
+    }
+}

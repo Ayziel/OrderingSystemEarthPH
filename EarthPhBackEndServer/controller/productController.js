@@ -54,41 +54,92 @@ async function createProduct(req, res) {
   }
 }
 
+//Needs testing
 async function updateProduct(req, res) {
-  console.log('PUT /updateProduct route hit');
-
-  const { productSKU, productName, productDescription, brand, price, discount } = req.body;
-
-  try {
+    console.log('PUT /updateProduct route hit');
+  
+    const { productSKU, productName, productDescription, brand, price, discount, productImage } = req.body;
+  
+    // Input validation
+    if (!productSKU || !productName || !price) {
+      return res.status(400).json({ message: 'Missing required fields: productSKU, productName, and price are required' });
+    }
+  
+    if (isNaN(price) || (discount && isNaN(discount))) {
+      return res.status(400).json({ message: 'Price and discount must be valid numbers' });
+    }
+  
+    try {
       // Find the product by SKU (or another identifier) and update the fields
       const updatedProduct = await ProductModel.findOneAndUpdate(
-          { productSKU },  // Search criteria (e.g., productSKU)
-          { 
-              productName,
-              productDescription,
-              brand,
-              price: parseFloat(price),  // Ensure price is a float
-              discount: parseFloat(discount) || 0  // Default discount to 0 if not provided
-          },
-          { new: true }  // Return the updated document
+        { productSKU },  // Search criteria (e.g., productSKU)
+        { 
+          productName,
+          productDescription,
+          brand,
+          price: parseFloat(price),  // Ensure price is a float
+          discount: parseFloat(discount) || 0,  // Default discount to 0 if not provided
+          productImage  // Update product image if provided
+        },
+        { new: true }  // Return the updated document
       );
-
+  
       if (!updatedProduct) {
-          return res.status(404).json({ message: 'Product not found' });
+        return res.status(404).json({ message: 'Product not found' });
       }
-
+  
+      // Calculate final price after discount
+      const finalPrice = updatedProduct.price - (updatedProduct.price * (updatedProduct.discount / 100));
+  
       res.json({ 
-          message: 'Product updated successfully', 
-          product: {
-              ...updatedProduct.toObject(),
-              finalPrice: updatedProduct.price - (updatedProduct.price * (updatedProduct.discount / 100))
-          }
+        message: 'Product updated successfully', 
+        product: {
+          ...updatedProduct.toObject(),
+          finalPrice: finalPrice.toFixed(2)  // Optionally format to 2 decimal places
+        }
       });
-  } catch (err) {
+    } catch (err) {
       console.error('Error updating product:', err);
       res.status(500).json({ message: 'Error updating product', error: err });
+    }
   }
-}
+  
+
+// async function updateProduct(req, res) {
+//   console.log('PUT /updateProduct route hit');
+
+//   const { productSKU, productName, productDescription, brand, price, discount } = req.body;
+
+//   try {
+//       // Find the product by SKU (or another identifier) and update the fields
+//       const updatedProduct = await ProductModel.findOneAndUpdate(
+//           { productSKU },  // Search criteria (e.g., productSKU)
+//           { 
+//               productName,
+//               productDescription,
+//               brand,
+//               price: parseFloat(price),  // Ensure price is a float
+//               discount: parseFloat(discount) || 0  // Default discount to 0 if not provided
+//           },
+//           { new: true }  // Return the updated document
+//       );
+
+//       if (!updatedProduct) {
+//           return res.status(404).json({ message: 'Product not found' });
+//       }
+
+//       res.json({ 
+//           message: 'Product updated successfully', 
+//           product: {
+//               ...updatedProduct.toObject(),
+//               finalPrice: updatedProduct.price - (updatedProduct.price * (updatedProduct.discount / 100))
+//           }
+//       });
+//   } catch (err) {
+//       console.error('Error updating product:', err);
+//       res.status(500).json({ message: 'Error updating product', error: err });
+//   }
+// }
 
 
 async function deleteProduct(req, res) {
