@@ -101,11 +101,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     
         products.forEach(product => {
-            // Filter products based on storeUid
-            if (product.storeUid !== storeUid && storeUid !== null) {
-                return; // Skip this product if it doesn't match the storeUid
+
+            if (!(product.storeUid.includes(storeUid) || product.storeUid.includes("0"))) {
+                console.log("Skipping product due to storeUid mismatch");
+                return; // Skip this product if storeUid is not in the product's storeUid array, and storeUid is not exactly "0"
             }
-            
+
 
             //console.log("Productsss:", product);
             const discountOptions = Array.from({ length: 9 }, (_, i) => `<option value="${i * 10}">${i * 10}%</option>`).join('');

@@ -144,6 +144,12 @@ function populateStoresDropdown(stores) {
     // Clear the current options (e.g., loading message)
     storeSelect.innerHTML = '<option value="">Select a store...</option>';
     
+    // Add "All Stores" as a hardcoded option with UID 0
+    const allStoresOption = document.createElement('option');
+    allStoresOption.value = '0';  // Hardcoded UID for "All Stores"
+    allStoresOption.textContent = 'All Storess'; // Display the name "All Stores"
+    storeSelect.appendChild(allStoresOption);
+
     // Populate dropdown with store data
     stores.forEach(store => {
         const option = document.createElement('option');
@@ -193,6 +199,7 @@ function addToChosenStores(storeSelect) {
     // Debugging: Log the chosen stores array
     console.log("Chosen Stores Array:", chosenStoresArray);
 }
+
 
 function removeFromChosenStores(uid) {
     const chosenStoresSelect = document.getElementById('store-chosen');
