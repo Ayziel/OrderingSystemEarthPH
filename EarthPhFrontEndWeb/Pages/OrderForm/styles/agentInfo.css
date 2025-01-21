@@ -111,7 +111,8 @@ h1 {
 
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
+    margin: 0 auto; /* 15% from the top and centered */
+    margin-top: 0;
     padding: 30px;
     border: 1px solid #888;
     width: 50%; /* Could be more or less, depending on screen size */

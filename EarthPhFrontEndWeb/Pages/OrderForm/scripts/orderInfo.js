@@ -519,12 +519,18 @@ document.addEventListener("DOMContentLoaded", () => {
         
         
             const updatedProducts = productDetails.map(product => {
-                const updatedProduct = {
+                const isARSCoil = product.name.toLowerCase().includes('ars coil'); // Check if the name contains "ARS Coil"
+                const extraItems = isARSCoil ? Math.floor(product.quantity / 5) : 0; // Calculate extra items
+                const adjustedQuantity = product.quantity + extraItems; // Adjust quantity
+                const adjustedTotalItems = product.totalItems;
+                return {
                     ...product,
+                    quantity: adjustedQuantity, // Use the adjusted quantity
+                    originalQuantity: product.quantity, // Save the original quantity for reference
                     description: product.description || 'No description available',
                 };
-                return updatedProduct;
             });
+            
         
             const user = JSON.parse(localStorage.getItem('orderData')) || {};
         
@@ -537,6 +543,9 @@ document.addEventListener("DOMContentLoaded", () => {
             //user.tin = "123123123";
             
             ////////
+            const totalItems = updatedProducts.reduce((acc, product) => {
+                return acc + product.quantity; // Sum of the adjusted quantity
+            }, 0);
 
             const orderData = {
                 agentName: user.agentName,
@@ -546,7 +555,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 storeName: user.storeName,
                 tin: user.tin,
                 listPrice: parseFloat(document.getElementById('listPrice').value),
-                totalItems: parseInt(document.getElementById('totalItems').value),
+                totalItems: totalItems, 
                 totalAmount: parseFloat(document.getElementById('totalAmount').value),
                 paymentMode: document.getElementById('paymentMode').value,
                 remarks: document.getElementById('remarks').value,

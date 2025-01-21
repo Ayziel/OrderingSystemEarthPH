@@ -85,11 +85,11 @@
 
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
+    margin: 0 auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
     width: 80%; /* Could be more or less, depending on screen size */
-    max-height: 80%; /* Limit the height */
+    height: 100%; /* Limit the height */
     overflow-y: auto; /* Enable vertical scrolling */
 }
 
