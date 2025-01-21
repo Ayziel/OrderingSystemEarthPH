@@ -326,3 +326,10 @@ input[type="text"], select {
         display: none !important;
     }
 }
+
+.Bundle {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
