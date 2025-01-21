@@ -163,7 +163,7 @@ function populateProducts(products) {
                 } catch (error) {
                     console.error('Error updating product:', error);
                 }
-                // window.location.reload();
+                 window.location.reload();
             };
         });
 
