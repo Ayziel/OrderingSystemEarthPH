@@ -23,51 +23,70 @@ function populateStoresTable(stores) {
     const tableBody = document.querySelector('#storesTable tbody');
     tableBody.innerHTML = '';  // Clear any existing rows
 
+    let addressLabel = '';
+    let storeNameLabel = '';
+    let phoneLabel = '';
+
+    if (window.innerWidth < 756) {
+        addressLabel = 'Address ';
+        storeNameLabel = 'Store Name ';
+        phoneLabel = 'Phone ';
+    } else {
+        addressLabel = '';
+        storeNameLabel = '';
+        phoneLabel = '';
+    }
+
     // Loop through the stores data and create table rows
     for (let i = 0; i < stores.length; i++) {
         const store = stores[i];
         const row = document.createElement('tr');
-        
-        // Create table cells for address, store name, and status
+    
+        // Create table cells with both a common and unique class
         const addressCell = document.createElement('td');
-        addressCell.textContent = store.address || 'N/A';
+        addressCell.classList.add('table-cell', 'address-cell');
+        addressCell.innerHTML = `<strong class="label">${addressLabel}</strong><span class="value">${store.address || 'N/A'}</span>`;
         
         const storeNameCell = document.createElement('td');
-        storeNameCell.textContent = store.name || 'N/A';  // Update from 'storeName' to 'name'
+        storeNameCell.classList.add('table-cell', 'store-name-cell');
+        storeNameCell.innerHTML = `<strong class="label">${storeNameLabel}</strong><span class="value">${store.name || 'N/A'}</span>`;
         
         const statusCell = document.createElement('td');
-        statusCell.textContent = store.phone || 'N/A';
+        statusCell.classList.add('table-cell', 'status-cell');
+        statusCell.innerHTML = `<strong class="label">${phoneLabel}</strong><span class="value">${store.phone || 'N/A'}</span>`;
         
-            const button = document.createElement('td');
-            button.textContent = 'Open';
-            button.style.padding = '10px';
+        const button = document.createElement('td');
+        button.classList.add('table-cell', 'button-cell');
+        button.textContent = 'Open';
+        button.style.padding = '10px';
+        button.style.backgroundColor = '#66bb6a';
+        button.style.color = 'white';
+        button.style.textAlign = 'center';
+        button.style.cursor = 'pointer';
+        button.style.borderRadius = '5px';
+        button.style.transition = 'background-color 0.3s ease';
+    
+        button.addEventListener('mouseover', () => {
+            button.style.backgroundColor = '#28a745';
+        });
+    
+        button.addEventListener('mouseout', () => {
             button.style.backgroundColor = '#66bb6a';
-            button.style.color = 'white';
-            button.style.textAlign = 'center';
-            button.style.cursor = 'pointer';
-            button.style.borderRadius = '5px';
-            button.style.transition = 'background-color 0.3s ease';
-            button.style.backgroundColor = 'green !important'; // Apply background color with !important
-
-            button.addEventListener('mouseover', () => {
-                button.style.backgroundColor = '#28a745'; 
-            });
-            
-            button.addEventListener('mouseout', () => {
-                button.style.backgroundColor = '#66bb6a';
-            });
-            
-            row.appendChild(button);
+        });
+    
+        row.appendChild(button);
+    
         // Add a click event to open the modal when the row is clicked
         row.addEventListener('click', () => {
             openStoreModal(store);
         });
-
+    
         // Append cells to the row
         row.appendChild(addressCell);
         row.appendChild(storeNameCell);
         row.appendChild(statusCell);
         row.appendChild(button);
+    
         // Append the row to the table body
         tableBody.appendChild(row);
     }
@@ -119,12 +138,7 @@ document.getElementById('closeModal').addEventListener('click', () => {
     modal.style.display = 'none';
 });
 
-
-
-// Call the function to fetch and populate the table on page load
 getStores();
-
-
 
 // Function to handle export to Excel
 document.getElementById('export-btn').addEventListener('click', async () => {

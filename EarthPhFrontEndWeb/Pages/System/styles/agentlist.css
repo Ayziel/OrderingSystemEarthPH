@@ -52,7 +52,6 @@ th, td {
 th {
     background-color: #f4f4f4;
 }
-
 /* Style for the button */
 button {
     padding: 10px 20px;
@@ -66,3 +65,73 @@ button {
 button:hover {
     background-color: #45a049;
 }
+
+ @media (max-width: 768px) {
+    .navbar_content p {
+        display: none;
+    }
+    th {
+        display: block;
+        width: 100%;
+        font-size: 0.8rem;
+    }
+    td {
+        display: block;
+        width: 100%;
+        font-size: 0.8rem;
+    }
+    .modal-content{
+        width: 100%!important;
+    }
+
+    .dashboard {
+        position: static;
+        padding-right: 10px!important;
+    }
+
+    .dash-content {
+        padding-right: 10px!important;
+    }
+
+    nav.close ~ .dashboard {
+        width: 100%!important;
+    }
+
+    .agent-header-row {
+        display: none;
+    }
+
+    .modal-label {
+        display: none;
+    }
+
+    .modal-row::before {
+        font-weight: bold;
+        margin-right: 10px; /* Adds space between the before content and the cell content */
+        display: inline-block; /* Ensures it's on the same line */
+        width: 80px; /* Adjusts the space for alignment */
+    }
+    #modal-firstName::before {
+        content: "First Name: ";
+    }
+    
+    #modal-lastName::before {
+        content: "Last Name: ";
+    }
+    
+    #modal-phoneNumber::before {
+        content: "Phone Number: ";
+    }
+    
+    #modal-email::before {
+        content: "Email: ";
+    }
+    
+    #modal-team::before {
+        content: "Team: ";
+    }
+    
+    #modal-role::before {
+        content: "Role: ";
+    }
+} 

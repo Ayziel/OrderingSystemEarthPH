@@ -71,14 +71,14 @@ function populateOrders(orders) {
     
         // Populate row with order data and add the button for 'Status' after the totalAmount
         row.innerHTML = `
-            <td>${globalCounter++}</td>
-            <td>${order.storeName || 'No store name'}</td>
-            <td>${order.agentName || 'No agent name'}</td>
-            <td>${new Date(order.orderDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
-            <td>${order.area || 'No location'}</td>
-            <td>${order.totalItems || 'No items'}</td>
-            <td>${order.totalAmount ? '₱ ' + order.totalAmount.toFixed(2) : 'No amount'}</td>
-            <td>
+            <td class="table-data">${globalCounter++}</td>
+            <td class="table-data">${order.storeName || 'No store name'}</td>
+            <td class="table-data">${order.agentName || 'No agent name'}</td>
+            <td class="table-data">${new Date(order.orderDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
+            <td class="table-data">${order.area || 'No location'}</td>
+            <td class="table-data">${order.totalItems || 'No items'}</td>
+            <td class="table-data">${order.totalAmount ? '₱ ' + order.totalAmount.toFixed(2) : 'No amount'}</td>
+               <td class="table-data">
                     ${
                         order.paymentMode
                             ? order.paymentMode === 'credit'
@@ -86,16 +86,15 @@ function populateOrders(orders) {
                                 : order.paymentMode.charAt(0).toUpperCase() + order.paymentMode.slice(1)
                             : 'No method'
                     }
-            </td>
-            <td>
+                </td>
+            <td class="table-data">
                 <select class="status-dropdown" data-order-id="${order._id}" ${userRole === 'agent' ? 'disabled' : ''}>
                     <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
                     <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
-                    <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
                     <option value="received" ${order.status === 'received' ? 'selected' : ''}>Received</option>
                 </select>
             </td>
-            <td class="open-button">Open</td>
+            <td class="open-button table-data">Open</td>
         `;
     
         // Add change event listener to status dropdown (inside the loop)
@@ -174,15 +173,43 @@ function openModal(order) {
     // Add the product details as a table if products exist
     let productsHTML = '';
     if (order.products && order.products.length > 0) {
+        if (window.innerWidth < 768) {
+            productsHTML = `
+            <h4>Products:</h4>
+            <table>
+                <thead>
+                </thead>
+                <tbody>
+                    ${order.products
+                        .map(
+                            (product, index) => `
+                        <tr>
+                            <th>Product Name</th>
+                            <td>${product.name}</td>
+                            <th>Price</th>
+                            <td>₱${product.price.toFixed(2)}</td>
+                            <th>Quantity</th>
+                            <td>${product.quantity}</td>
+                            <th>Total</th>
+                            <td>₱${(product.price * product.quantity).toFixed(2)}</td>
+                        </tr>
+                        `)
+                        .join('')}
+                </tbody>
+            </table>
+            <button id="save-button" style="display: none;">Save</button>
+        `;
+        }
+        else {
         productsHTML = `
             <h4>Products:</h4>
             <table>
                 <thead>
                     <tr>
-                        <th>Product Name</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Total</th>
+                        <th class:"th-desktop-product">Product Name</th>
+                        <th class:"th-desktop-product">Price</th>
+                        <th class:"th-desktop-product">Quantity</th>
+                        <th class:"th-desktop-product">Total</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -201,6 +228,7 @@ function openModal(order) {
             </table>
             <button id="save-button" style="display: none;">Save</button>
         `;
+        }
     } else {
         productsHTML = `<p>No products available.</p>`;
     }

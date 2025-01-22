@@ -54,12 +54,12 @@ function populateProducts(products) {
         const priceWithDiscount = product.discount ? (product.price - (product.price * product.discount / 100)) : product.price;
 
         row.innerHTML = `
-            <td>${globalCounter++}</td>
-            <td>${truncateText(product.productName || 'N/A', 30)}</td>
-            <td>${truncateText(product.productDescription || 'No description', 50)}</td>
-            <td>${truncateText(product.brand || 'No brand', 30)}</td>
-            <td>₱ ${priceWithDiscount ? priceWithDiscount.toFixed(2) : '0.00'}</td>
-            <td>% ${product.discount ? product.discount.toFixed(2) : '0'}</td>
+            <td class="table-data">${globalCounter++}</td>
+            <td class="table-data" >${truncateText(product.productName || 'N/A', 30)}</td>
+            <td class="table-data">${truncateText(product.productDescription || 'No description', 50)}</td>
+            <td class="table-data">${truncateText(product.brand || 'No brand', 30)}</td>
+            <td class="table-data">₱ ${priceWithDiscount ? priceWithDiscount.toFixed(2) : '0.00'}</td>
+            <td class="table-data">% ${product.discount ? product.discount.toFixed(2) : '0'}</td>
              <td class="open-cell">Open</td>
         `;
 

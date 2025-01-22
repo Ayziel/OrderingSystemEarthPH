@@ -315,9 +315,11 @@ const openGCashModal = () => {
     });
 };
 
-
-
-
-
-// Add click event to the GCash card
-document.getElementById('gcashCard').addEventListener('click', openGCashModal);
+document.getElementById('gcashCard').addEventListener('click', function() {
+    // Check window width
+    if (window.innerWidth < 787) {
+        return; // Exit early if the window width is less than 787px
+    } else {
+        openGCashModal(); // Otherwise, execute the usual action
+    }
+});

@@ -57,3 +57,78 @@ th {
 .open-button:hover {
     background-color: #45a049; /* Darker green on hover */
 }
+
+@media (max-width: 768px) {
+
+    .modal-content {
+        margin-top: 30px;
+        width: 100%;
+    }
+
+    .table-header-row {
+        display: none;
+    }
+
+    .dash-content {
+        margin-left: 0!important;
+        margin-top: 0!important;
+        padding: 0!important;
+    }
+
+    .navbar_content p {
+        display: none;
+    }
+
+    .modal-product-content {
+        width: 100%;
+        margin-top: 50%;
+    }
+    
+
+    .table-cell {
+        display: block;
+        width: 100%;
+        font-size: 0.8rem;
+    }
+    
+        .dashboard {
+            position: static;
+            padding-right: 10px!important;
+        }
+    
+        .dash-content {
+            padding-right: 10px!important;
+        }
+    
+        nav.close ~ .dashboard {
+            width: 100%!important;
+        }
+
+
+/* Common styles for all table cells */
+.table-cell {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+/* Align label and value with consistent spacing */
+.table-cell .label,
+.table-cell .value {
+    display: inline-block;
+    width: 50%; /* Adjust as needed for even spacing */
+    text-align: left; /* Optional: Align text to the left */
+    vertical-align: middle; /* Ensures proper alignment */
+}
+
+/* Optional: Make the label bold and distinct */
+.label {
+    font-weight: bold;
+}
+
+/* Optional: Add color to the value for distinction */
+.value {
+    color: #333;
+}
+
+}

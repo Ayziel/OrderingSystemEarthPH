@@ -882,3 +882,20 @@ margin-top: 30px;
 .team-leader-table tbody tr:hover {
   background-color: #eaeaea;
 }
+
+
+
+@media (max-width: 768px) {
+
+  .navbar_content p {
+    display: none;
+  }
+  .page-wrapper {
+    margin-left: 0!important;
+    padding-left: 0!important;
+  }
+   
+  #lineChart{
+    display: none;
+   } 
+}
