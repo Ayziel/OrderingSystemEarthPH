@@ -53,6 +53,7 @@ exports.createOrder = async (req, res) => {
             uid: orderData.uid,
             storeUid: orderData.storeUid,
             userUid: orderData.userUid,
+            receiptUid: orderData.receiptUid,
             status: 'Pending' // Set default status to 'Pending'
         });
 

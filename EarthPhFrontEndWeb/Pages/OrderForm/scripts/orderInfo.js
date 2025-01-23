@@ -500,6 +500,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const orderUid = uuid.v4();
         const stockUid = uuid.v4();
+        const generateReceiptUid = () => {
+            const timestamp = Date.now().toString().slice(-4); // Last 4 digits of the timestamp
+            const randomNum = Math.floor(100 + Math.random() * 900); // Random 3-digit number
+            return `RCPT-${timestamp}-${randomNum}`;
+        };
+        const receiptUid = generateReceiptUid();
+        document.getElementById("receiptID").textContent = receiptUid;
 
         document.getElementById('acceptOrderBtn').addEventListener('click', async () => {
             const button = document.getElementById('acceptOrderBtn');
@@ -563,6 +570,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 uid: orderUid,
                 storeUid: storeData.uid, //none
                 userUid: matchedUser.uid,
+                receiptUid: receiptUid,
                 products: updatedProducts.length > 0 ? updatedProducts : [{
                     name: 'No product selected',
                     price: 0,
@@ -573,7 +581,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     product_uid: 'defaultProductUid' // Add a default product_uid for the placeholder product
                 }]
             };
-
+            console.log("Order Data:", orderData);
         
             const isFieldMissing = (field, fieldName) => {
                 if (typeof field !== 'string' || field.trim() === '') {
@@ -606,6 +614,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${localStorage.getItem('authToken')}`
                     },
+                 
                     body: JSON.stringify(orderData)
                 });
         

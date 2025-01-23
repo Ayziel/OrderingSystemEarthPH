@@ -71,6 +71,10 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    receiptUid: {
+        type: String,
+        required: true
+    },
     products: [{
         product_uid: {
             type: String,
