@@ -14,6 +14,7 @@ const storeRoutes = require('./EarthPhBackEndServer/routes/storeRoutes');
 const surveyRoutes = require('./EarthPhBackEndServer/routes/surveyRoutes');
 const stockRoutes = require('./EarthPhBackEndServer/routes/stockRoutes');
 const gCashRoutes = require('./EarthPhBackEndServer/routes/gcashMoneyRoutes');
+const viewStoreRoutes = require('./EarthPhBackEndServer/routes/viewStoreRoutes');
 const app = express();
 
 app.use(cors()); // Enable CORS for all routes
@@ -51,6 +52,7 @@ app.use('/stores', storeRoutes);
 app.use('/survey', surveyRoutes);
 app.use('/stocks', stockRoutes);
 app.use('/gcash', gCashRoutes);
+app.use('/viewStoreRoutes', viewStoreRoutes);
 
 // Error handling middleware (if needed)
 app.use((err, req, res, next) => {

@@ -502,7 +502,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const stockUid = uuid.v4();
         const generateReceiptUid = () => {
             const timestamp = Date.now().toString().slice(-4); // Last 4 digits of the timestamp
-            const randomNum = Math.floor(100 + Math.random() * 900); // Random 3-digit number
+            const randomNum = Math.floor(1000 + Math.random() * 9000); // Random 3-digit number
             return `RCPT-${timestamp}-${randomNum}`;
         };
         const receiptUid = generateReceiptUid();

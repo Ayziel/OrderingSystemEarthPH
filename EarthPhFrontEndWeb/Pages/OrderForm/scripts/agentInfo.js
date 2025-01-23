@@ -1,3 +1,12 @@
+
+const addImage = document.getElementById('addImage');
+const applyBtn = document.getElementById('applyBtn');
+
+const link = document.createElement("link");
+link.rel = "manifest";
+link.href = "/System/manifest.json";
+document.head.appendChild(link);
+
 document.addEventListener('DOMContentLoaded', () => {
     const today = new Date().toISOString().split('T')[0];  // Get today's date in YYYY-MM-DD format
     document.getElementById('order-date').value = today;
@@ -10,19 +19,18 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.log('No order data found in localStorage on load.');
     }
-});
 
-const link = document.createElement("link");
-link.rel = "manifest";
-link.href = "/System/manifest.json";
-document.head.appendChild(link);
+    if (localStorage.getItem("isViewOrderMode") === "true") {
+        addImage.style.display = 'block';
+        applyBtn.style.display = 'block';
+        } 
+});
 
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/System/service-worker.js")
         .then(() => console.log("Service Worker registered"))
         .catch((error) => console.log("Service Worker registration failed:", error));
 }
-
 // Listen for the "beforeinstallprompt" event
 window.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault();
@@ -260,5 +268,6 @@ document.getElementById('orderForm').addEventListener('submit', (event) => {
         alert('Please select a valid store.'); // Show an alert if no valid store is selected
     }
 });
+
 
 

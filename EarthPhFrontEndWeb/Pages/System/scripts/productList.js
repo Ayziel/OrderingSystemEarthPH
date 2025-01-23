@@ -234,10 +234,6 @@ deleteProductButton.addEventListener('click', () => {
         });
 });
 
-
-
-
-
 function exportToExcel() {
     console.log("Exporting products to Excel...");
 

@@ -90,3 +90,77 @@ button:hover {
     color: white;
     font-size: 1rem;
 }
+
+.open {
+    background-color: #4CAF50; /* Green background */
+    color: white!important; /* White text */
+    height: 50px;
+    text-align: center; /* Center text */
+    font-size: 1rem;
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+@media (max-width: 768px) {
+    th {
+        display: block;
+        width: 100%;
+        font-size: 0.8rem;
+    }
+    td {
+        display: block;
+        width: 100%;
+        font-size: 0.8rem;
+    }
+
+    .orders-header {
+        display: none;
+    }
+
+    .modal-content{
+        width: 100%!important;
+    }
+
+    .dashboard {
+        position: static;
+        padding-right: 10px!important;
+    }
+
+    .dash-content {
+        padding-right: 10px!important;
+    }
+
+    nav.close ~ .dashboard {
+        width: 100%!important;
+    }
+    .order-header{
+        display: none;
+    }
+    .orders-body td {
+        display: block;
+        width: 100%;
+        font-size: 0.8rem;
+    }
+    .orders-body td::before {
+        font-weight: bold;
+        margin-right: 10px; /* Adds space between the before content and the cell content */
+        display: inline-block; /* Ensures it's on the same line */
+        width: 80px; /* Adjusts the space for alignment */
+    }
+    .orders-body td:nth-of-type(1):before {
+        content: "Index: ";
+    }
+    .orders-body td:nth-of-type(2):before {
+        content: "Store: ";
+    }
+    .orders-body td:nth-of-type(3):before {
+        content: "Product Name: ";
+    }
+    .orders-body td:nth-of-type(4):before {
+        content: "Orders: ";
+    }
+    .orders-body td:nth-of-type(5):before {
+        content: "Stock: ";
+    }
+}

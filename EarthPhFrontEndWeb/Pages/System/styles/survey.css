@@ -1,0 +1,103 @@
+.open-button {
+    background-color: #4CAF50; /* Green background */
+    color: white!important; /* White text */
+    height: 50px;
+    text-align: center; /* Center text */
+    font-size: 1rem!important;
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition for background color */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+@media (max-width: 768px) {
+    th {
+        display: block;
+        width: 100%;
+        font-size: 0.8rem;
+    }
+    td {
+        display: block;
+        width: 100%;
+        font-size: 0.8rem;
+    }
+
+
+    .modal-content{
+        width: 100%!important;
+    }
+
+    .dashboard {
+        position: static;
+        padding-right: 10px!important;
+    }
+
+    .dash-content {
+        padding-right: 10px!important;
+    }
+
+    nav.close ~ .dashboard {
+        width: 100%!important;
+    }
+    .order-header{
+        display: none;
+    }
+    .survey-cell {
+        display: block;
+        width: 100%;
+        font-size: 0.8rem;
+    }
+    .survey-cell::before {
+        font-weight: bold;
+        margin-right: 20px; /* Adds space between the before content and the cell content */
+        display: inline-block; /* Ensures it's on the same line */
+        width: 100px; /* Adjusts the space for alignment */
+    }
+    .survey-cell:nth-of-type(1):before {
+        content: "Name: ";
+    }
+    .survey-cell:nth-of-type(2):before {
+        content: "Store: ";
+    }
+    .survey-cell:nth-of-type(3):before {
+        content: "insectControl: ";
+    }
+    .survey-cell:nth-of-type(4):before {
+        content: "rodentControl: ";
+    }
+    .survey-cell:nth-of-type(5):before {
+        content: "FabricSpray: ";
+    }
+    .survey-cell:nth-of-type(6):before {
+        content: "AirConCleaner: ";
+    }
+    .survey-cell:nth-of-type(7):before {
+        content: "PetCare: ";
+    }
+    .survey-cell:nth-of-type(8):before {
+        content: "Date: ";
+    }
+
+    /* Alternate row colors */
+.even-row {
+    background-color: #f9f9f9; /* Light color for even rows */
+}
+
+.odd-row {
+    background-color: #ffffff; /* White for odd rows */
+}
+
+/* Optional: You can add a border between cells for extra separation */
+.survey-cell {
+    border-right: 1px solid #ddd; /* Add a right border to each cell */
+}
+
+/* Optional: Add a border at the bottom of each row */
+tr {
+    border-bottom: 1px solid #ddd;
+}
+
+}
