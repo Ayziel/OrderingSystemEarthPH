@@ -1,6 +1,7 @@
 
 const addImage = document.getElementById('addImage');
 const applyBtn = document.getElementById('applyBtn');
+let selectedStoreData = null;
 
 const link = document.createElement("link");
 link.rel = "manifest";
@@ -35,18 +36,6 @@ if ("serviceWorker" in navigator) {
 window.addEventListener("beforeinstallprompt", (event) => {
     event.preventDefault();
     const installPrompt = event;
-    //document.getElementById("install-btn").style.display = "block";
-
-    // document.getElementById("install-btn").addEventListener("click", () => {
-    //     installPrompt.prompt();
-    //     installPrompt.userChoice.then((choiceResult) => {
-    //         if (choiceResult.outcome === "accepted") {
-    //             console.log("User accepted the install prompt");
-    //         } else {
-    //             console.log("User dismissed the install prompt");
-    //         }
-    //     });
-    // });
 }); 
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -103,9 +92,6 @@ function populateUserData(matchedUser, users) {
     document.getElementById('agent-name').value = `${matchedUser.firstName} ${matchedUser.lastName}`;
     console.log('Matched User:', matchedUser);
 
-    // Populate area field with matched user's address
-
-
     // Populate team leader name field if available
     const teamLeader = findTeamLeader(users, matchedUser.team);
     if (teamLeader) {
@@ -159,7 +145,76 @@ document.getElementById('confirm-button').addEventListener('click', (event) => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('authToken');
+const token = localStorage.getItem('authToken');
+
+let applybtnLabel = document.querySelector('.apply-label');
+const uploadFeedback = document.getElementById('upload-feedback');
+
+// Event listener for the Apply button
+applybtnLabel.addEventListener('click', (event) => {
+    event.preventDefault(); // Prevent the page from reloading
+
+    // Static data that you want to submit
+    const agentName = 'John Doe';
+    const agentUid = 'agent-123';
+    const location = selectedStoreData.address; // Make sure it's 'Location' on the backend
+    const storeName = selectedStoreData.name;
+    const storeUid = selectedStoreData.uid;
+    const uid = selectedStoreData.uid;
+    const createdAt = new Date().toISOString();
+
+    // Prepare the data to be sent to the server
+    const storeData = {
+        agentName,
+        agentUid,
+        Location: location, // Correct field name 'Location'
+        storeName,
+        storeUid,
+        uid,
+        createdAt
+    };
+
+    // Log the data to be sent to the server
+    console.log('Data to be sent:', storeData);
+
+    // Send the data to the server using fetch
+    fetch('https://earthph.sdevtech.com.ph/viewStoreRoutes/createStore', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(storeData), // Sending data as JSON
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(errorData => {
+                throw new Error(errorData.message || 'Failed to submit data');
+            });
+        }
+        return response.json();  // Parse the response JSON
+    })
+    .then(result => {
+        console.log('Success:', result);
+        alert('Data uploaded successfully!');
+        
+        // Update the feedback message (check if the element exists first)
+        if (uploadFeedback) {
+            uploadFeedback.textContent = 'Data uploaded successfully!';
+            uploadFeedback.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        console.error('Error uploading data:', error);
+        alert('Failed to upload data: ' + error.message);
+        
+        // Update the feedback message (check if the element exists first)
+        if (uploadFeedback) {
+            uploadFeedback.textContent = 'Failed to upload data.';
+            uploadFeedback.style.display = 'block';
+        }
+    });
+});
+
     if (!token) {
         window.location.href = 'https://earthhomecareph.astute.services/System/login.html';  // Adjust path accordingly
     }
@@ -217,43 +272,40 @@ async function getStores() {
 
 function populateStoresDropdown(stores) {
     const storeSelect = document.getElementById('store-name');
-    
-    // Clear existing options (except the first placeholder option)
     storeSelect.innerHTML = '<option value="">Select store name</option>';
     
-    // Populate the dropdown with store options
     stores.forEach(store => {
         const option = document.createElement('option');
         option.value = store._id;
         option.textContent = store.name;
-        option.setAttribute('data-uid', store.uid); // Store the store uid in a data attribute
-        option.setAttribute('data-tin', store.tin); // Store the store's TIN in a data attribute
-        option.setAttribute('data-address', store.address); // Store the store's TIN in a data attribute
-        option.setAttribute('data-store', JSON.stringify(store)); // Store the entire store object in a data attribute
+        option.setAttribute('data-uid', store.uid);
+        option.setAttribute('data-tin', store.tin);
+        option.setAttribute('data-address', store.address); 
+        option.setAttribute('data-store', JSON.stringify(store)); 
         storeSelect.appendChild(option);
     });
 
-    // Add event listener to store the selected store's data in localStorage
     storeSelect.addEventListener('change', () => {
         const selectedOption = storeSelect.options[storeSelect.selectedIndex];
-        
-        // Check if the selected option has a valid store data
         const storeData = selectedOption && selectedOption.getAttribute('data-store') ? JSON.parse(selectedOption.getAttribute('data-store')) : null;
         
         if (storeData) {
-            localStorage.setItem('storeData', JSON.stringify(storeData)); // Store the entire store data in localStorage
-            console.log('Selected store data:', storeData); // Log the store data for debugging
-            
-            // Now update the TIN field with the selected store's TIN
+            // Store the selected store data in the global variable
+            selectedStoreData = storeData;
+            console.log(selectedStoreData)
+            // Also save it to localStorage if needed
+            localStorage.setItem('storeData', JSON.stringify(storeData)); 
+            console.log('Selected store data:', storeData);
+    
+            // Update the TIN and address fields based on selected store
             const storeTIN = selectedOption.getAttribute('data-tin');
             const storeAddress = selectedOption.getAttribute('data-address');
-            document.getElementById('tin').value = storeTIN; // Set the TIN field value to the selected store's TIN
+            document.getElementById('tin').value = storeTIN; 
             document.getElementById('area').value = storeAddress;
-            console.log('Updated TIN:', storeTIN); // Log the updated TIN for debugging
+            console.log('Updated TIN:', storeTIN);
         }
     });
 }
-
 
 // Form validation before submission
 document.getElementById('orderForm').addEventListener('submit', (event) => {
@@ -268,6 +320,5 @@ document.getElementById('orderForm').addEventListener('submit', (event) => {
         alert('Please select a valid store.'); // Show an alert if no valid store is selected
     }
 });
-
 
 

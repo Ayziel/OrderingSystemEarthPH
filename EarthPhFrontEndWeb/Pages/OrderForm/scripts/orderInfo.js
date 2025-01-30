@@ -115,9 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="product-row product-divider-popup">
                         <img src="${product.productImage}" class="product-image" alt="Product Image">
                         <div class="product-controls">
-                            <div class="Bundle">
-                                <p id="bundle-${product.productSKU}">ARS Coil Bundle (5+1) = 0</p>
-                            </div>
+
                             <div class="quantity-controls">
                                 <button class="minus-btn" data-sku="${product.productSKU}">-</button>
                                 <input type="text" class="product-quantity" data-sku="${product.productSKU}" value="0" readonly>
@@ -142,16 +140,16 @@ document.addEventListener("DOMContentLoaded", () => {
     
             // Now apply the visibility check after the HTML has been added
             const productContainer = document.querySelector(`[data-uid="${product.uid}"]`);
-            if (productContainer) {
-                const bundleElement = productContainer.querySelector('.Bundle');
-                if (bundleElement) {
-                    if (!product.productName.includes("Coil")) {
-                        bundleElement.style.display = "none"; // Hide the bundle if "Coil" is not in the product name
-                    } else {
-                        console.log('Bundle should be visible for product:', product.productName); // Debugging statement
-                    }
-                }
-            }
+            // if (productContainer) {
+            //     const bundleElement = productContainer.querySelector('.Bundle');
+            //     if (bundleElement) {
+            //         if (!product.productName.includes("Coil")) {
+            //             bundleElement.style.display = "none"; // Hide the bundle if "Coil" is not in the product name
+            //         } else {
+            //             console.log('Bundle should be visible for product:', product.productName); // Debugging statement
+            //         }
+            //     }
+            // }
         });
     
         addQuantityButtonListeners(); // Attach listeners after rendering the products
@@ -160,37 +158,37 @@ document.addEventListener("DOMContentLoaded", () => {
     
     
 
-    const attachBundleUpdateListeners = () => {
-        const quantityInputs = document.querySelectorAll(".product-quantity");
+    // const attachBundleUpdateListeners = () => {
+    //     const quantityInputs = document.querySelectorAll(".product-quantity");
     
-        quantityInputs.forEach(input => {
-            const sku = input.dataset.sku;
-            const bundleElement = document.getElementById(`bundle-${sku}`);
+    //     quantityInputs.forEach(input => {
+    //         const sku = input.dataset.sku;
+    //         const bundleElement = document.getElementById(`bundle-${sku}`);
     
-            input.addEventListener("input", () => {
-                const quantity = parseInt(input.value) || 0;
-                const bundle = Math.floor(quantity / 5); // Calculate bundle
-                if (bundleElement) {
-                    bundleElement.textContent = `ARS Coil Bundle (5 + 1) = ${bundle}`;
-                }
-            });
-        });
+    //         input.addEventListener("input", () => {
+    //             const quantity = parseInt(input.value) || 0;
+    //             const bundle = Math.floor(quantity / 5); // Calculate bundle
+    //             if (bundleElement) {
+    //                 bundleElement.textContent = `ARS Coil Bundle (5 + 1) = ${bundle}`;
+    //             }
+    //         });
+    //     });
     
-        const buttons = document.querySelectorAll(".minus-btn, .plus-btn");
+    //     const buttons = document.querySelectorAll(".minus-btn, .plus-btn");
     
-        buttons.forEach(button => {
-            button.addEventListener("click", (e) => {
-                const sku = e.target.dataset.sku;
-                const quantityInput = document.querySelector(`.product-quantity[data-sku="${sku}"]`);
-                const bundleElement = document.getElementById(`bundle-${sku}`);
-                const quantity = parseInt(quantityInput.value) || 0;
-                const bundle = Math.floor(quantity / 5); // Calculate bundle
-                if (bundleElement) {
-                    bundleElement.textContent = `ARS Coil Bundle (5 + 1) = ${bundle}`;
-                }
-            });
-        });
-    };
+    //     buttons.forEach(button => {
+    //         button.addEventListener("click", (e) => {
+    //             const sku = e.target.dataset.sku;
+    //             const quantityInput = document.querySelector(`.product-quantity[data-sku="${sku}"]`);
+    //             const bundleElement = document.getElementById(`bundle-${sku}`);
+    //             const quantity = parseInt(quantityInput.value) || 0;
+    //             const bundle = Math.floor(quantity / 5); // Calculate bundle
+    //             if (bundleElement) {
+    //                 bundleElement.textContent = `ARS Coil Bundle (5 + 1) = ${bundle}`;
+    //             }
+    //         });
+    //     });
+    // };
     
     
     
@@ -346,28 +344,17 @@ document.addEventListener("DOMContentLoaded", () => {
             let itemsHTML = "";
             let totalAmount = 0;
 
-            productDetails.forEach(item => {
-                // Check if item name contains "ARS Coil"
-                if (item.name.includes("ARS Coil")) {
-                    const bundle = Math.floor(item.quantity / 5);  // Only calculate bundle if "ARS Coil" is present
-                    itemsHTML += `
-                        <p><strong>${item.name}</strong><br>
-                           Price: ₱${item.price.toFixed(2)}<br>
-                           Quantity: ${item.quantity + bundle}<br>
-                           Total: ₱${item.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                    `;
-                } else {
-                    // For items that don't have "ARS Coil", just display as is
-                    itemsHTML += `
-                        <p><strong>${item.name}</strong><br>
-                           Price: ₱${item.price.toFixed(2)}<br>
-                           Quantity: ${item.quantity}<br>
-                           Total: ₱${item.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                    `;
-                }
-            
-                totalAmount += item.total;
-            });
+             productDetails.forEach(item => {
+
+                     // For items that don't have "ARS Coil", just display as is
+                     itemsHTML += `
+                         <p><strong>${item.name}</strong><br>
+                            Price: ₱${item.price.toFixed(2)}<br>
+                            Quantity: ${item.quantity}<br>
+                            Total: ₱${item.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                     `;
+                     totalAmount += item.total;
+         });
             
 
             itemsPurchasedElement.innerHTML = itemsHTML;
@@ -483,12 +470,12 @@ document.addEventListener("DOMContentLoaded", () => {
             //console.log (!checkStockAvailability(productUid, quantity))
             const isAvailable = await checkStockAvailability(productUid, quantity);
 
-            if(!isAvailable){
-                //exceeds.push (`${product.querySelector("strong").innerText}`);
-                alert(`The following products exceeded stock limit: ${product.querySelector("strong").innerText}`);
-                product.querySelector(".product-quantity").value = 0;
-                return true;
-            }
+            // if(!isAvailable){
+            //     //exceeds.push (`${product.querySelector("strong").innerText}`);
+            //     alert(`The following products exceeded stock limit: ${product.querySelector("strong").innerText}`);
+            //     product.querySelector(".product-quantity").value = 0;
+            //     return true;
+            // }
         });
         return false;
     }
@@ -525,18 +512,18 @@ document.addEventListener("DOMContentLoaded", () => {
             button.disabled = true;
         
         
-            const updatedProducts = productDetails.map(product => {
-                const isARSCoil = product.name.toLowerCase().includes('ars coil'); // Check if the name contains "ARS Coil"
-                const extraItems = isARSCoil ? Math.floor(product.quantity / 5) : 0; // Calculate extra items
-                const adjustedQuantity = product.quantity + extraItems; // Adjust quantity
-                const adjustedTotalItems = product.totalItems;
-                return {
-                    ...product,
-                    quantity: adjustedQuantity, // Use the adjusted quantity
-                    originalQuantity: product.quantity, // Save the original quantity for reference
-                    description: product.description || 'No description available',
-                };
-            });
+            // const updatedProducts = productDetails.map(product => {
+            //     const isARSCoil = product.name.toLowerCase().includes('ars coil'); // Check if the name contains "ARS Coil"
+            //     const extraItems = isARSCoil ? Math.floor(product.quantity / 5) : 0; // Calculate extra items
+            //     const adjustedQuantity = product.quantity + extraItems; // Adjust quantity
+            //     const adjustedTotalItems = product.totalItems;
+            //     return {
+            //         ...product,
+            //         quantity: adjustedQuantity, // Use the adjusted quantity
+            //         originalQuantity: product.quantity, // Save the original quantity for reference
+            //         description: product.description || 'No description available',
+            //     };
+            // });
             
         
             const user = JSON.parse(localStorage.getItem('orderData')) || {};
@@ -632,7 +619,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             store_name: orderData.storeName,
                             product_name: product.name,
                             quantity: product.quantity,
-                            stock: product.stock ? product.stock : 10
+                            stock: product.stock ? product.stock : 100
                         };
                         
                         // Search if same parent_uid/product_uid pair already exists in the stocks
