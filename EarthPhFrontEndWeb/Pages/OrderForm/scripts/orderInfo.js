@@ -105,10 +105,17 @@ document.addEventListener("DOMContentLoaded", () => {
             }
     
             const discountOptions = Array.from({ length: 9 }, (_, i) => `<option value="${i * 10}">${i * 10}%</option>`).join('');
-    
+            // data-bundle="${product.bundle}" 
+            // data-free="${product.free}">
             // Create the product HTML structure first
             const productHTML = `
-                <div class="product-container" data-uid="${product.uid}" data-sku="${product.productSKU}" data-store-uid="${product.storeUid}">
+                <div class="product-container" 
+                data-uid="${product.uid}" 
+                data-sku="${product.productSKU}" 
+                data-store-uid="${product.storeUid}"
+                data-bundle="${0}" 
+                data-free="${0}">
+                
                     <div class="product-row">
                         <strong>${product.productName}</strong>
                     </div>
@@ -153,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     
         addQuantityButtonListeners(); // Attach listeners after rendering the products
-        attachBundleUpdateListeners(); // Attach listeners for bundle updates
+        // attachBundleUpdateListeners(); // Attach listeners for bundle updates
     };
     
     
@@ -194,30 +201,30 @@ document.addEventListener("DOMContentLoaded", () => {
     
     populateProductList();
 
-    const updateOrderComputation = () => {
-        const products = document.querySelectorAll(".product-container");
-        let totalItems = 0;
-        let totalAmount = 0;
+    // const updateOrderComputation = () => {
+    //     const products = document.querySelectorAll(".product-container");
+    //     let totalItems = 0;
+    //     let totalAmount = 0;
 
-        products.forEach(product => {
-            const quantity = parseInt(product.querySelector(".product-quantity").value) || 0;
-            const price = parseFloat(product.querySelector(".product-size-select").value);
-            const discountPercentage = parseInt(product.querySelector(".discount-percentage").value) || 0;
+    //     products.forEach(product => {
+    //         const quantity = parseInt(product.querySelector(".product-quantity").value) || 0;
+    //         const price = parseFloat(product.querySelector(".product-size-select").value);
+    //         const discountPercentage = parseInt(product.querySelector(".discount-percentage").value) || 0;
 
-            const discountAmount = price * (discountPercentage / 100);
-            const discountedPrice = price - discountAmount;
+    //         const discountAmount = price * (discountPercentage / 100);
+    //         const discountedPrice = price - discountAmount;
 
-            if (quantity > 0) {
-                totalItems += quantity;
-                totalAmount += quantity * discountedPrice;
-            }
-        });
+    //         if (quantity > 0) {
+    //             totalItems += quantity;
+    //             totalAmount += quantity * discountedPrice;
+    //         }
+    //     });
 
-        document.getElementById("listPrice").value = totalAmount.toFixed(2);
-        document.getElementById("totalItems").value = totalItems;
-        document.getElementById("totalAmount").value = totalAmount.toFixed(2);
-        document.getElementById("totalAmountReceipt").innerText = `₱${totalAmount.toFixed(2)}`;
-    };
+    //     document.getElementById("listPrice").value = totalAmount.toFixed(2);
+    //     document.getElementById("totalItems").value = totalItems;
+    //     document.getElementById("totalAmount").value = totalAmount.toFixed(2);
+    //     document.getElementById("totalAmountReceipt").innerText = `₱${totalAmount.toFixed(2)}`;
+    // };
 
     const storeUid = localStorage.getItem('storeUid'); // Retrieve storeUid from localStorage
 
@@ -228,48 +235,59 @@ document.addEventListener("DOMContentLoaded", () => {
         
         let detailsHTML = "";
         let modalDetailsHTML = "";
+        let totalItems = 0;
+        let totalAmount = 0;
         productDetails = [];
     
         products.forEach(product => {
             const productName = product.querySelector("strong").innerText;
-            const quantity = parseInt(product.querySelector(".product-quantity").value) || 0;
-            const price = parseFloat(product.querySelector(".product-size-select").value);
+            let quantity = parseInt(product.querySelector(".product-quantity").value) || 0;
+            let price = parseFloat(product.querySelector(".product-size-select").value);
             const discountPercentage = parseInt(product.querySelector(".discount-percentage").value) || 0;
-            const productUid = product.getAttribute('data-uid'); // Extract the uid from the data-uid attribute
+            const productUid = product.getAttribute('data-uid');
+            
+            const bundle = parseInt(product.getAttribute("data-bundle")) || 1;
+            const free = parseInt(product.getAttribute("data-free")) || 0;
+    
+            if (bundle > 1) {
+                price = price / bundle;
+            }
+    
+            if (free > 0) {
+                quantity += free;
+            }
+    
             if (quantity > 0) {
-                // Check if this product is already in productDetails array
+                const discountAmount = price * (discountPercentage / 100);
+                const discountedPrice = price - discountAmount;
+                const total = quantity * discountedPrice;
+                
+                totalItems += quantity;
+                totalAmount += total;
+                
                 const existingProduct = productDetails.find(item => item.product_uid === productUid);
     
                 if (existingProduct) {
-                    // If product exists, update its quantity and total
                     existingProduct.quantity += quantity;
-                    const discountAmount = price * (discountPercentage / 100);
-                    const discountedPrice = price - discountAmount;
-                    existingProduct.total += quantity * discountedPrice;
+                    existingProduct.total += total;
                 } else {
-                    // If the product doesn't exist in the order, add it to the array
-                    const discountAmount = price * (discountPercentage / 100);
-                    const discountedPrice = price - discountAmount;
-                    const total = quantity * discountedPrice;
-    
                     productDetails.push({
                         name: productName,
                         price: discountedPrice,
                         quantity: quantity,
                         total: total,
                         discount: discountPercentage,
-                        product_uid: productUid // Include product_uid
+                        product_uid: productUid
                     });
                 }
     
-                // Add the HTML for displaying the product details in the list and modal
                 const itemHTML = `
                     <div class="product-detail">
                         <strong>${productName}</strong>
-                        <p>Price: ₱${(price - (price * (discountPercentage / 100))).toFixed(2)}</p>
+                        <p>Price: ₱${discountedPrice.toFixed(2)}</p>
                         <p>Discount: ${discountPercentage}%</p>
                         <p>Quantity: ${quantity}</p>
-                        <p>Total: ₱${(quantity * (price - (price * (discountPercentage / 100)))).toFixed(2)}</p>
+                        <p>Total: ₱${total.toFixed(2)}</p>
                         <hr>
                     </div>`;
     
@@ -280,25 +298,15 @@ document.addEventListener("DOMContentLoaded", () => {
     
         productDetailsElement.innerHTML = detailsHTML;
         productDetailsModalElement.innerHTML = modalDetailsHTML;
+        
+        document.getElementById("listPrice").value = totalAmount.toFixed(2);
+        document.getElementById("totalItems").value = totalItems;
+        document.getElementById("totalAmount").value = totalAmount.toFixed(2);
+        document.getElementById("totalAmountReceipt").innerText = `₱${totalAmount.toFixed(2)}`;
     };
     
-    const checkStockAvailability = async (productUid, orderedQuantity) => {
-        const product = productDetails.find(item => item.product_uid === productUid);
-        //const maxStock = 99;
-        if (!product) return true; // If the product doesn't exist in order, it's not restricted
-     
-        const currentStock = await getStockLevelFromDatabase(productUid); // Await the stock level for this product
-        if(!currentStock.stock) return true; // If no existing stocks found, it's not restricted
-        return currentStock.stock >= (currentStock.quantity+orderedQuantity); // Compare current stock with the ordered quantity
-    };
-     
-    const getStockLevelFromDatabase = async (productUid) => {
-        const stockData = await fetchStockData(); // Wait for the stock data to be fetched
-        const productStock = stockData.find(stock => stock.product_uid === productUid);
-        //console.log(productStock);
-        return productStock ? productStock : 0; // Return the stock or 0 if not found
-    };
-     
+    
+    
 
     const handleModals = () => {
         const addItemButton = document.getElementById("addItemBtn");
@@ -318,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const submitProductsButton = document.getElementById("submitProductsBtn");
         if (submitProductsButton) {
             submitProductsButton.addEventListener("click", () => {
-                updateOrderComputation();
+
                 updateProductDetails();
                 productModal.style.display = "none";
             });
@@ -358,7 +366,6 @@ document.addEventListener("DOMContentLoaded", () => {
             
 
             itemsPurchasedElement.innerHTML = itemsHTML;
-            totalAmountElement.textContent = `₱${totalAmount}`;
         };
 
         if (submitOrderButton) {
@@ -382,8 +389,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 generateReceipt();
             });
         }
-        
-
         if (closeReceiptButton) {
             closeReceiptButton.addEventListener("click", () => {
                 receiptModal.style.display = "none";
@@ -404,7 +409,11 @@ document.addEventListener("DOMContentLoaded", () => {
             button.addEventListener("click", (event) => {
                 event.preventDefault();
                 const quantityInput = button.closest(".quantity-controls").querySelector(".product-quantity");
+                const productContainer = button.closest(".product-container");
 
+                const bundle = parseInt(productContainer.dataset.bundle) === 0 ? 1 : parseInt(productContainer.dataset.bundle);
+                
+                console.log("Bundle Check",bundle)
                 if (!quantityInput) {
                     console.error("Product quantity input not found!");
                     return;
@@ -412,13 +421,13 @@ document.addEventListener("DOMContentLoaded", () => {
     
                 let quantity = parseInt(quantityInput.value) || 0;   
                 if(!(checkExceedsStock())){
-                    quantityInput.value = quantity + 1;
+                    quantityInput.value = quantity + bundle;
                 }
     
-                if (typeof updateOrderComputation === 'function') {
-                    updateOrderComputation();
+                if (typeof updateProductDetails === 'function') {
+                    updateProductDetails();
                 } else {
-                    console.warn("updateOrderComputation function is not defined.");
+                    console.warn("updateProductDetails function is not defined.");
                 }
     
                 if (typeof updateProductDetails === 'function') {
@@ -444,10 +453,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     quantityInput.value = quantity - 1;
                 }
     
-                if (typeof updateOrderComputation === 'function') {
-                    updateOrderComputation();
+                if (typeof updateProductDetails === 'function') {
+                    updateProductDetails();
                 } else {
-                    console.warn("updateOrderComputation function is not defined.");
+                    console.warn("updateProductDetails function is not defined.");
                 }
     
                 if (typeof updateProductDetails === 'function') {
@@ -459,27 +468,57 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     };
+
+    
+    const checkStockAvailability = async (productUid, orderedQuantity) => {
+        const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+        const currentStock = await getStockLevelFromDatabase(productUid);
+        
+        if (!currentStock || !currentStock.stock) return true; // No stock found, unrestricted
+        
+        // Check if the stock entry matches the user
+        if (currentStock.parent_uid != matchedUser.uid) {
+            // console.log("Matched User", matchedUser.uid);
+            // console.log("Stock Parent UID", currentStock.parent_uid);
+            // console.log(`Stock exists but does not match user UID: ${matchedUser.uid}`);
+            return true; // Allow order but do not alert
+        }
+        
+        console.log(`Product UID: ${productUid}`);
+        console.log(`Current Stock: ${currentStock.stock}`);
+        console.log(`Current Quantity: ${currentStock.quantity}`);
+        console.log(`Ordered Quantity: ${orderedQuantity}`);
+    
+        // Verify stock sufficiency
+        const isStockSufficient = currentStock.stock >= (currentStock.quantity + orderedQuantity);
+        console.log(`Stock sufficient? ${isStockSufficient}`);
+        
+        if (!isStockSufficient) {
+            alert(`The following product exceeded stock limit: ${productUid}`);
+        }
+        
+        return isStockSufficient;
+    };
+    
+
+    const getStockLevelFromDatabase = async (productUid) => {
+        const stockData = await fetchStockData();
+        return stockData.find(stock => stock.product_uid === productUid) || null;
+    };
+     
     
     const checkExceedsStock = () => {
-        const products = document.querySelectorAll(".product-container");
-
-        products.forEach(async product => {
-            const productUid = product.getAttribute('data-uid'); // Extract the uid from the data-uid attribute
-            const quantity = parseInt(product.querySelector(".product-quantity").value)+1 || 1;
-            //console.log("New Orders: " + quantity);
-            //console.log (!checkStockAvailability(productUid, quantity))
+        document.querySelectorAll(".product-container").forEach(async product => {
+            const productUid = product.getAttribute('data-uid');
+            const quantity = parseInt(product.querySelector(".product-quantity").value) + 1 || 1;
+    
             const isAvailable = await checkStockAvailability(productUid, quantity);
-
-            // if(!isAvailable){
-            //     //exceeds.push (`${product.querySelector("strong").innerText}`);
-            //     alert(`The following products exceeded stock limit: ${product.querySelector("strong").innerText}`);
-            //     product.querySelector(".product-quantity").value = 0;
-            //     return true;
-            // }
+            if (!isAvailable) {
+                product.querySelector(".product-quantity").value = 0;
+            }
         });
-        return false;
-    }
-
+    };
+    
 
     const initialize = () => {
         handleModals();
@@ -510,33 +549,18 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         
             button.disabled = true;
-        
-        
-            // const updatedProducts = productDetails.map(product => {
-            //     const isARSCoil = product.name.toLowerCase().includes('ars coil'); // Check if the name contains "ARS Coil"
-            //     const extraItems = isARSCoil ? Math.floor(product.quantity / 5) : 0; // Calculate extra items
-            //     const adjustedQuantity = product.quantity + extraItems; // Adjust quantity
-            //     const adjustedTotalItems = product.totalItems;
-            //     return {
-            //         ...product,
-            //         quantity: adjustedQuantity, // Use the adjusted quantity
-            //         originalQuantity: product.quantity, // Save the original quantity for reference
-            //         description: product.description || 'No description available',
-            //     };
-            // });
-            
+            const updatedProducts = productDetails.map(product => {
+                const adjustedQuantity = product.quantity; // Adjust quantity
+                return {
+                    ...product,
+                    quantity: adjustedQuantity, // Use the adjusted quantity
+                    originalQuantity: product.quantity, // Save the original quantity for reference
+                    description: product.description || 'No description available',
+                };
+            });
         
             const user = JSON.parse(localStorage.getItem('orderData')) || {};
         
-            //////// TEST
-            
-            //user.agentName = "Agent Name";;
-            //user.teamLeaderName = "Team Leader Name";
-            //user.area = "Area";
-            //user.storeName = "McDonalds";
-            //user.tin = "123123123";
-            
-            ////////
             const totalItems = updatedProducts.reduce((acc, product) => {
                 return acc + product.quantity; // Sum of the adjusted quantity
             }, 0);
@@ -650,7 +674,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                                 const updatedStock = {
                                     uid: newStock.uid,
-                                    quantity: (parseInt(product.quantity, 10) + parseInt(newStock.quantity, 10))
+                                    quantity: (parseInt(product.quantity, 100) + parseInt(newStock.quantity, 100))
                                 }
 
                                 fetch('https://earthph.sdevtech.com.ph/stocks/updateStock', {

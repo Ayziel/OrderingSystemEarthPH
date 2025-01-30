@@ -37,6 +37,16 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  free: {
+    type: Number,
+    required: false,
+    default: 0,
+  },
+  bundle: {
+    type: Number,
+    required: false,
+    default: 0,
+  },
   price: {
     type: Number,
     required: true,

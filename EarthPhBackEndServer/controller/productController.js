@@ -29,9 +29,11 @@ async function getProduct(req, res) {
       size, 
       storeName, 
       productImage, 
-      manufacturer, 
+      manufacturer,
+      bundle,
+      free,
       uid, 
-      storeUid 
+      storeUid
     } = req.body;
   
     // Ensure `storeName` and `storeUid` are arrays
@@ -48,6 +50,8 @@ async function getProduct(req, res) {
       price: parseFloat(price), // Convert the price to a float
       discount: parseFloat(discount) || 0, // Default discount to 0 if not provided
       manufacturer,
+      bundle,
+      free,
       storeName: storeNameArray, // Assign the array
       uid,
       storeUid: storeUidArray, // Assign the array

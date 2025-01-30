@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const manufacturer = document.querySelector('input[placeholder="Enter manufacturer"]').value;
         const price = parseFloat(document.querySelector('input[placeholder="Enter Price"]').value);
         const size = document.querySelector('input[placeholder="Enter Size"]').value;
+        const free = parseFloat(document.querySelector('input[placeholder="Enter Free per bundle"]').value) || 0;
+        const bundle = document.querySelector('input[placeholder="Enter Bundle"]').value || 0;
         // Get the selected store name and UID
         const storeSelect = document.querySelector('#store-name');
         const storeName = chosenStoresArray.map(store => store.name);  // Array of store names
@@ -52,6 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
             price,
             size,
             productImage, // This will be a Base64 string if an image is uploaded
+            free,
+            bundle
         };
     
         console.log('Product Data to send:', productData);
