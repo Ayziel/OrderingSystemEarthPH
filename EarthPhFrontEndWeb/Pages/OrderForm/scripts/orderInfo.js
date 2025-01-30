@@ -105,17 +105,19 @@ document.addEventListener("DOMContentLoaded", () => {
             }
     
             const discountOptions = Array.from({ length: 9 }, (_, i) => `<option value="${i * 10}">${i * 10}%</option>`).join('');
-            // data-bundle="${product.bundle}" 
-            // data-free="${product.free}">
+            let bundle = product.bundle ? parseInt(product.bundle) : 0;
+            let free = product.free ? parseInt(product.free) : 0;
+            
             // Create the product HTML structure first
+
             const productHTML = `
                 <div class="product-container" 
                 data-uid="${product.uid}" 
                 data-sku="${product.productSKU}" 
                 data-store-uid="${product.storeUid}"
-                data-bundle="${0}" 
-                data-free="${0}">
-                
+                data-bundle="${bundle}" 
+                data-free="${free}">
+            
                     <div class="product-row">
                         <strong>${product.productName}</strong>
                     </div>
@@ -245,48 +247,56 @@ document.addEventListener("DOMContentLoaded", () => {
             let price = parseFloat(product.querySelector(".product-size-select").value);
             const discountPercentage = parseInt(product.querySelector(".discount-percentage").value) || 0;
             const productUid = product.getAttribute('data-uid');
-            
+    
             const bundle = parseInt(product.getAttribute("data-bundle")) || 1;
             const free = parseInt(product.getAttribute("data-free")) || 0;
     
+            // Adjust price if it's part of a bundle
             if (bundle > 1) {
                 price = price / bundle;
             }
     
-            if (free > 0) {
-                quantity += free;
-            }
+            // Calculate free items correctly based on bundle size
+            let freeItems = Math.floor(quantity / bundle) * free;
+            let totalQuantity = quantity + freeItems;
     
-            if (quantity > 0) {
+            if (totalQuantity > 0) {
                 const discountAmount = price * (discountPercentage / 100);
                 const discountedPrice = price - discountAmount;
-                const total = quantity * discountedPrice;
-                
-                totalItems += quantity;
+    
+                // Calculate total but remove the free items' cost
+                const total = (totalQuantity * discountedPrice) - (freeItems * discountedPrice);
+    
+                totalItems += totalQuantity;
                 totalAmount += total;
-                
+    
                 const existingProduct = productDetails.find(item => item.product_uid === productUid);
     
                 if (existingProduct) {
-                    existingProduct.quantity += quantity;
+                    existingProduct.quantity += totalQuantity;
                     existingProduct.total += total;
                 } else {
                     productDetails.push({
                         name: productName,
                         price: discountedPrice,
-                        quantity: quantity,
+                        quantity: totalQuantity,
                         total: total,
                         discount: discountPercentage,
                         product_uid: productUid
                     });
                 }
     
+                // Format the quantity display based on whether there are free items
+                let quantityText = freeItems > 0 
+                    ? `<p>Quantity: ${quantity} + ${freeItems} free = ${totalQuantity}</p>` 
+                    : `<p>Quantity: ${quantity}</p>`;
+    
                 const itemHTML = `
                     <div class="product-detail">
                         <strong>${productName}</strong>
                         <p>Price: ₱${discountedPrice.toFixed(2)}</p>
                         <p>Discount: ${discountPercentage}%</p>
-                        <p>Quantity: ${quantity}</p>
+                        ${quantityText}
                         <p>Total: ₱${total.toFixed(2)}</p>
                         <hr>
                     </div>`;
@@ -298,12 +308,15 @@ document.addEventListener("DOMContentLoaded", () => {
     
         productDetailsElement.innerHTML = detailsHTML;
         productDetailsModalElement.innerHTML = modalDetailsHTML;
-        
+    
         document.getElementById("listPrice").value = totalAmount.toFixed(2);
         document.getElementById("totalItems").value = totalItems;
         document.getElementById("totalAmount").value = totalAmount.toFixed(2);
         document.getElementById("totalAmountReceipt").innerText = `₱${totalAmount.toFixed(2)}`;
     };
+    
+    
+    
     
     
     
@@ -469,7 +482,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
-    
+            
     const checkStockAvailability = async (productUid, orderedQuantity) => {
         const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
         const currentStock = await getStockLevelFromDatabase(productUid);
