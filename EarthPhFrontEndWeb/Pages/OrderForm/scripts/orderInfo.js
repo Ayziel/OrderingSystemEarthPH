@@ -433,7 +433,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
     
                 let quantity = parseInt(quantityInput.value) || 0;   
-                if(!(checkExceedsStock())){
+                if(checkStockAvailability(bundle)){
                     quantityInput.value = quantity + bundle;
                 }
     
@@ -483,43 +483,50 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
             
-    const checkStockAvailability = async (productUid, orderedQuantity) => {
-        const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
-        const currentStock = await getStockLevelFromDatabase(productUid);
+    const checkStockAvailability = async (bundle) => {
+        document.querySelectorAll(".product-container").forEach(async product => {
+            const productUid = product.getAttribute('data-uid');
+            const orderedQuantity = parseInt(product.querySelector(".product-quantity").value) + bundle || bundle;
+
+            const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+            console.log("Matched User: ", matchedUser.uid);
+            const currentStock = await getStockLevelFromDatabase(productUid, matchedUser.uid);
+            
+            if (!currentStock || !currentStock.stock) return true; // No stock found, unrestricted
+            
+            // Check if the stock entry matches the user
+            //if (currentStock.parent_uid != matchedUser.uid) {
+                // console.log("Matched User", matchedUser.uid);
+                // console.log("Stock Parent UID", currentStock.parent_uid);
+                // console.log(`Stock exists but does not match user UID: ${matchedUser.uid}`);
+                //return true; // Allow order but do not alert
+            //}
+            
+            console.log(`Product UID: ${productUid}`);
+            console.log(`Current Stock: ${currentStock.stock}`);
+            console.log(`Current Quantity: ${currentStock.quantity}`);
+            console.log(`Ordered Quantity: ${orderedQuantity}`);
         
-        if (!currentStock || !currentStock.stock) return true; // No stock found, unrestricted
-        
-        // Check if the stock entry matches the user
-        if (currentStock.parent_uid != matchedUser.uid) {
-            // console.log("Matched User", matchedUser.uid);
-            // console.log("Stock Parent UID", currentStock.parent_uid);
-            // console.log(`Stock exists but does not match user UID: ${matchedUser.uid}`);
-            return true; // Allow order but do not alert
-        }
-        
-        console.log(`Product UID: ${productUid}`);
-        console.log(`Current Stock: ${currentStock.stock}`);
-        console.log(`Current Quantity: ${currentStock.quantity}`);
-        console.log(`Ordered Quantity: ${orderedQuantity}`);
-    
-        // Verify stock sufficiency
-        const isStockSufficient = currentStock.stock >= (currentStock.quantity + orderedQuantity);
-        console.log(`Stock sufficient? ${isStockSufficient}`);
-        
-        if (!isStockSufficient) {
-            alert(`The following product exceeded stock limit: ${productUid}`);
-        }
-        
-        return isStockSufficient;
+            // Verify stock sufficiency
+            const isStockSufficient = currentStock.stock >= (currentStock.quantity + orderedQuantity);
+            console.log(`Stock sufficient? ${isStockSufficient}`);
+            
+            if (!isStockSufficient) {
+                alert(`The following product exceeded stock limit: ${productUid}`);
+                product.querySelector(".product-quantity").value = 0;
+            }
+            
+            return isStockSufficient;
+        });
     };
     
 
-    const getStockLevelFromDatabase = async (productUid) => {
+    const getStockLevelFromDatabase = async (productUid, parentUid) => {
         const stockData = await fetchStockData();
-        return stockData.find(stock => stock.product_uid === productUid) || null;
+        return stockData.find(stock => stock.product_uid === productUid && stock.parent_uid === parentUid) || null;
     };
      
-    
+    /*
     const checkExceedsStock = () => {
         document.querySelectorAll(".product-container").forEach(async product => {
             const productUid = product.getAttribute('data-uid');
@@ -531,6 +538,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     };
+    */
     
 
     const initialize = () => {
