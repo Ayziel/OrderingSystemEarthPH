@@ -116,7 +116,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 data-sku="${product.productSKU}" 
                 data-store-uid="${product.storeUid}"
                 data-bundle="${bundle}" 
-                data-free="${free}">
+                data-free="${free}"
+                data-name="${product.productName}">
             
                     <div class="product-row">
                         <strong>${product.productName}</strong>
@@ -512,7 +513,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log(`Stock sufficient? ${isStockSufficient}`);
             
             if (!isStockSufficient) {
-                alert(`The following product exceeded stock limit: ${productUid}`);
+                alert(`The following product exceeded stock limit: ${product.getAttribute('data-name')}, Max Limit = ${currentStock.stock-currentStock.quantity}`);
                 product.querySelector(".product-quantity").value = 0;
             }
             
