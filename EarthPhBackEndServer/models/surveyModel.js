@@ -9,33 +9,22 @@ const surveySchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  insectControl: {
+  lionTigerCoil: {
     type: String,
     required: true
   },
-  rodentControl: {
+  bayconCoil: {
     type: String,
     required: true
   },
-  fabricSpray: {
+  otherBrandsCoil: {
     type: String,
     required: true
   },
-  airConCleaner: {
+  arsCoil: {
     type: String,
     required: true
   },
-  petCare: {
-    type: String,
-    required: true
-  },
-  selectedProducts: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product', // Reference to products
-      required: true
-    }
-  ],
   createdAt: {
     type: Date,
     default: Date.now

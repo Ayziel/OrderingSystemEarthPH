@@ -1,26 +1,22 @@
 let orderData = JSON.parse(localStorage.getItem('orderData'));
-console.log("STORENAME TEST",orderData.storeName)
+console.log("STORENAME TEST", orderData?.storeName);
 
 document.getElementById('surveyForm').addEventListener('submit', async (event) => {
-    event.preventDefault(); // Prevent the default form submission (page refresh)
+    event.preventDefault(); // Prevent page refresh
+
     let matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
     let orderData = JSON.parse(localStorage.getItem('orderData'));
     const form = document.getElementById('surveyForm');
     const formData = new FormData(form);
 
-    
-
     // Collect data from the form
     const surveyData = {
-        insectControl: formData.get('insectControl'),
-        rodentControl: formData.get('rodentControl'),
-        fabricSpray: formData.get('fabricSpray'),
-        airConCleaner: formData.get('airConCleaner'),
-        petCare: formData.get('petCare'),
-        userUid: matchedUser.uid,
-        storeName: orderData.storeName,
-        // Add selected products (you can update this part depending on your UI)
-        selectedProducts: getSelectedProducts()
+        lionTigerCoil: formData.get('lionTigerCoil'),
+        bayconCoil: formData.get('bayconCoil'),
+        otherBrandsCoil: formData.get('otherBrandsCoil'),
+        arsCoil: formData.get('arsCoil'),
+        userUid: matchedUser?.uid,
+        storeName: orderData?.storeName,
     };
 
     console.log('Survey Data:', surveyData);
@@ -37,8 +33,8 @@ document.getElementById('surveyForm').addEventListener('submit', async (event) =
 
         if (response.ok) {
             alert('Survey submitted successfully!');
-            // Redirect to the order info page after successful submission
-             window.location.href = "https://earthhomecareph.astute.services/OrderForm/Order-Info.html";
+            // Redirect after successful submission
+            window.location.href = "https://earthhomecareph.astute.services/OrderForm/Order-Info.html";
         } else {
             alert('Failed to submit survey. Please try again.');
         }
@@ -48,39 +44,15 @@ document.getElementById('surveyForm').addEventListener('submit', async (event) =
     }
 });
 
-// Function to get selected products from the form (modify based on your form elements)
-function getSelectedProducts() {
-    // Example: Assuming there are checkboxes or a multi-select dropdown for products
-    const selectedProductCheckboxes = document.querySelectorAll('input[name="selectedProducts"]:checked');
-    const selectedProducts = Array.from(selectedProductCheckboxes).map(checkbox => checkbox.value);
-    return selectedProducts;
-}
-
+// Add manifest link
 const link = document.createElement("link");
 link.rel = "manifest";
 link.href = "/System/manifest.json";
 document.head.appendChild(link);
 
+// Register service worker
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/System/service-worker.js")
         .then(() => console.log("Service Worker registered"))
         .catch((error) => console.log("Service Worker registration failed:", error));
 }
-
-// Listen for the "beforeinstallprompt" event
-window.addEventListener("beforeinstallprompt", (event) => {
-    event.preventDefault();
-    const installPrompt = event;
-    //document.getElementById("install-btn").style.display = "block";
-
-    // document.getElementById("install-btn").addEventListener("click", () => {
-    //     installPrompt.prompt();
-    //     installPrompt.userChoice.then((choiceResult) => {
-    //         if (choiceResult.outcome === "accepted") {
-    //             console.log("User accepted the install prompt");
-    //         } else {
-    //             console.log("User dismissed the install prompt");
-    //         }
-    //     });
-    // });
-}); 

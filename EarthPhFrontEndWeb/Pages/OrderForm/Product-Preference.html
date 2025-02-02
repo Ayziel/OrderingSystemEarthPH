@@ -10,74 +10,51 @@
     <div class="form-container">
         <h1>Product Preference Survey</h1>
         <form id="surveyForm">
-            <!-- Insect Control -->
+            <!-- Selling Lion Tiger Coil -->
             <div class="survey-question">
-                <label for="insectControl">1. Insect Control</label>
-                <input list="insectControlOptions" id="insectControl" name="insectControl" placeholder="Select or type your choice" required>
-                <datalist id="insectControlOptions">
-                    <option value="Advanced">
-                    <option value="Bayer">
-                    <option value="Baygon">
-                    <option value="Target">
-                    <option value="AgroShield">
-                </datalist>
+                <label for="lionTigerCoil">1. Selling Lion Tiger Coil</label>
+                <select id="lionTigerCoil" name="lionTigerCoil" required>
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="1">Yes (Selling)</option>
+                    <option value="0">No (Not Selling)</option>
+                </select>
             </div>
-            
-            <!-- Rodent Control -->
+    
+            <!-- Selling Baycon Coil -->
             <div class="survey-question">
-                <label for="rodentControl">2. Rodent Control</label>
-                <input list="rodentControlOptions" id="rodentControl" name="rodentControl" placeholder="Select or type your choice" required>
-                <datalist id="rodentControlOptions">
-                    <option value="Bayer">
-                    <option value="Racumin">
-                    <option value="Rascal">
-                    <option value="Fresh Cab">
-                    <option value="Natural Safe">
-                </datalist>
+                <label for="bayconCoil">2. Selling Baycon Coil</label>
+                <select id="bayconCoil" name="bayconCoil" required>
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="1">Yes (Selling)</option>
+                    <option value="0">No (Not Selling)</option>
+                </select>
             </div>
-            
-            <!-- Linen and Fabric Spray -->
+    
+            <!-- Selling Other Brands Coil -->
             <div class="survey-question">
-                <label for="fabricSpray">3. Linen and Fabric Spray</label>
-                <input list="fabricSprayOptions" id="fabricSpray" name="fabricSpray" placeholder="Select or type your choice" required>
-                <datalist id="fabricSprayOptions">
-                    <option value="Natucair">
-                    <option value="Vunguard Fresh Room and Linen Disinfectant Spray">
-                    <option value="Bench Linen and Room Sprays">
-                    <option value="Natucair Fabric and Linen Spray">
-                    <option value="Mandaue Foam Linen and Room Sprays">
-                </datalist>
+                <label for="otherBrandsCoil">3. Selling Other Brands Coil</label>
+                <select id="otherBrandsCoil" name="otherBrandsCoil" required>
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="1">Yes (Selling)</option>
+                    <option value="0">No (Not Selling)</option>
+                </select>
             </div>
-            
-            <!-- Air Con Cleaner -->
+    
+            <!-- Selling ARS Coil -->
             <div class="survey-question">
-                <label for="airConCleaner">4. Air Con Cleaner</label>
-                <input list="airConCleanerOptions" id="airConCleaner" name="airConCleaner" placeholder="Select or type your choice" required>
-                <datalist id="airConCleanerOptions">
-                    <option value="EarthPH">
-                    <option value="FreshFoam AC Cleaner Spray">
-                    <option value="Coil-Brite R1 Aircon Coil Cleaner">
-                    <option value="3M AC Cleaner & Anti-Mic Foam">
-                    <option value="Bitop A/C Foam Cleaner">
-                </datalist>
+                <label for="arsCoil">4. Selling ARS Coil</label>
+                <select id="arsCoil" name="arsCoil" required>
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="1">Yes (Selling)</option>
+                    <option value="0">No (Not Selling)</option>
+                </select>
             </div>
-            
-            <!-- Pet Care -->
-            <div class="survey-question">
-                <label for="petCare">5. Pet Care</label>
-                <input list="petCareOptions" id="petCare" name="petCare" placeholder="Select or type your choice" required>
-                <datalist id="petCareOptions">
-                    <option value="Bayopet">
-                    <option value="Royal Canin">
-                    <option value="TropiClean">
-                    <option value="Happy Life">
-                    <option value="Zee Dog">
-                </datalist>
-            </div>
-            
+    
             <button id="submit-button" type="submit">Next</button>
         </form>
     </div>
+    
+    
     <script src="./scripts/productPreference.js"></script>
 </body>
 </html>
