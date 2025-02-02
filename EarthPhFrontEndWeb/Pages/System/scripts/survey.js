@@ -32,13 +32,6 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
                         const row = document.createElement('tr');
                 
                         // Add the userName value
-
-                        const br = document.createElement('br');
-                        if (window.innerWidth <= 768) {
-                            row.appendChild(br); // Add <br> if the screen width is 768px or less
-                        }
-
-
                         const userNameCell = document.createElement('td');
                         userNameCell.textContent = matchingUser.userName;
                         userNameCell.classList.add('survey-cell');  // Adding common class
@@ -49,35 +42,29 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
                         storeName.classList.add('survey-cell');  // Adding common class
                         row.appendChild(storeName);
                 
-                        // Add the insectControl value
-                        const insectControlCell = document.createElement('td');
-                        insectControlCell.textContent = survey.insectControl;
-                        insectControlCell.classList.add('survey-cell');  // Adding common class
-                        row.appendChild(insectControlCell);
+                        // Add the lionTigerCoil value
+                        const lionTigerCoilCell = document.createElement('td');
+                        lionTigerCoilCell.textContent = survey.lionTigerCoil === '1' ? 'Yes' : 'No';  // Check for 1 or 0
+                        lionTigerCoilCell.classList.add('survey-cell');  // Adding common class
+                        row.appendChild(lionTigerCoilCell);
                 
-                        // Add the rodentControl value
-                        const rodentControlCell = document.createElement('td');
-                        rodentControlCell.textContent = survey.rodentControl;
-                        rodentControlCell.classList.add('survey-cell');  // Adding common class
-                        row.appendChild(rodentControlCell);
+                        // Add the bayconCoil value
+                        const bayconCoilCell = document.createElement('td');
+                        bayconCoilCell.textContent = survey.bayconCoil === '1' ? 'Yes' : 'No';  // Check for 1 or 0
+                        bayconCoilCell.classList.add('survey-cell');  // Adding common class
+                        row.appendChild(bayconCoilCell);
                 
-                        // Add the fabricSpray value
-                        const fabricSprayCell = document.createElement('td');
-                        fabricSprayCell.textContent = survey.fabricSpray;
-                        fabricSprayCell.classList.add('survey-cell');  // Adding common class
-                        row.appendChild(fabricSprayCell);
+                        // Add the otherBrandsCoil value
+                        const otherBrandsCoilCell = document.createElement('td');
+                        otherBrandsCoilCell.textContent = survey.otherBrandsCoil === '1' ? 'Yes' : 'No';  // Check for 1 or 0
+                        otherBrandsCoilCell.classList.add('survey-cell');  // Adding common class
+                        row.appendChild(otherBrandsCoilCell);
                 
-                        // Add the airConCleaner value
-                        const airConCleanerCell = document.createElement('td');
-                        airConCleanerCell.textContent = survey.airConCleaner;
-                        airConCleanerCell.classList.add('survey-cell');  // Adding common class
-                        row.appendChild(airConCleanerCell);
-                
-                        // Add the petCare value
-                        const petCareCell = document.createElement('td');
-                        petCareCell.textContent = survey.petCare;
-                        petCareCell.classList.add('survey-cell');  // Adding common class
-                        row.appendChild(petCareCell);
+                        // Add the arsCoil value
+                        const arsCoilCell = document.createElement('td');
+                        arsCoilCell.textContent = survey.arsCoil === '1' ? 'Yes' : 'No';  // Check for 1 or 0
+                        arsCoilCell.classList.add('survey-cell');  // Adding common class
+                        row.appendChild(arsCoilCell);
                 
                         // Add the createdAt value
                         const createdAtCell = document.createElement('td');
