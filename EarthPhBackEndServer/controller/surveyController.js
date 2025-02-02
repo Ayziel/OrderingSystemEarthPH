@@ -47,4 +47,17 @@ async function createSurvey(req, res) {
   }
 }
 
-module.exports = { getSurveys, createSurvey };
+async function getSurveysByProduct(req, res) {
+  const { productId } = req.params;
+
+  try {
+    // Fetch surveys where the selected product is included
+    const surveys = await SurveyModel.find({ selectedProducts: productId }).populate('selectedProducts');
+    res.json({ surveys });
+  } catch (err) {
+    console.error('Error fetching surveys by product:', err);
+    res.status(500).json({ message: 'Error fetching surveys by product', error: err });
+  }
+}
+
+module.exports = { getSurveys, createSurvey, getSurveysByProduct };
