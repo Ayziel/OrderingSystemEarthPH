@@ -23,7 +23,7 @@ fetch('https://earthph.sdevtech.com.ph/viewStoreRoutes/getStores')
             const row = document.createElement('tr');
     
             // Random image URL from Picsum (or your source)
-            const randomImageUrl = `https://picsum.photos/200/300?random=${index}`;
+            const Image = store.image;
     
             // Format createdAt date (day/month/year)
             const formattedDate = store.createdAt ? new Date(store.createdAt).toLocaleDateString('en-GB') : 'No creation date';
@@ -41,7 +41,7 @@ fetch('https://earthph.sdevtech.com.ph/viewStoreRoutes/getStores')
             // Add event listener for when the row is clicked
             row.addEventListener('click', (e) => {
                 // Toggle row background and set the modal image
-                toggleRowClick(row, store, randomImageUrl);
+                toggleRowClick(row, store, Image);
             });
         });
     }

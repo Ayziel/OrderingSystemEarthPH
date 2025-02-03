@@ -1,7 +1,19 @@
 
 const addImage = document.getElementById('addImage');
 const applyBtn = document.getElementById('applyBtn');
+
+// Get the stored data from localStorage
+const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+
+// Extract firstName, lastName, and uid
+const matchedUserUID = matchedUser.uid; 
+const matchedUserullName = `${matchedUser.firstName} ${matchedUser.lastName}`;
+
 let selectedStoreData = null;
+for (let i = 0; i < localStorage.length; i++) {
+    let key = localStorage.key(i);
+    console.log(`${key}: ${localStorage.getItem(key)}`);
+}
 
 const link = document.createElement("link");
 link.rel = "manifest";
@@ -172,8 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault(); // Prevent the page from reloading
 
         // Static data that you want to submit
-        const agentName = 'John Doe';
-        const agentUid = 'agent-123';
+        const agentName = matchedUserullName;
+        const agentUid =  matchedUserUID;
         const location = selectedStoreData.address; // Make sure it's 'Location' on the backend
         const storeName = selectedStoreData.name;
         const storeUid = selectedStoreData.uid;

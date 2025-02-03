@@ -47,6 +47,8 @@
 img {
     width: 400px;
     height: auto;
+    max-height: 500px;
+    object-fit: contain;
 }
 
 /* Table Styles */
@@ -167,5 +169,6 @@ tr {
 img {
     width: 80%;
     height: auto;
+    max-height: 400px;
 }
 }
