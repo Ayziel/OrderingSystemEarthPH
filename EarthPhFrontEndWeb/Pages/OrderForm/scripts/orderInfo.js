@@ -252,10 +252,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const bundle = parseInt(product.getAttribute("data-bundle")) || 1;
             const free = parseInt(product.getAttribute("data-free")) || 0;
     
-            // Adjust price if it's part of a bundle
-            if (bundle > 1) {
-                price = price / bundle;
-            }
     
             // Calculate free items correctly based on bundle size
             let freeItems = Math.floor(quantity / bundle) * free;
