@@ -30,6 +30,10 @@ const viewStoreSchema = new mongoose.Schema({
     type: String,
     required: true  // Marked as required
   },
+  image: {
+    type: String, // Stores the base64 string of the image
+    required: false // Optional field, you can make this required if necessary
+  }
 });
 
 const ViewStore = mongoose.model('ViewStore', viewStoreSchema);

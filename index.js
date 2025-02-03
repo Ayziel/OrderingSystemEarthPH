@@ -15,6 +15,8 @@ const surveyRoutes = require('./EarthPhBackEndServer/routes/surveyRoutes');
 const stockRoutes = require('./EarthPhBackEndServer/routes/stockRoutes');
 const gCashRoutes = require('./EarthPhBackEndServer/routes/gcashMoneyRoutes');
 const viewStoreRoutes = require('./EarthPhBackEndServer/routes/viewStoreRoutes');
+const StockModel = require('./EarthPhBackEndServer/models/stockModel');
+
 const app = express();
 
 app.use(cors()); // Enable CORS for all routes
@@ -24,7 +26,12 @@ app.use(express.urlencoded({ limit: '10mb', extended: true })); // Parse URL-enc
 // Connect to MongoDB
 const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/earthph';
 mongoose.connect(mongoURL)
-  .then(() => console.log('MongoDB Connected'))
+.then(() => {
+  console.log('MongoDB Connected');
+
+  // Start scheduling once connected
+  scheduleDailyReset();
+})
   .catch(err => console.log('MongoDB connection error:', err));
 
 // Serve static files (like index.html) from the specified folder
@@ -66,3 +73,37 @@ app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
   console.log(`Connecting to MongoDB at: ${mongoURL}`);
 });
+
+
+// --- Scheduling Code ---
+// Define how many milliseconds in a day
+const ONE_DAY = 24 * 60 * 60 * 1000;
+
+// Function to reset all stock quantities to 0
+async function resetStockQuantities() {
+  try {
+    await StockModel.updateMany({}, { quantity: 0, stock: 0 }); // Reset both fields
+    console.log('✅ Reset all stock quantities and stock to 0');
+  } catch (error) {
+    console.error('❌ Error resetting stocks:', error);
+  }
+}
+
+// Calculate delay until next midnight
+function scheduleDailyReset() {
+  const now = new Date();
+  const nextMidnight = new Date(now);
+  
+  // Ensure we're setting it for the next day at 00:00:00
+  nextMidnight.setDate(now.getDate() + 1);
+  nextMidnight.setHours(0, 0, 0, 0);
+
+  const delay = nextMidnight.getTime() - now.getTime(); // Ensure correct delay calculation
+
+  console.log(`Next reset scheduled in ${delay / 1000 / 60} minutes (${delay} ms)`);
+
+  setTimeout(() => {
+    resetStockQuantities();
+    setInterval(resetStockQuantities, ONE_DAY);
+  }, delay);
+}

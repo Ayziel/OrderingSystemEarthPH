@@ -145,80 +145,147 @@ document.getElementById('confirm-button').addEventListener('click', (event) => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('authToken');
 
-let applybtnLabel = document.querySelector('.apply-label');
-const uploadFeedback = document.getElementById('upload-feedback');
+    let applybtnLabel = document.querySelector('.apply-label');
+    const uploadFeedback = document.getElementById('upload-feedback');
+    const imageInput = document.getElementById('image-upload');
+    const filenameDisplay = document.getElementById('uploaded-tin-filename');
 
-// Event listener for the Apply button
-applybtnLabel.addEventListener('click', (event) => {
-    event.preventDefault(); // Prevent the page from reloading
-
-    // Static data that you want to submit
-    const agentName = 'John Doe';
-    const agentUid = 'agent-123';
-    const location = selectedStoreData.address; // Make sure it's 'Location' on the backend
-    const storeName = selectedStoreData.name;
-    const storeUid = selectedStoreData.uid;
-    const uid = selectedStoreData.uid;
-    const createdAt = new Date().toISOString();
-
-    // Prepare the data to be sent to the server
-    const storeData = {
-        agentName,
-        agentUid,
-        Location: location, // Correct field name 'Location'
-        storeName,
-        storeUid,
-        uid,
-        createdAt
-    };
-
-    // Log the data to be sent to the server
-    console.log('Data to be sent:', storeData);
-
-    // Send the data to the server using fetch
-    fetch('https://earthph.sdevtech.com.ph/viewStoreRoutes/createStore', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(storeData), // Sending data as JSON
-    })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(errorData => {
-                throw new Error(errorData.message || 'Failed to submit data');
-            });
-        }
-        return response.json();  // Parse the response JSON
-    })
-    .then(result => {
-        console.log('Success:', result);
-        alert('Data uploaded successfully!');
+    // Handle the image file selection
+    imageInput.addEventListener('change', function(event) {
+        const fileInput = event.target;
+        const fileName = fileInput.files[0] ? fileInput.files[0].name : ''; // Get the name of the uploaded file
         
-        // Update the feedback message (check if the element exists first)
-        if (uploadFeedback) {
-            uploadFeedback.textContent = 'Data uploaded successfully!';
-            uploadFeedback.style.display = 'block';
-        }
-    })
-    .catch(error => {
-        console.error('Error uploading data:', error);
-        alert('Failed to upload data: ' + error.message);
-        
-        // Update the feedback message (check if the element exists first)
-        if (uploadFeedback) {
-            uploadFeedback.textContent = 'Failed to upload data.';
-            uploadFeedback.style.display = 'block';
+        if (fileName) {
+            // Show the file name in the paragraph and make it visible
+            filenameDisplay.textContent = `Uploaded file: ${fileName}`;
+            filenameDisplay.style.display = 'block';
+        } else {
+            // Hide the paragraph if no file is selected
+            filenameDisplay.style.display = 'none';
         }
     });
-});
+
+    // Event listener for the Apply button
+    applybtnLabel.addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent the page from reloading
+
+        // Static data that you want to submit
+        const agentName = 'John Doe';
+        const agentUid = 'agent-123';
+        const location = selectedStoreData.address; // Make sure it's 'Location' on the backend
+        const storeName = selectedStoreData.name;
+        const storeUid = selectedStoreData.uid;
+        const uid = selectedStoreData.uid;
+        const createdAt = new Date().toISOString();
+
+        // Prepare the data to be sent to the server
+        const storeData = {
+            agentName,
+            agentUid,
+            Location: location, // Correct field name 'Location'
+            storeName,
+            storeUid,
+            uid,
+            createdAt
+        };
+
+        // Check if an image was selected and convert it to base64
+        const file = imageInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                // Append the base64 string of the image to the storeData object
+                storeData.image = reader.result;
+
+                // Log the data to be sent to the server
+                console.log('Data to be sent:', storeData);
+
+                // Send the data to the server using fetch
+                fetch('https://earthph.sdevtech.com.ph/viewStoreRoutes/createStore', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(storeData), // Sending data as JSON
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            throw new Error(errorData.message || 'Failed to submit data');
+                        });
+                    }
+                    return response.json();  // Parse the response JSON
+                })
+                .then(result => {
+                    console.log('Success:', result);
+                    alert('Data uploaded successfully!');
+
+                    // Update the feedback message (check if the element exists first)
+                    if (uploadFeedback) {
+                        uploadFeedback.textContent = 'Data uploaded successfully!';
+                        uploadFeedback.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error uploading data:', error);
+                    alert('Failed to upload data: ' + error.message);
+
+                    // Update the feedback message (check if the element exists first)
+                    if (uploadFeedback) {
+                        uploadFeedback.textContent = 'Failed to upload data.';
+                        uploadFeedback.style.display = 'block';
+                    }
+                });
+            };
+            // Read the image file as base64
+            reader.readAsDataURL(file);
+        } else {
+            // If no file is selected, send the store data without image
+            fetch('https://earthph.sdevtech.com.ph/viewStoreRoutes/createStore', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(storeData), // Sending data as JSON
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.message || 'Failed to submit data');
+                    });
+                }
+                return response.json();  // Parse the response JSON
+            })
+            .then(result => {
+                console.log('Success:', result);
+                alert('Data uploaded successfully!');
+
+                // Update the feedback message (check if the element exists first)
+                if (uploadFeedback) {
+                    uploadFeedback.textContent = 'Data uploaded successfully!';
+                    uploadFeedback.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error uploading data:', error);
+                alert('Failed to upload data: ' + error.message);
+
+                // Update the feedback message (check if the element exists first)
+                if (uploadFeedback) {
+                    uploadFeedback.textContent = 'Failed to upload data.';
+                    uploadFeedback.style.display = 'block';
+                }
+            });
+        }
+    });
 
     if (!token) {
         window.location.href = 'https://earthhomecareph.astute.services/System/login.html';  // Adjust path accordingly
     }
 });
+
 
 // Get the modal
 var modal = document.getElementById("myModal");

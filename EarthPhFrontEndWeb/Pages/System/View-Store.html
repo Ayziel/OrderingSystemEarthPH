@@ -7,7 +7,7 @@
     <!----======== CSS ======== -->
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/allStores.css">
-    <link rel="stylesheet" href="./styles/survey.css">
+    <link rel="stylesheet" href="./styles/viewStore.css">
       
     <!----===== Icons ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
@@ -161,26 +161,52 @@
       </div>
     </div>
   </nav>
-    <section class="dashboard">
-      <div class="top">
-          <i class="uil uil-bars sidebar-toggle"></i>
-  
-          <div class="search-box">
-              <i class="uil uil-search"></i>
-              <input type="text" placeholder="Search here...">
-          </div>
-      </div>
-  
-      <div class="dash-content">
-        <button id="export-btn" class="export">Export to Excel</button>
-        <div class="activity">
-            <div class="title">
-                <span class="text">Preferences</span>
-            </div>
-
+  <section class="dashboard">
+    <div class="top">
+        <i class="uil uil-bars sidebar-toggle"></i>
+    
+        <div class="search-box">
+            <i class="uil uil-search"></i>
+            <input type="text" placeholder="Search here...">
         </div>
     </div>
+    
+    <div class="dash-content">
+      <button id="export-btn" class="export">Export to Excel</button>
+      <div class="activity">
+          <div class="title">
+              <span class="text">Preferences</span>
+          </div>
+      </div>
+      <div class="table-container">
+          <table class="orders-table">
+              <thead class="orders-header">
+                  <tr>
+                      <th>#</th>
+                      <th>Store Name</th>
+                      <th>Agent Name</th>
+                      <th>Location</th>
+                      <th>Created At</th>
+                      <th>Actions</th>
+                  </tr>
+              </thead>
+              <tbody class="orders-body">
+                  <!-- This will be populated dynamically with store data -->
+              </tbody>
+          </table>
+      </div>
+    </div>
+
+<!-- Modal Container for Viewing Images -->
+<div id="image-modal" class="modal">
+  <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <img id="modal-image" src="" alt="Store Image" />
+  </div>
+</div>
+
   </section>
+  
     <script src="./scripts/script.js"></script>
     <script src="./scripts/viewStore.js"></script>
     <script src="./scripts/sideNavigation.js"></script>

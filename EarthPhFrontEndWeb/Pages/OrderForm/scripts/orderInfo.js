@@ -415,29 +415,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const addQuantityButtonListeners = () => {
         const plusButtons = document.querySelectorAll(".plus-btn");
         const minusButtons = document.querySelectorAll(".minus-btn");
+    
         plusButtons.forEach(button => {
             button.addEventListener("click", (event) => {
                 event.preventDefault();
-                const quantityInput = button.closest(".quantity-controls").querySelector(".product-quantity");
                 const productContainer = button.closest(".product-container");
-
-                const bundle = parseInt(productContainer.dataset.bundle) === 0 ? 1 : parseInt(productContainer.dataset.bundle);
-                
-                console.log("Bundle Check",bundle)
+                const quantityInput = button.closest(".quantity-controls").querySelector(".product-quantity");
+    
                 if (!quantityInput) {
                     console.error("Product quantity input not found!");
                     return;
                 }
     
-                let quantity = parseInt(quantityInput.value) || 0;   
-                if(checkStockAvailability(bundle)){
-                    quantityInput.value = quantity + bundle;
-                }
+                const bundle = parseInt(productContainer.dataset.bundle) || 1;
+                console.log("Bundle Check", bundle);
     
-                if (typeof updateProductDetails === 'function') {
-                    updateProductDetails();
-                } else {
-                    console.warn("updateProductDetails function is not defined.");
+                let quantity = parseInt(quantityInput.value) || 0;   
+                if (checkStockAvailability(bundle)) {
+                    quantityInput.value = quantity + bundle;
                 }
     
                 if (typeof updateProductDetails === 'function') {
@@ -451,6 +446,7 @@ document.addEventListener("DOMContentLoaded", () => {
         minusButtons.forEach(button => {
             button.addEventListener("click", (event) => {
                 event.preventDefault();
+                const productContainer = button.closest(".product-container");
                 const quantityInput = button.closest(".quantity-controls").querySelector(".product-quantity");
     
                 if (!quantityInput) {
@@ -458,9 +454,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
     
+                const bundle = parseInt(productContainer.dataset.bundle) || 1;
                 let quantity = parseInt(quantityInput.value) || 0;
-                if (quantity > 0) {
-                    quantityInput.value = quantity - 1;
+                
+                // Decrease by bundle ensuring the quantity doesn't drop below zero
+                if (quantity >= bundle) {
+                    quantityInput.value = quantity - bundle;
+                } else {
+                    quantityInput.value = 0;
                 }
     
                 if (typeof updateProductDetails === 'function') {
@@ -468,16 +469,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                     console.warn("updateProductDetails function is not defined.");
                 }
-    
-                if (typeof updateProductDetails === 'function') {
-                    updateProductDetails();
-                } else {
-                    console.warn("updateProductDetails function is not defined.");
-                }
-            
             });
         });
     };
+    
 
             
     const checkStockAvailability = async (bundle) => {
