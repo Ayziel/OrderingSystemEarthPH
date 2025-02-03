@@ -51,7 +51,8 @@ function populateProducts(products) {
 
     products.forEach(product => {
         const row = document.createElement('tr');
-        row.setAttribute('data-product-id', product.productId); // Store product ID in dataset
+        row.setAttribute('data-product-id', product._id); // Store product ID in dataset
+        console.log("Product ID:", product._id);
 
         const priceWithDiscount = product.discount ? (product.price - (product.price * product.discount / 100)) : product.price;
 
@@ -85,15 +86,16 @@ function populateProducts(products) {
 
         row.addEventListener('click', () => {
             // Populate modal with product details
-            modalProductId.textContent = product.productId; // NEW: Store product ID in modal
+            modalProductId.textContent = product._id; // Use _id from the product object
+            modalProductId.dataset.productId = product._id; // Store product ID in dataset for consistency
             modalProductName.textContent = product.productName || 'N/A';
             modalProductDescription.textContent = product.productDescription || 'No description';
             modalProductBrand.textContent = product.brand || 'No brand';
             modalProductPrice.textContent = `₱ ${priceWithDiscount ? priceWithDiscount.toFixed(2) : '0.00'}`;
             modalProductDiscount.value = product.discount || '';
-
+        
             modal.style.display = 'block';
-
+        
             // Enable editing when "Edit" button is clicked
             editProductButton.onclick = () => {
                 modalProductName.contentEditable = true;
@@ -115,7 +117,7 @@ function populateProducts(products) {
                     price: parseFloat(modalProductPrice.textContent.replace('₱', '').trim()),
                     discount: parseFloat(modalProductDiscount.value) || 0
                 };
-
+        
                 try {
                     const response = await fetch('https://earthph.sdevtech.com.ph/products/updateProduct', {
                         method: 'PUT',
@@ -125,9 +127,9 @@ function populateProducts(products) {
                         },
                         body: JSON.stringify(updatedProduct)
                     });
-
+        
                     const data = await response.json();
-
+        
                     if (response.ok) {
                         console.log('Product updated:', data);
                         modal.style.display = 'none';
@@ -139,6 +141,7 @@ function populateProducts(products) {
                     console.error('Error updating product:', error);
                 }
             };
+        
         });
 
         productList.appendChild(row);
@@ -169,18 +172,18 @@ const deleteProductButton = document.getElementById('delete-product');
 
 if (deleteProductButton) {
     deleteProductButton.addEventListener('click', async () => {
-        // Get product ID from a hidden field or dataset attribute
-        const modalProductIdElement = document.getElementById('modal-product-id');
-        const modalProductId = modalProductIdElement ? modalProductIdElement.dataset.productId || modalProductIdElement.textContent : null;
-
+        const modalProductId = document.getElementById('modal-product-id').dataset.productId;
+    
+        // Log the product ID before making the delete request
+        console.log("Deleting Product ID:", modalProductId);
+    
         if (!modalProductId) {
             alert('No product selected to delete!');
             return;
         }
-
-        // Confirm deletion
+    
         if (!confirm('Are you sure you want to delete this product?')) return;
-
+    
         try {
             const response = await fetch(`https://earthph.sdevtech.com.ph/products/deleteProduct/${modalProductId}`, {
                 method: 'DELETE',
@@ -189,24 +192,28 @@ if (deleteProductButton) {
                     'Content-Type': 'application/json'
                 }
             });
-
+    
+            const responseText = await response.text(); // Get raw response text
+            console.log('Response text:', responseText);
+    
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to delete product.');
+                throw new Error(responseText || 'Failed to delete product.');
             }
-
+    
             alert('Product deleted successfully!');
-
-            // Close the modal safely
+    
             const modal = document.getElementById('modal-product');
             if (modal) modal.style.display = 'none';
-
-            location.reload(); // Refresh the page or update UI
+    
+            location.reload();
         } catch (error) {
             console.error('Error deleting product:', error);
             alert(`Error: ${error.message}`);
         }
     });
+    
+    
+    
 }
 
 
