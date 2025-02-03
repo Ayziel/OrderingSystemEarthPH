@@ -35,135 +35,109 @@ function populateProducts(products) {
     const closeModal = modal.querySelector('.close-product');
 
     // Modal content elements
+    const modalProductId = document.getElementById('modal-product-id'); // NEW: Hidden element for productId
     const modalProductName = document.getElementById('modal-product-name');
     const modalProductDescription = document.getElementById('modal-product-description');
     const modalProductBrand = document.getElementById('modal-product-brand');
     const modalProductPrice = document.getElementById('modal-product-price');
-    const modalProductDiscount = document.getElementById('modal-product-discount'); // Added discount modal field
+    const modalProductDiscount = document.getElementById('modal-product-discount');
     const editProductButton = document.getElementById('edit-product');
     const saveProductButton = document.getElementById('save-product');
     const productImageImage = document.getElementById('modal-product-image');
-    const productdiscount = document.getElementById('modal-product-discount');
+
     productList.innerHTML = ''; // Clear existing rows before populating
 
     let globalCounter = 1;
 
     products.forEach(product => {
         const row = document.createElement('tr');
+        row.setAttribute('data-product-id', product.productId); // Store product ID in dataset
 
         const priceWithDiscount = product.discount ? (product.price - (product.price * product.discount / 100)) : product.price;
 
         row.innerHTML = `
             <td class="table-data">${globalCounter++}</td>
-            <td class="table-data" >${truncateText(product.productName || 'N/A', 30)}</td>
+            <td class="table-data">${truncateText(product.productName || 'N/A', 30)}</td>
             <td class="table-data">${truncateText(product.productDescription || 'No description', 50)}</td>
             <td class="table-data">${truncateText(product.brand || 'No brand', 30)}</td>
             <td class="table-data">₱ ${priceWithDiscount ? priceWithDiscount.toFixed(2) : '0.00'}</td>
             <td class="table-data">% ${product.discount ? product.discount.toFixed(2) : '0'}</td>
-             <td class="open-cell">Open</td>
+            <td class="open-cell">Open</td>
         `;
 
-        // Design Hard Coded Rush implementation
-            const openCell = row.querySelector('.open-cell');
-            openCell.style.padding = '10px';
-            openCell.style.backgroundColor = '#66bb6a'; // Lighter green
-            openCell.style.color = 'white';
-            openCell.style.textAlign = 'center';
-            openCell.style.cursor = 'pointer';
-            openCell.style.borderRadius = '5px';
-            openCell.style.transition = 'background-color 0.3s ease';
+        // Styling for "Open" button
+        const openCell = row.querySelector('.open-cell');
+        openCell.style.padding = '10px';
+        openCell.style.backgroundColor = '#66bb6a';
+        openCell.style.color = 'white';
+        openCell.style.textAlign = 'center';
+        openCell.style.cursor = 'pointer';
+        openCell.style.borderRadius = '5px';
+        openCell.style.transition = 'background-color 0.3s ease';
 
-            // Add hover effect
-            openCell.addEventListener('mouseover', () => {
-                openCell.style.backgroundColor = '#28a745'; // Darker green on hover
-            });
+        openCell.addEventListener('mouseover', () => {
+            openCell.style.backgroundColor = '#28a745';
+        });
 
-            openCell.addEventListener('mouseout', () => {
-                openCell.style.backgroundColor = '#66bb6a'; // Reset to lighter green
-            });
+        openCell.addEventListener('mouseout', () => {
+            openCell.style.backgroundColor = '#66bb6a';
+        });
 
         row.addEventListener('click', () => {
-            // When the product is clicked, populate the modal with its details
+            // Populate modal with product details
+            modalProductId.textContent = product.productId; // NEW: Store product ID in modal
             modalProductName.textContent = product.productName || 'N/A';
             modalProductDescription.textContent = product.productDescription || 'No description';
             modalProductBrand.textContent = product.brand || 'No brand';
-            modalProductPrice.textContent = `₱ ${priceWithDiscount ? priceWithDiscount.toFixed(2) : '0.00'}`; // Show discounted price in modal
-            modalProductDiscount.value = product.discount || ''; // Display discount in modal input field
+            modalProductPrice.textContent = `₱ ${priceWithDiscount ? priceWithDiscount.toFixed(2) : '0.00'}`;
+            modalProductDiscount.value = product.discount || '';
 
-            modal.style.display = 'block'; // Show modal
+            modal.style.display = 'block';
 
-            // Enable editing when the "Edit" button is clicked
+            // Enable editing when "Edit" button is clicked
             editProductButton.onclick = () => {
                 modalProductName.contentEditable = true;
                 modalProductDescription.contentEditable = true;
                 modalProductBrand.contentEditable = true;
                 modalProductPrice.contentEditable = true;
-                modalProductDiscount.disabled = false; // Allow editing of discount
-                editProductButton.style.display = 'none';  // Hide the edit button after clicking
-                saveProductButton.style.display = 'inline';  // Show the save button
-                productdiscount.disabled = false;
-                productImageImage.disabled = false;
+                modalProductDiscount.disabled = false;
+                editProductButton.style.display = 'none';
+                saveProductButton.style.display = 'inline';
             };
 
-            const productImageInput = document.getElementById('modal-product-image');
-            let base64Image = '';
-            productImageInput.addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                
-                if (file) {
-                    const reader = new FileReader();
-            
-                    reader.onloadend = function() {
-                        // Store the base64 string in the global variable
-                        base64Image = reader.result;
-            
-                        // Log the base64 string to verify it's being set
-                        console.log('Base64 Image:', base64Image);
-                    };
-            
-                    // Read the image file as a data URL (base64)
-                    reader.readAsDataURL(file);
-                }
-            });
-
-
-            // Save the changes when the "Save" button is clicked
+            // Save changes when "Save" button is clicked
             saveProductButton.onclick = async () => {
-                // Get the edited values
                 const updatedProduct = {
-                    productSKU: product.productSKU,  // Ensure the product SKU is passed along
+                    productId: modalProductId.textContent, // Use stored product ID
                     productName: modalProductName.textContent,
                     productDescription: modalProductDescription.textContent,
                     brand: modalProductBrand.textContent,
                     price: parseFloat(modalProductPrice.textContent.replace('₱', '').trim()),
-                    discount: parseFloat(modalProductDiscount.value) || 0, // Get the discount value
-                    productImage: base64Image,
+                    discount: parseFloat(modalProductDiscount.value) || 0
                 };
-
-                console.log("Updated Product:", updatedProduct);
 
                 try {
                     const response = await fetch('https://earthph.sdevtech.com.ph/products/updateProduct', {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${usertoken}`  // Send token for authentication
+                            'Authorization': `Bearer ${usertoken}`
                         },
-                        body: JSON.stringify(updatedProduct)  // Send the updated product data
+                        body: JSON.stringify(updatedProduct)
                     });
 
                     const data = await response.json();
 
                     if (response.ok) {
                         console.log('Product updated:', data);
-                        modal.style.display = 'none';  // Close modal on successful update
+                        modal.style.display = 'none';
+                        window.location.reload();
                     } else {
                         console.error('Error updating product:', data.message);
                     }
                 } catch (error) {
                     console.error('Error updating product:', error);
                 }
-                 window.location.reload();
             };
         });
 
@@ -181,6 +155,7 @@ function populateProducts(products) {
     });
 }
 
+
 // Example function to update the product data
 function updateProductData(productId, updatedProduct) {
     // Here, you would typically make an API call to update the product data
@@ -189,50 +164,52 @@ function updateProductData(productId, updatedProduct) {
 }
 
 
-deleteProductButton = document.getElementById('delete-product');
+// Ensure the delete button exists before adding an event listener
+const deleteProductButton = document.getElementById('delete-product');
 
-// Add an event listener to the delete button
-deleteProductButton.addEventListener('click', () => {
-    // Get the product details from the modal
-    const modalProductName = document.getElementById('modal-product-name').textContent;
-    const modalProductDescription = document.getElementById('modal-product-description').textContent;
-    const modalProductBrand = document.getElementById('modal-product-brand').textContent;
+if (deleteProductButton) {
+    deleteProductButton.addEventListener('click', async () => {
+        // Get product ID from a hidden field or dataset attribute
+        const modalProductIdElement = document.getElementById('modal-product-id');
+        const modalProductId = modalProductIdElement ? modalProductIdElement.dataset.productId || modalProductIdElement.textContent : null;
 
-    if (!modalProductName || !modalProductDescription || !modalProductBrand) {
-        alert('No product selected to delete!');
-        return;
-    }
+        if (!modalProductId) {
+            alert('No product selected to delete!');
+            return;
+        }
 
-    // Confirm deletion
-    const confirmDelete = confirm(`Are you sure you want to delete "${modalProductName}"?`);
-    if (!confirmDelete) return;
+        // Confirm deletion
+        if (!confirm('Are you sure you want to delete this product?')) return;
 
-    // Send DELETE request with all three fields
-    fetch('https://earthph.sdevtech.com.ph/products/deleteProduct', {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            productName: modalProductName,
-            productDescription: modalProductDescription,
-            productBrand: modalProductBrand
-        }),  // Send all three fields for deletion
-    })
-        .then(response => {
-            if (response.ok) {
-                alert('Product deleted successfully!');
-                modal.style.display = 'none'; // Close modal
-                location.reload(); // Refresh the page or update UI
-            } else {
-                throw new Error('Failed to delete product.');
+        try {
+            const response = await fetch(`https://earthph.sdevtech.com.ph/products/deleteProduct/${modalProductId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${usertoken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to delete product.');
             }
-        })
-        .catch(error => {
+
+            alert('Product deleted successfully!');
+
+            // Close the modal safely
+            const modal = document.getElementById('modal-product');
+            if (modal) modal.style.display = 'none';
+
+            location.reload(); // Refresh the page or update UI
+        } catch (error) {
             console.error('Error deleting product:', error);
-            alert('An error occurred while deleting the product.');
-        });
-});
+            alert(`Error: ${error.message}`);
+        }
+    });
+}
+
+
 
 function exportToExcel() {
     console.log("Exporting products to Excel...");

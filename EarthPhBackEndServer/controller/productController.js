@@ -167,31 +167,28 @@ async function updateProduct(req, res) {
 
 
 async function deleteProduct(req, res) {
-    console.log('DELETE /deleteProduct route hit');
+  console.log('DELETE /deleteProduct/:id route hit');
 
-    const { productName, productDescription, productBrand } = req.body; // Accepting all three fields
+  const { id } = req.params; // Get product ID from URL
 
-    try {
-        // Find the product by all three fields and delete it
-        const deletedProduct = await ProductModel.findOneAndDelete({
-            productName,
-            productDescription,
-            productBrand
-        });
+  try {
+      // Find the product by ID and delete it
+      const deletedProduct = await ProductModel.findByIdAndDelete(id);
 
-        if (!deletedProduct) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
+      if (!deletedProduct) {
+          return res.status(404).json({ message: 'Product not found' });
+      }
 
-        res.json({ 
-            message: 'Product deleted successfully',
-            product: deletedProduct // Optional: Include the deleted product details
-        });
-    } catch (err) {
-        console.error('Error deleting product:', err);
-        res.status(500).json({ message: 'Error deleting product', error: err });
-    }
+      res.json({ 
+          message: 'Product deleted successfully',
+          product: deletedProduct // Optional: return deleted product
+      });
+  } catch (err) {
+      console.error('Error deleting product:', err);
+      res.status(500).json({ message: 'Error deleting product', error: err });
+  }
 }
+
 
   
 
