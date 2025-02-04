@@ -82,7 +82,7 @@ const ONE_DAY = 24 * 60 * 60 * 1000;
 // Function to reset all stock quantities to 0
 async function resetStockQuantities() {
   try {
-    await StockModel.updateMany({}, { quantity: 0, stock: 0 }); // Reset both fields
+    await StockModel.updateMany({}, { quantity: 0}); // Reset both fields
     console.log('✅ Reset all stock quantities and stock to 0');
   } catch (error) {
     console.error('❌ Error resetting stocks:', error);
