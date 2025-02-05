@@ -589,7 +589,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 totalItems: totalItems, 
                 totalAmount: parseFloat(document.getElementById('totalAmount').value),
                 paymentMode: document.getElementById('paymentMode').value,
-                remarks: document.getElementById('remarks').value,
+                remarks: document.getElementById('remarks').value ? document.getElementById('remarks').value : "No Remarks",
                 paymentImage: document.getElementById('paymentMode').value === 'credit' ? base64PaymentImage : "No Image",
                 uid: orderUid,
                 storeUid: storeData.uid, //none
@@ -622,7 +622,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (isFieldMissing(orderData.storeName, 'Store Name')) missingFields.push('Store Name');
             if (isFieldMissing(orderData.tin, 'TIN')) missingFields.push('TIN');
             if (isFieldMissing(orderData.paymentMode, 'Payment Mode')) missingFields.push('Payment Mode');
-            if (isFieldMissing(orderData.remarks, 'Remarks')) missingFields.push('Remarks');
             if (orderData.paymentMode === 'credit' && isFieldMissing(orderData.paymentImage, 'Payment Image')) missingFields.push('Payment Image');
         
             if (missingFields.length > 0) {
