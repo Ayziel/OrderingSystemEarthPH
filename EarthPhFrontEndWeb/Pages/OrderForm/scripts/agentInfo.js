@@ -15,11 +15,6 @@ for (let i = 0; i < localStorage.length; i++) {
     console.log(`${key}: ${localStorage.getItem(key)}`);
 }
 
-const link = document.createElement("link");
-link.rel = "manifest";
-link.href = "/System/manifest.json";
-document.head.appendChild(link);
-
 document.addEventListener('DOMContentLoaded', () => {
     const today = new Date().toISOString().split('T')[0];  // Get today's date in YYYY-MM-DD format
     document.getElementById('order-date').value = today;
@@ -38,17 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
         applyBtn.style.display = 'block';
         } 
 });
-
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/System/service-worker.js")
-        .then(() => console.log("Service Worker registered"))
-        .catch((error) => console.log("Service Worker registration failed:", error));
-}
-// Listen for the "beforeinstallprompt" event
-window.addEventListener("beforeinstallprompt", (event) => {
-    event.preventDefault();
-    const installPrompt = event;
-}); 
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log("VIEW ORDER MODE",localStorage.getItem('isViewOrderMode'))
@@ -350,41 +334,56 @@ async function getStores() {
 }
 
 function populateStoresDropdown(stores) {
-    const storeSelect = document.getElementById('store-name');
-    storeSelect.innerHTML = '<option value="">Select store name</option>';
-    
+    const storeSelect = $('#store-name');
+    storeSelect.empty().append('<option value="">Select store name</option>');
+
+    let savedStore = localStorage.getItem('storeData') ? JSON.parse(localStorage.getItem('storeData')) : null;
+
     stores.forEach(store => {
-        const option = document.createElement('option');
-        option.value = store._id;
-        option.textContent = store.name;
-        option.setAttribute('data-uid', store.uid);
-        option.setAttribute('data-tin', store.tin);
-        option.setAttribute('data-address', store.address); 
-        option.setAttribute('data-store', JSON.stringify(store)); 
-        storeSelect.appendChild(option);
+        const option = $('<option></option>')
+            .val(store._id)
+            .text(store.name)
+            .attr('data-uid', store.uid)
+            .attr('data-tin', store.tin)
+            .attr('data-address', store.address)
+            .attr('data-store', JSON.stringify(store));
+
+        if (savedStore && savedStore._id === store._id) {
+            option.prop('selected', true); // Auto-select previous store
+        }
+
+        storeSelect.append(option);
     });
 
-    storeSelect.addEventListener('change', () => {
-        const selectedOption = storeSelect.options[storeSelect.selectedIndex];
-        const storeData = selectedOption && selectedOption.getAttribute('data-store') ? JSON.parse(selectedOption.getAttribute('data-store')) : null;
-        
-        if (storeData) {
-            // Store the selected store data in the global variable
-            selectedStoreData = storeData;
-            console.log(selectedStoreData)
-            // Also save it to localStorage if needed
-            localStorage.setItem('storeData', JSON.stringify(storeData)); 
-            console.log('Selected store data:', storeData);
-    
-            // Update the TIN and address fields based on selected store
-            const storeTIN = selectedOption.getAttribute('data-tin');
-            const storeAddress = selectedOption.getAttribute('data-address');
-            document.getElementById('tin').value = storeTIN; 
-            document.getElementById('area').value = storeAddress;
-            console.log('Updated TIN:', storeTIN);
-        }
+    // Initialize select2 for search functionality
+    storeSelect.select2({
+        placeholder: 'Search store name...',
+        allowClear: true
     });
+
+    function updateStoreDetails() {
+        const selectedOption = storeSelect.find(':selected');
+        const storeData = selectedOption.data('store') ? JSON.parse(selectedOption.attr('data-store')) : null;
+
+        if (storeData) {
+            selectedStoreData = storeData;
+            localStorage.setItem('storeData', JSON.stringify(storeData));
+            console.log('Selected store data:', storeData);
+
+            $('#tin').val(selectedOption.attr('data-tin'));
+            $('#area').val(selectedOption.attr('data-address'));
+        }
+    }
+
+    // Auto-populate fields on page load if a store was selected before
+    if (savedStore) {
+        updateStoreDetails();
+    }
+
+    // Listen for changes and update fields accordingly
+    storeSelect.on('change', updateStoreDetails);
 }
+
 
 // Form validation before submission
 document.getElementById('orderForm').addEventListener('submit', (event) => {
@@ -399,5 +398,3 @@ document.getElementById('orderForm').addEventListener('submit', (event) => {
         alert('Please select a valid store.'); // Show an alert if no valid store is selected
     }
 });
-
-

@@ -43,16 +43,3 @@ document.getElementById('surveyForm').addEventListener('submit', async (event) =
         alert('An error occurred. Please try again.');
     }
 });
-
-// Add manifest link
-const link = document.createElement("link");
-link.rel = "manifest";
-link.href = "/System/manifest.json";
-document.head.appendChild(link);
-
-// Register service worker
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/System/service-worker.js")
-        .then(() => console.log("Service Worker registered"))
-        .catch((error) => console.log("Service Worker registration failed:", error));
-}
