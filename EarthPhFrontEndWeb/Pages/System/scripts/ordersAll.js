@@ -411,11 +411,10 @@ async function exportToExcel(orders) {
                     TranDate: new Date(order.orderDate).toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' }),
                     ItemCode: productDescription,
                     Location: order.area,
-                    ItemCode: matchedProduct ? matchedProduct.productSKU : 'No SKU',
+                    ProductName: matchedProduct ? matchedProduct.productSKU : 'No SKU',
                     QTYSold: product.quantity,
                     UnitPrice: product.price,
                     SalesAmt: product.quantity, // Might need adjustment
-                    ProductUID: product.product_uid || 'No UID',
       
                 };
             });
