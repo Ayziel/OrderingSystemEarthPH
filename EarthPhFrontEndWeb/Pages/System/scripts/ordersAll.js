@@ -370,35 +370,66 @@ function updateOrderStatus(orderId, status) {
 
 
 
-function exportToExcel(orders) {
-    // Convert orders to worksheet format, including products
-    const data = orders.flatMap(order => {
-        return order.products.map(product => ({
-            OrderID: order._id,
-            Status: order.status,
-            AgentName: order.agentName,
-            TeamLeaderName: order.teamLeaderName,
-            StoreName: order.storeName,
-            StoreTIN: order.tin,
-            Area: order.area,
-            OrderDate: new Date(order.orderDate).toLocaleString(),
-            PaymentMode: order.paymentMode,
-            TotalItems: order.totalItems,
-            TotalAmount: order.totalAmount,
-            ProductName: product.name,
-            ProductDescription: product.description,
-            ProductPrice: product.price,
-            ProductDiscount: product.discount,
-            ProductQuantity: product.quantity,
-            ProductTotal: product.total,
-        }));
-    });
+async function exportToExcel(orders) {
+    try {
+        // Fetch users
+        const usersResponse = await fetch('https://earthph.sdevtech.com.ph/users/getUsers');
+        const usersData = await usersResponse.json();
+        console.log('Users API Response:', usersData); // Debugging step
 
-    // Create a new workbook and add the data
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(data);
-    XLSX.utils.book_append_sheet(wb, ws, 'OrdersWithProducts');
+        // Ensure usersData is an array
+        const users = Array.isArray(usersData) ? usersData : usersData.users;
+        if (!Array.isArray(users)) {
+            console.error('Users data is not an array:', users);
+            return;
+        }
 
-    // Export the workbook
-    XLSX.writeFile(wb, 'Orders_With_Products.xlsx');
+        // Fetch products
+        const productsResponse = await fetch('https://earthph.sdevtech.com.ph/products/getProduct');
+        const productsData = await productsResponse.json();
+        console.log('Products API Response:', productsData); // Debugging step
+
+        // Ensure productsData is an array
+        const products = Array.isArray(productsData) ? productsData : productsData.products;
+        if (!Array.isArray(products)) {
+            console.error('Products data is not an array:', products);
+            return;
+        }
+
+        // Convert orders to worksheet format
+        const data = orders.flatMap(order => {
+            const matchedUser = users.find(user => user.uid === order.userUid);
+            const userID = matchedUser ? matchedUser.id || 'Not Found' : 'Not Found'; // Get 'id' if available
+
+            return order.products.map(product => {
+                const matchedProduct = products.find(prod => prod.uid === product.product_uid);
+                const productDescription = matchedProduct ? matchedProduct.productDescription : 'No Description';
+
+                return {
+                    OrderID: order._id,
+                    CustomerID: userID,
+                    TranDate: new Date(order.orderDate).toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' }),
+                    ItemCode: productDescription,
+                    Location: order.area,
+                    ItemCode: matchedProduct ? matchedProduct.productSKU : 'No SKU',
+                    QTYSold: product.quantity,
+                    UnitPrice: product.price,
+                    SalesAmt: product.quantity, // Might need adjustment
+                    ProductUID: product.product_uid || 'No UID',
+      
+                };
+            });
+        });
+
+        // Create a new workbook and add the data
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(data);
+        XLSX.utils.book_append_sheet(wb, ws, 'OrdersWithProducts');
+
+        // Export the workbook
+        XLSX.writeFile(wb, 'Orders_With_Products.xlsx');
+    } catch (error) {
+        console.error('Error exporting orders:', error);
+    }
 }
+

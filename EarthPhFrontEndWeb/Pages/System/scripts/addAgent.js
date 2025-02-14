@@ -41,6 +41,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         console.log("Password match: Passwords are the same.");
 
+        const usersResponse = await fetch('https://earthph.sdevtech.com.ph/users/getUsers');
+        const usersData = await usersResponse.json();
+
+        const agents = usersData.filter(user => user.role === "Agent");
+
+        let nextAgentId = 1;
+        if (agents.length > 0) {
+            const agentIds = agents.map(agent => parseInt(agent.id)).filter(num => !isNaN(num));
+            nextAgentId = (Math.max(...agentIds) || 0) + 1;
+        }
+
         // Create a data object to send in the request
         const userData = { 
             uid,
@@ -49,12 +60,13 @@ document.addEventListener('DOMContentLoaded', () => {
             phoneNumber, 
             workPhone, 
             email, 
-            address,  // Include address
-            tin,      // Include TIN
+            address,
+            tin,
             team, 
             userName, 
             password, 
-            role 
+            role,
+            id: nextAgentId // Assign the next agent ID
         };
 
         console.log("Captured Form Data:", {

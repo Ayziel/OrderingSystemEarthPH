@@ -41,7 +41,8 @@ async function createUser(req, res) {
     role,
     address,
     tin,  // Added tin here
-    uid
+    uid,
+    id,
   });
 
   try {

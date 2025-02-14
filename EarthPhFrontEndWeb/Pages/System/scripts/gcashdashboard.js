@@ -88,11 +88,16 @@ const logGCashData = () => {
             
             // Fetch GCash data for the user
             fetch(`https://earthph.sdevtech.com.ph/gCash/getGcash/${userUid}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Failed to fetch GCash data: ${response.statusText}`);
-                    }
-                    return response.json();
+            .then(response => {
+                console.log("Response Status:", response.status);
+        
+                // If the response is not OK, log a message instead of throwing an error
+                if (!response.ok) {
+                    console.warn(`No GCash data found for user UID: ${userUid}`);
+                    return null; // Return null so we don't proceed with parsing
+                }
+        
+                return response.json();
                 })
                 .then(data => {
                     if (data && data.gcash && data.gcash.userUid === userUid) {

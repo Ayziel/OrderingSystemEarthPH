@@ -54,6 +54,10 @@ const userSchema = new mongoose.Schema({
   type: String,
   required: true  // Marked as required
 },
+id: {
+  type: String,
+  required: true  // Marked as required
+},
 });
 
 const User = mongoose.model('User', userSchema);
