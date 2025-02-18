@@ -55,4 +55,34 @@ async function createUser(req, res) {
   }
 }
 
-module.exports = { getUsers, createUser };
+// Controller to update an existing user
+async function updateUser(req, res) {
+  const { userId } = req.params;  // Get the userId from the URL params
+  const { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin, uid } = req.body;
+
+  // Validation for required fields
+  if (!userName || !password || !role || !firstName || !lastName || !phoneNumber || !workPhone || !email || !team || !address) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+
+  try {
+    // Find the user by ID and update the fields
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,  // Find user by ID
+      { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin, uid },
+      { new: true }  // Return the updated user
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ message: 'User updated successfully', user: updatedUser });
+  } catch (err) {
+    console.error('Error updating user:', err);
+    res.status(500).json({ message: 'Error updating user', error: err });
+  }
+}
+
+
+module.exports = { getUsers, createUser, updateUser};

@@ -415,7 +415,6 @@ async function exportToExcel(orders) {
                     QTYSold: product.quantity,
                     UnitPrice: product.price,
                     SalesAmt: product.quantity, // Might need adjustment
-      
                 };
             });
         });
