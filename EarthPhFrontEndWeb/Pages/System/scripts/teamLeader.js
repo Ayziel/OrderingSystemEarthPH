@@ -91,23 +91,140 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
 
 // Function to open modal and populate data
 function openModal(user) {
+    // Populate modal with user data
     document.getElementById('modal-firstName').textContent = user.firstName;
     document.getElementById('modal-lastName').textContent = user.lastName;
     document.getElementById('modal-phoneNumber').textContent = user.phoneNumber;
     document.getElementById('modal-email').textContent = user.email;
-    document.getElementById('modal-team').textContent = user.team;
-    document.getElementById('modal-role').textContent = user.role;
+    document.getElementById('modal-team').textContent = user.team;  // NOT EDITABLE
+    document.getElementById('modal-role').textContent = user.role;  // NOT EDITABLE
+    document.getElementById('modal-address').textContent = user.address;
 
     // Show the modal
     document.getElementById('userModal').style.display = "flex";
+
+    // Reset buttons
+    document.getElementById('edit-button').style.display = 'block';
+    document.getElementById('save-button').style.display = 'none';
+
+    // Set button functionalities
+    document.getElementById('edit-button').onclick = enableEditing;
+    document.getElementById('save-button').onclick = function () {
+        console.log("Saving data for user:", user._id);
+        saveUpdatedData(user._id);
+    };
 }
 
-// Close the modal when the close button is clicked
+// Enable editing for specific fields
+function enableEditing() {
+    replaceTextWithInput('modal-firstName');
+    replaceTextWithInput('modal-lastName');
+    replaceTextWithInput('modal-phoneNumber');
+    replaceTextWithInput('modal-email');
+    replaceTextWithInput('modal-address');
+
+    // Hide Edit button, Show Save button
+    document.getElementById('edit-button').style.display = 'none';
+    const saveButton = document.getElementById('save-button');
+    saveButton.style.display = 'block';
+    saveButton.removeAttribute('disabled');  // ✅ Enable save button
+}
+
+// Function to replace text with an input field (only for editable fields)
+function replaceTextWithInput(id) {
+    const span = document.getElementById(id);
+    const text = span.textContent;
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = text;
+    input.id = id;
+    span.replaceWith(input);
+}
+
+// Function to revert input fields back to spans
+function revertInputToSpan(id, value) {
+    const input = document.getElementById(id);
+    const span = document.createElement('span');
+    span.id = id;
+    span.textContent = value;
+    input.replaceWith(span);
+}
+
+function saveUpdatedData(userId) {
+    if (!userId) {
+        alert("User ID is missing.");
+        console.error("Error: userId is undefined or null.");
+        return;
+    }
+
+    const updatedUser = {
+        firstName: document.getElementById('modal-firstName')?.value?.trim() || "",
+        lastName: document.getElementById('modal-lastName')?.value?.trim() || "",
+        phoneNumber: document.getElementById('modal-phoneNumber')?.value?.trim() || "",
+        workPhone: document.getElementById('modal-workPhone')?.value?.trim() || "",
+        email: document.getElementById('modal-email')?.value?.trim() || "",
+        address: document.getElementById('modal-address')?.value?.trim() || "",
+        team: document.getElementById('modal-team')?.textContent || "",  // Non-editable
+        role: document.getElementById('modal-role')?.textContent || "",  // Non-editable
+        userName: document.getElementById('modal-userName')?.value?.trim() || "",
+        tin: document.getElementById('modal-tin')?.value?.trim() || "",
+        uid: document.getElementById('modal-uid')?.value?.trim() || "",
+    };
+
+    console.log("Updating user:", userId, updatedUser);
+
+    if (!usertoken) {
+        alert("User token is missing.");
+        console.error("Error: User token is missing.");
+        return;
+    }
+
+    fetch(`https://earthph.sdevtech.com.ph/users/updateUser/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${usertoken}`
+        },
+        body: JSON.stringify(updatedUser)
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => { throw err; });
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Server Response:", data);
+        alert('User updated successfully');
+
+        // Update displayed values
+        for (const key in updatedUser) {
+            if (updatedUser[key]) {
+                document.getElementById(`modal-${key}`).textContent = updatedUser[key];
+            }
+        }
+
+        // Reset buttons
+        document.getElementById('edit-button').style.display = 'block';
+        document.getElementById('save-button').style.display = 'none';
+
+        // Close modal
+        document.getElementById('userModal').style.display = 'none';
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error("Error updating user:", error);
+        alert(`Failed to update user: ${error.message || 'Unknown error'}`);
+    });
+}
+
+
+// Close modal when clicking the close button
 document.querySelector('.close').onclick = function () {
     document.getElementById('userModal').style.display = "none";
 }
 
-// Close the modal if the user clicks outside of it
+// Close modal when clicking outside
 window.onclick = function (event) {
     if (event.target === document.getElementById('userModal')) {
         document.getElementById('userModal').style.display = "none";

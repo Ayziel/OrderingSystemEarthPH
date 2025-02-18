@@ -202,6 +202,7 @@ function saveUpdatedData(userId) {
 
         // Close modal
         document.getElementById('userModal').style.display = 'none';
+        window.location.reload();
     })
     .catch(error => {
         console.error("Error updating user:", error);

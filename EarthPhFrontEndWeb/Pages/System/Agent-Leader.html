@@ -205,18 +205,22 @@
 <!-- Modal -->
 <div id="userModal" class="modal">
   <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>User Details</h2>
-      <table>
-          <tbody >
-              <tr><td class="modal-label">First Name:</td><td id="modal-firstName" class="modal-row"></td></tr>
-              <tr><td class="modal-label">Last Name:</td><td id="modal-lastName" class="modal-row"></td></tr>
-              <tr><td class="modal-label">Phone Number:</td><td id="modal-phoneNumber" class="modal-row"></td></tr>
-              <tr><td class="modal-label">Email:</td><td id="modal-email" class="modal-row"></td></tr>
-              <tr><td class="modal-label">Team:</td><td id="modal-team" class="modal-row"></td></tr>
-              <tr><td class="modal-label">Role:</td><td id="modal-role" class="modal-row"></td></tr>
-          </tbody>
-      </table>
+    <span class="close">&times;</span>
+    <h2>User Details</h2>
+    <table>
+      <tbody>
+        <tr><td class="modal-label">First Name:</td><td><span id="modal-firstName"></span></td></tr>
+        <tr><td class="modal-label">Last Name:</td><td><span id="modal-lastName"></span></td></tr>
+        <tr><td class="modal-label">Phone Number:</td><td><span id="modal-phoneNumber"></span></td></tr>
+        <tr><td class="modal-label">Email:</td><td><span id="modal-email"></span></td></tr>
+        <tr><td class="modal-label">Team:</td><td><span id="modal-team"></span></td></tr>
+        <tr><td class="modal-label">Role:</td><td><span id="modal-role"></span></td></tr>
+        <tr><td class="modal-label">Location:</td><td><span id="modal-address"></span></td></tr>
+      </tbody>
+    </table>
+    <!-- Edit and Save buttons -->
+    <button id="edit-button" style="background-color: #FF9800; color: white;">Edit</button>
+    <button id="save-button" style="background-color: #66BB6A; color: white;" disabled>Save</button>
   </div>
 </div>
 
