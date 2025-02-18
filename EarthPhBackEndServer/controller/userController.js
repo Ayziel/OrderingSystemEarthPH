@@ -57,6 +57,9 @@ async function createUser(req, res) {
 
 // Controller to update an existing user
 async function updateUser(req, res) {
+
+  console.log("Received userId:", req.params.userId);
+  console.log("Request Body:", req.body);
   const { userId } = req.params;  // Get the userId from the URL params
   const { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin, uid } = req.body;
 

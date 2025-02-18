@@ -103,7 +103,7 @@ function openModal(user) {
     document.getElementById('edit-button').onclick = enableEditing;
     document.getElementById('save-button').onclick = function () {
         console.log("saving data");
-        saveUpdatedData(user.id);
+        saveUpdatedData(user._id);
     };
 }
 
