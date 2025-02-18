@@ -54,7 +54,7 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
             button.style.cursor = 'pointer';
             button.style.borderRadius = '5px';
             button.style.transition = 'background-color 0.3s ease';
-            button.style.backgroundColor = 'green !important'; // Apply background color with !important
+            button.style.backgroundColor = 'green'; // Apply background color with !important
 
             button.addEventListener('mouseover', () => {
                 button.style.backgroundColor = '#28a745'; 
@@ -80,17 +80,82 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
         alert('Failed to fetch agent data. Please check your server.');
     });
 
+    
 // Function to open modal and populate data
 function openModal(user) {
-    document.getElementById('modal-firstName').textContent = user.firstName;
-    document.getElementById('modal-lastName').textContent = user.lastName;
-    document.getElementById('modal-phoneNumber').textContent = user.phoneNumber;
-    document.getElementById('modal-email').textContent = user.email;
-    document.getElementById('modal-team').textContent = user.team;
-    document.getElementById('modal-role').textContent = user.role;
+    // Populate modal with user data
+    document.getElementById('modal-firstName').value = user.firstName;
+    document.getElementById('modal-lastName').value = user.lastName;
+    document.getElementById('modal-phoneNumber').value = user.phoneNumber;
+    document.getElementById('modal-email').value = user.email;
+    document.getElementById('modal-team').value = user.team;
+    document.getElementById('modal-role').value = user.role;
 
     // Show the modal
     document.getElementById('userModal').style.display = "flex";
+
+    // Enable editing on the fields when Edit is clicked
+    document.getElementById('edit-button').onclick = function() {
+        enableEditing();
+    };
+
+    // Save updated data to the database
+    document.getElementById('save-button').onclick = function() {
+        saveUpdatedData(user.id);  // Send updated data for saving
+    };
+}
+
+// Close the modal when the close button is clicked
+document.querySelector('.close').onclick = function () {
+    document.getElementById('userModal').style.display = "none";
+}
+
+
+// Enable editing functionality
+function enableEditing() {
+    // Make the inputs editable
+    const inputs = document.querySelectorAll('#userModal input');
+    inputs.forEach(input => {
+        input.readOnly = false;
+    });
+
+    // Enable the save button
+    document.getElementById('save-button').disabled = false;
+
+    // Change the edit button to 'Cancel' if desired
+    document.getElementById('edit-button').style.display = 'none';
+    document.getElementById('cancel-button').style.display = 'block';
+}
+
+// Function to save the updated user data
+function saveUpdatedData(userId) {
+    const updatedUser = {
+        firstName: document.getElementById('modal-firstName').value,
+        lastName: document.getElementById('modal-lastName').value,
+        phoneNumber: document.getElementById('modal-phoneNumber').value,
+        email: document.getElementById('modal-email').value,
+        team: document.getElementById('modal-team').value,
+        role: document.getElementById('modal-role').value
+    };
+
+    fetch(`https://earthph.sdevtech.com.ph/users/updateUser/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${usertoken}`  // Include token if needed for authentication
+        },
+        body: JSON.stringify(updatedUser)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('User updated successfully');
+        document.getElementById('userModal').style.display = 'none';
+        location.reload();  // Optionally reload the page to reflect changes
+    })
+    .catch(error => {
+        console.error('Error updating user:', error);
+        alert('Failed to update user');
+    });
 }
 
 // Close the modal when the close button is clicked

@@ -205,20 +205,24 @@
 <!-- Modal -->
 <div id="userModal" class="modal">
   <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>User Details</h2>
-      <table>
-        <tbody >
-          <tr><td class="modal-label">First Name:</td><td id="modal-firstName" class="modal-row"></td></tr>
-          <tr><td class="modal-label">Last Name:</td><td id="modal-lastName" class="modal-row"></td></tr>
-          <tr><td class="modal-label">Phone Number:</td><td id="modal-phoneNumber" class="modal-row"></td></tr>
-          <tr><td class="modal-label">Email:</td><td id="modal-email" class="modal-row"></td></tr>
-          <tr><td class="modal-label">Team:</td><td id="modal-team" class="modal-row"></td></tr>
-          <tr><td class="modal-label">Role:</td><td id="modal-role" class="modal-row"></td></tr>
+    <span class="close">&times;</span>
+    <h2>User Details</h2>
+    <table>
+      <tbody>
+        <tr><td class="modal-label">First Name:</td><td><input type="text" id="modal-firstName" class="modal-row" readonly></td></tr>
+        <tr><td class="modal-label">Last Name:</td><td><input type="text" id="modal-lastName" class="modal-row" readonly></td></tr>
+        <tr><td class="modal-label">Phone Number:</td><td><input type="text" id="modal-phoneNumber" class="modal-row" readonly></td></tr>
+        <tr><td class="modal-label">Email:</td><td><input type="text" id="modal-email" class="modal-row" readonly></td></tr>
+        <tr><td class="modal-label">Team:</td><td><input type="text" id="modal-team" class="modal-row" readonly></td></tr>
+        <tr><td class="modal-label">Role:</td><td><input type="text" id="modal-role" class="modal-row" readonly></td></tr>
       </tbody>
-      </table>
+    </table>
+    <!-- Edit and Save buttons -->
+    <button id="edit-button" style="background-color: #FF9800; color: white;">Edit</button>
+    <button id="save-button" style="background-color: #66BB6A; color: white;" disabled>Save</button>
   </div>
 </div>
+
     </section>
     <script src="./scripts/manifestShared.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
