@@ -57,35 +57,40 @@ async function createUser(req, res) {
 
 // Controller to update an existing user
 async function updateUser(req, res) {
+  const { userId } = req.params;  
+  const updateFields = req.body; // Get all sent fields
 
-  console.log("Received userId:", req.params.userId);
-  console.log("Request Body:", req.body);
-  const { userId } = req.params;  // Get the userId from the URL params
-  const { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin, uid } = req.body;
-
-  // Validation for required fields
-  if (!userName || !password || !role || !firstName || !lastName || !phoneNumber || !workPhone || !email || !team || !address) {
-    return res.status(400).json({ message: 'Missing required fields' });
-  }
+  // Remove empty or undefined fields from updateFields
+  Object.keys(updateFields).forEach((key) => {
+      if (updateFields[key] === "" || updateFields[key] === undefined) {
+          delete updateFields[key];
+      }
+  });
 
   try {
-    // Find the user by ID and update the fields
-    const updatedUser = await UserModel.findByIdAndUpdate(
-      userId,  // Find user by ID
-      { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin, uid },
-      { new: true }  // Return the updated user
-    );
+      // Ensure there's at least one field to update
+      if (Object.keys(updateFields).length === 0) {
+          return res.status(400).json({ message: "No valid fields provided for update" });
+      }
 
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+      // Find the user by ID and update only the provided fields
+      const updatedUser = await UserModel.findByIdAndUpdate(
+          userId,
+          { $set: updateFields },  // Only update provided fields
+          { new: true }
+      );
 
-    res.json({ message: 'User updated successfully', user: updatedUser });
+      if (!updatedUser) {
+          return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json({ message: "User updated successfully", user: updatedUser });
   } catch (err) {
-    console.error('Error updating user:', err);
-    res.status(500).json({ message: 'Error updating user', error: err });
+      console.error("Error updating user:", err);
+      res.status(500).json({ message: "Error updating user", error: err });
   }
 }
+
 
 
 module.exports = { getUsers, createUser, updateUser};

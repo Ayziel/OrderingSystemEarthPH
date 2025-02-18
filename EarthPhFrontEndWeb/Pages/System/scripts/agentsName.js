@@ -102,7 +102,7 @@ function openModal(user) {
     // Set button functionalities
     document.getElementById('edit-button').onclick = enableEditing;
     document.getElementById('save-button').onclick = function () {
-        console.log("saving data");
+        console.log("Saving data for user:", user._id);
         saveUpdatedData(user._id);
     };
 }
@@ -143,16 +143,31 @@ function revertInputToSpan(id, value) {
 }
 
 function saveUpdatedData(userId) {
+    if (!userId) {
+        alert("User ID is missing.");
+        console.error("Error: userId is undefined or null.");
+        return;
+    }
+
     const updatedUser = {
-        firstName: document.getElementById('modal-firstName').value,
-        lastName: document.getElementById('modal-lastName').value,
-        phoneNumber: document.getElementById('modal-phoneNumber').value,
-        email: document.getElementById('modal-email').value,
-        address: document.getElementById('modal-address').value
+        firstName: document.getElementById('modal-firstName')?.value?.trim() || "",
+        lastName: document.getElementById('modal-lastName')?.value?.trim() || "",
+        phoneNumber: document.getElementById('modal-phoneNumber')?.value?.trim() || "",
+        workPhone: document.getElementById('modal-workPhone')?.value?.trim() || "",
+        email: document.getElementById('modal-email')?.value?.trim() || "",
+        address: document.getElementById('modal-address')?.value?.trim() || "",
+        team: document.getElementById('modal-team')?.textContent || "",  // Non-editable
+        role: document.getElementById('modal-role')?.textContent || "",  // Non-editable
+        userName: document.getElementById('modal-userName')?.value?.trim() || "",
+        tin: document.getElementById('modal-tin')?.value?.trim() || "",
+        uid: document.getElementById('modal-uid')?.value?.trim() || "",
     };
+
+    console.log("Updating user:", userId, updatedUser);
 
     if (!usertoken) {
         alert("User token is missing.");
+        console.error("Error: User token is missing.");
         return;
     }
 
@@ -164,13 +179,21 @@ function saveUpdatedData(userId) {
         },
         body: JSON.stringify(updatedUser)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => { throw err; });
+        }
+        return response.json();
+    })
     .then(data => {
+        console.log("Server Response:", data);
         alert('User updated successfully');
 
-        // Revert input fields back to spans with updated values
+        // Update displayed values
         for (const key in updatedUser) {
-            revertInputToSpan(`modal-${key}`, updatedUser[key]);
+            if (updatedUser[key]) {
+                document.getElementById(`modal-${key}`).textContent = updatedUser[key];
+            }
         }
 
         // Reset buttons
@@ -181,10 +204,11 @@ function saveUpdatedData(userId) {
         document.getElementById('userModal').style.display = 'none';
     })
     .catch(error => {
-        console.error('Error updating user:', error);
-        alert('Failed to update user');
+        console.error("Error updating user:", error);
+        alert(`Failed to update user: ${error.message || 'Unknown error'}`);
     });
 }
+
 
 // Close modal when clicking the close button
 document.querySelector('.close').onclick = function () {
