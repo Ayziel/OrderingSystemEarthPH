@@ -1,17 +1,17 @@
 const staticCacheName = "site-static-v1";
 const assets = [
-    "/", 
-    "/EarthPhFrontEndWeb/Pages/System/index.html",
-    "/EarthPhFrontEndWeb/Pages/System/styles/style.css",
-    "/EarthPhFrontEndWeb/Pages/System/login.html",
-    "/EarthPhFrontEndWeb/Pages/System/styles/log-in.css",
-    "https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap",
-    "https://fonts.gstatic.com/s/poppins/v15/pxiEyp8kv8JHgFVrJJfecg.ttf",
-    // Add Font Awesome CDN URLs
-    "https://unicons.iconscout.com/release/v4.0.0/css/line.css",
-    "https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css",
-    "https://cdn.jsdelivr.net/npm/font-awesome@5.15.4/css/all.min.css", // Example FA CDN
-    // Other important external resources (like images)
+    // "/", 
+    // "/EarthPhFrontEndWeb/Pages/System/index.html",
+    // "/EarthPhFrontEndWeb/Pages/System/styles/style.css",
+    // "/EarthPhFrontEndWeb/Pages/System/login.html",
+    // "/EarthPhFrontEndWeb/Pages/System/styles/log-in.css",
+    // "https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap",
+    // "https://fonts.gstatic.com/s/poppins/v15/pxiEyp8kv8JHgFVrJJfecg.ttf",
+    // // Add Font Awesome CDN URLs
+    // "https://unicons.iconscout.com/release/v4.0.0/css/line.css",
+    // "https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css",
+    // "https://cdn.jsdelivr.net/npm/font-awesome@5.15.4/css/all.min.css", // Example FA CDN
+    // // Other important external resources (like images)
 
 ];
 

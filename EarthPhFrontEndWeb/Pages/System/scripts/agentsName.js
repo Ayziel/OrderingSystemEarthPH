@@ -84,73 +84,101 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
 // Function to open modal and populate data
 function openModal(user) {
     // Populate modal with user data
-    document.getElementById('modal-firstName').value = user.firstName;
-    document.getElementById('modal-lastName').value = user.lastName;
-    document.getElementById('modal-phoneNumber').value = user.phoneNumber;
-    document.getElementById('modal-email').value = user.email;
-    document.getElementById('modal-team').value = user.team;
-    document.getElementById('modal-role').value = user.role;
+    document.getElementById('modal-firstName').textContent = user.firstName;
+    document.getElementById('modal-lastName').textContent = user.lastName;
+    document.getElementById('modal-phoneNumber').textContent = user.phoneNumber;
+    document.getElementById('modal-email').textContent = user.email;
+    document.getElementById('modal-team').textContent = user.team;  // NOT EDITABLE
+    document.getElementById('modal-role').textContent = user.role;  // NOT EDITABLE
+    document.getElementById('modal-address').textContent = user.address;
 
     // Show the modal
     document.getElementById('userModal').style.display = "flex";
 
-    // Enable editing on the fields when Edit is clicked
-    document.getElementById('edit-button').onclick = function() {
-        enableEditing();
-    };
+    // Reset buttons
+    document.getElementById('edit-button').style.display = 'block';
+    document.getElementById('save-button').style.display = 'none';
 
-    // Save updated data to the database
-    document.getElementById('save-button').onclick = function() {
-        saveUpdatedData(user.id);  // Send updated data for saving
+    // Set button functionalities
+    document.getElementById('edit-button').onclick = enableEditing;
+    document.getElementById('save-button').onclick = function () {
+        console.log("saving data");
+        saveUpdatedData(user.id);
     };
 }
 
-// Close the modal when the close button is clicked
-document.querySelector('.close').onclick = function () {
-    document.getElementById('userModal').style.display = "none";
-}
-
-
-// Enable editing functionality
+// Enable editing for specific fields
 function enableEditing() {
-    // Make the inputs editable
-    const inputs = document.querySelectorAll('#userModal input');
-    inputs.forEach(input => {
-        input.readOnly = false;
-    });
+    replaceTextWithInput('modal-firstName');
+    replaceTextWithInput('modal-lastName');
+    replaceTextWithInput('modal-phoneNumber');
+    replaceTextWithInput('modal-email');
+    replaceTextWithInput('modal-address');
 
-    // Enable the save button
-    document.getElementById('save-button').disabled = false;
-
-    // Change the edit button to 'Cancel' if desired
+    // Hide Edit button, Show Save button
     document.getElementById('edit-button').style.display = 'none';
-    document.getElementById('cancel-button').style.display = 'block';
+    const saveButton = document.getElementById('save-button');
+    saveButton.style.display = 'block';
+    saveButton.removeAttribute('disabled');  // ✅ Enable save button
 }
 
-// Function to save the updated user data
+// Function to replace text with an input field (only for editable fields)
+function replaceTextWithInput(id) {
+    const span = document.getElementById(id);
+    const text = span.textContent;
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = text;
+    input.id = id;
+    span.replaceWith(input);
+}
+
+// Function to revert input fields back to spans
+function revertInputToSpan(id, value) {
+    const input = document.getElementById(id);
+    const span = document.createElement('span');
+    span.id = id;
+    span.textContent = value;
+    input.replaceWith(span);
+}
+
 function saveUpdatedData(userId) {
     const updatedUser = {
         firstName: document.getElementById('modal-firstName').value,
         lastName: document.getElementById('modal-lastName').value,
         phoneNumber: document.getElementById('modal-phoneNumber').value,
         email: document.getElementById('modal-email').value,
-        team: document.getElementById('modal-team').value,
-        role: document.getElementById('modal-role').value
+        address: document.getElementById('modal-address').value
     };
+
+    if (!usertoken) {
+        alert("User token is missing.");
+        return;
+    }
 
     fetch(`https://earthph.sdevtech.com.ph/users/updateUser/${userId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${usertoken}`  // Include token if needed for authentication
+            'Authorization': `Bearer ${usertoken}`
         },
         body: JSON.stringify(updatedUser)
     })
     .then(response => response.json())
     .then(data => {
         alert('User updated successfully');
+
+        // Revert input fields back to spans with updated values
+        for (const key in updatedUser) {
+            revertInputToSpan(`modal-${key}`, updatedUser[key]);
+        }
+
+        // Reset buttons
+        document.getElementById('edit-button').style.display = 'block';
+        document.getElementById('save-button').style.display = 'none';
+
+        // Close modal
         document.getElementById('userModal').style.display = 'none';
-        location.reload();  // Optionally reload the page to reflect changes
     })
     .catch(error => {
         console.error('Error updating user:', error);
@@ -158,12 +186,12 @@ function saveUpdatedData(userId) {
     });
 }
 
-// Close the modal when the close button is clicked
+// Close modal when clicking the close button
 document.querySelector('.close').onclick = function () {
     document.getElementById('userModal').style.display = "none";
 }
 
-// Close the modal if the user clicks outside of it
+// Close modal when clicking outside
 window.onclick = function (event) {
     if (event.target === document.getElementById('userModal')) {
         document.getElementById('userModal').style.display = "none";
