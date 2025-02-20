@@ -1,5 +1,5 @@
-const staticCacheName = "site-static-v16";
-const dynamicCacheName = "site-dynamic-v16";
+const staticCacheName = "site-static-v17";
+const dynamicCacheName = "site-dynamic-v17";
 const cacheLimit = 100;
 
 const dashboardAssets = [
@@ -179,7 +179,7 @@ async function syncData(dbName, storeName, apiEndpoint) {
     return new Promise((resolve, reject) => {
         const dbRequest = indexedDB.open(dbName, 1);
 
-        dbRequest.onsuccess = async (event) => {
+        dbRequest.onsuccess = (event) => {
             let db = event.target.result;
             let tx = db.transaction(storeName, "readwrite");
             let store = tx.objectStore(storeName);
@@ -203,11 +203,7 @@ async function syncData(dbName, storeName, apiEndpoint) {
                         });
 
                         if (response.ok) {
-                            // ✅ DELETE the synced item from IndexedDB
-                            let deleteTx = db.transaction(storeName, "readwrite");
-                            let deleteStore = deleteTx.objectStore(storeName);
-                            deleteStore.delete(dataItem.id);
-
+                            await deleteSyncedData(db, storeName, dataItem.id);
                             notifyClients({ type: "sync-success", message: `Synced order: ${dataItem.id}` });
                         }
                     } catch (error) {
@@ -225,3 +221,23 @@ async function syncData(dbName, storeName, apiEndpoint) {
         };
     });
 }
+
+// ✅ Ensures data is deleted correctly
+async function deleteSyncedData(db, storeName, id) {
+    return new Promise((resolve, reject) => {
+        let deleteTx = db.transaction(storeName, "readwrite");
+        let deleteStore = deleteTx.objectStore(storeName);
+        let deleteRequest = deleteStore.delete(id);
+
+        deleteRequest.onsuccess = () => {
+            console.log(`✅ Order ${id} deleted from IndexedDB`);
+            resolve();
+        };
+
+        deleteRequest.onerror = (event) => {
+            console.error(`❌ Failed to delete order ${id}`, event.target.error);
+            reject(event.target.error);
+        };
+    });
+}
+
