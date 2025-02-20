@@ -93,7 +93,7 @@ document.getElementById('surveyForm').addEventListener('submit', async (event) =
         });
 
         alert('Survey saved. It will be sent when you go online.');
-        //window.location.href = "https://earthhomecareph.astute.services/OrderForm/Order-Info.html";
+        window.location.href = "https://earthhomecareph.astute.services/OrderForm/Order-Info.html";
     }
 });
 
