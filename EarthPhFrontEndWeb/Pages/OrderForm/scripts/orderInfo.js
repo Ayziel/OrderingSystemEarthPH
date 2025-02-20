@@ -499,7 +499,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
     */
-    
+
 
     const initialize = () => {
         handleModals();
@@ -512,6 +512,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const randomNum = Math.floor(1000 + Math.random() * 9000); // Random 3-digit number
             return `RCPT-${timestamp}-${randomNum}`;
         };
+        
         const receiptUid = generateReceiptUid();
         document.getElementById("receiptID").textContent = receiptUid;
 
@@ -724,11 +725,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 button.disabled = false;
             }
         });
-        
-
-        const handleOrderClick = (event) => {
-            event.preventDefault();
-        };
     };
 
     initialize();

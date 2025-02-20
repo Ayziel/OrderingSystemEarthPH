@@ -398,3 +398,15 @@ document.getElementById('orderForm').addEventListener('submit', (event) => {
         alert('Please select a valid store.'); // Show an alert if no valid store is selected
     }
 });
+
+
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((registration) => {
+            if (registration.active && registration.active.scriptURL.includes("site-static-v8")) {
+                registration.unregister();
+                console.log("Old service worker unregistered.");
+            }
+        });
+    });
+}

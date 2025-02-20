@@ -52,7 +52,7 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
                     const imageCell = document.createElement('td');
                     const img = document.createElement('img');
                     const randomImageId = Math.floor(Math.random() * 1000) + 1;  // Generate a random image ID
-                    img.src = `https://picsum.photos/40/40?random=${randomImageId}`;  // Fetch a random 40x40 image
+                    img.src = `/images/logo.jpg`;  // Fetch a random 40x40 image
                     img.classList.add('agent-image');
                     imageCell.appendChild(img);
                     row.appendChild(imageCell);

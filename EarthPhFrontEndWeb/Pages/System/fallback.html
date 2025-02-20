@@ -1,0 +1,61 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        img {
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        a {
+            text-decoration: none;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <img src="/images/logo.jpg" alt="Logo">
+    <h1>You are Offline</h1>
+    <p>Please visit this page once with an internet connection.</p>
+    <a href="index.html" class="btn">Go to Home</a>
+</body>
+</html>

@@ -229,7 +229,7 @@ window.onclick = function (event) {
     if (event.target === document.getElementById('userModal')) {
         document.getElementById('userModal').style.display = "none";
     }
-}
+}+
 
 // Function to export data
 function exportUserData() {
