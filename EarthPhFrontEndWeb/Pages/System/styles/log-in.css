@@ -28,7 +28,7 @@ body {
     width: 100px;
     height: 100px;
     margin-bottom: 20px;
-    background: url('https://picsum.photos/100') no-repeat center center/cover;
+    background: url('/images/logo.jpg') no-repeat center center/cover;
     border-radius: 50%;
 }
 

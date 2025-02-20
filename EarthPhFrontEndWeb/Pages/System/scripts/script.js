@@ -86,3 +86,14 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.href = 'https://earthhomecareph.astute.services/System/login.html';
   }
 });
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+      registrations.forEach((registration) => {
+          if (registration.active && registration.active.scriptURL.includes("site-static-v8")) {
+              registration.unregister();
+              console.log("Old service worker unregistered.");
+          }
+      });
+  });
+}
