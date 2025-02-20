@@ -1,5 +1,5 @@
-const staticCacheName = "site-static-v18";
-const dynamicCacheName = "site-dynamic-v18";
+const staticCacheName = "site-static-v19";
+const dynamicCacheName = "site-dynamic-v19";
 const cacheLimit = 100;
 
 const dashboardAssets = [
@@ -187,6 +187,7 @@ async function syncData(dbName, storeName, apiEndpoint) {
 
             getAll.onsuccess = async () => {
                 const dataItems = getAll.result;
+
                 if (dataItems.length === 0) {
                     console.log("No data to sync.");
                     return resolve();
@@ -203,7 +204,7 @@ async function syncData(dbName, storeName, apiEndpoint) {
                         });
 
                         if (response.ok) {
-                            await deleteSyncedData(db, storeName, dataItem.id);
+                            await deleteOrder(db, storeName, dataItem.id);
                             notifyClients({ type: "sync-success", message: `Synced order: ${dataItem.id}` });
                         }
                     } catch (error) {
@@ -222,8 +223,8 @@ async function syncData(dbName, storeName, apiEndpoint) {
     });
 }
 
-// ✅ Ensures data is deleted correctly
-async function deleteSyncedData(db, storeName, id) {
+// ✅ This function makes sure the order is deleted AFTER successful sync
+async function deleteOrder(db, storeName, id) {
     return new Promise((resolve, reject) => {
         let deleteTx = db.transaction(storeName, "readwrite");
         let deleteStore = deleteTx.objectStore(storeName);
@@ -240,4 +241,3 @@ async function deleteSyncedData(db, storeName, id) {
         };
     });
 }
-
