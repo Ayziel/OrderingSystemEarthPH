@@ -1,5 +1,5 @@
-const staticCacheName = "site-static-v14";
-const dynamicCacheName = "site-dynamic-v14";
+const staticCacheName = "site-static-v15";
+const dynamicCacheName = "site-dynamic-v15";
 const cacheLimit = 100;
 
 const dashboardAssets = [
@@ -47,25 +47,22 @@ const limitCacheSize = (cacheName, size) => {
 
 self.addEventListener("install", (event) => {
     event.waitUntil(
-        caches.open(staticCacheName).then((cache) => {
-            return cache.addAll(assets).catch((error) => {
-                console.error("🚨 Cache addAll failed!", error);
-                return Promise.all(
-                    assets.map((asset) =>
-                        fetch(asset)
-                            .then((response) => {
-                                if (!response.ok) throw new Error(`Failed to fetch ${asset}: ${response.statusText}`);
-                                return cache.put(asset, response);
-                            })
-                            .catch((err) => console.warn(`⚠️ Skipping ${asset}:`, err))
-                    )
-                );
-            });
+        caches.open(staticCacheName).then(async (cache) => {
+            for (let asset of assets) {
+                try {
+                    let response = await fetch(asset);
+                    if (!response.ok) throw new Error(`Failed to fetch ${asset}: ${response.statusText}`);
+                    await cache.put(asset, response.clone());
+                } catch (err) {
+                    console.warn(`⚠️ Skipping ${asset}:`, err.message);
+                }
+            }
         }).then(() => {
             self.skipWaiting();
         })
     );
 });
+
 
 
 self.addEventListener("activate", (event) => {
