@@ -46,7 +46,7 @@ app.get("/System/service-worker.js", (req, res) => {
     res.sendFile(path.resolve(__dirname, "", "service-worker.js"));
 });
 
-app.get("/System/manifest.json", (req, res) => {
+app.get("/manifest.json", (req, res) => {
     res.sendFile(path.resolve(__dirname, "", "manifest.json"));
 });
 
