@@ -1,5 +1,5 @@
-const staticCacheName = "site-static-v13";
-const dynamicCacheName = "site-dynamic-v13";
+const staticCacheName = "site-static-v14";
+const dynamicCacheName = "site-dynamic-v14";
 const cacheLimit = 100;
 
 const dashboardAssets = [
@@ -73,11 +73,14 @@ self.addEventListener("activate", (event) => {
         caches.keys().then((keys) => {
             return Promise.all(
                 keys
-                    .filter((key) => key !== staticCacheName && key !== dynamicCacheName)
+                    .filter((key) => 
+                        key.startsWith("site-static-") || key.startsWith("site-dynamic-") // ✅ Target all versions
+                    )
+                    .filter((key) => key !== staticCacheName && key !== dynamicCacheName) // ✅ Keep only the latest
                     .map((key) => caches.delete(key))
             );
         }).then(() => {
-            self.clients.claim();
+            self.clients.claim(); // Ensure control over all clients
             return self.clients.matchAll({ type: "window" }).then((clients) => {
                 clients.forEach((client) => client.navigate(client.url)); // Refresh open tabs
             });
@@ -86,8 +89,13 @@ self.addEventListener("activate", (event) => {
 });
 
 
+
 self.addEventListener("fetch", (event) => {
     const { request } = event;
+
+    if (request.url.startsWith("chrome-extension://")) {
+        return;
+    }
 
     if (request.method === "POST" && request.url.includes("/order")) {
         event.respondWith(handleOrderRequest(event));
