@@ -124,6 +124,25 @@ function openStockModal(stock) {
 
     modalContent.innerHTML = stockDetailsHTML;
 
+    const editButton = document.getElementById('edit-button');
+    const saveButton = document.getElementById('save-button');
+
+    // Disable Edit button if offline
+    function updateEditButtonStatus() {
+        if (!navigator.onLine) {
+            editButton.disabled = true;
+            editButton.classList.add('disabled');
+        } else {
+            editButton.disabled = false;
+            editButton.classList.remove('disabled');
+        }
+    }
+
+    updateEditButtonStatus(); // Check status when modal opens
+
+    window.addEventListener("online", updateEditButtonStatus);
+    window.addEventListener("offline", updateEditButtonStatus);
+
     // Show the modal
     modal.style.display = 'block';
     document.body.classList.add('modal-open');
@@ -135,16 +154,21 @@ function openStockModal(stock) {
     });
 
     // Edit button functionality
-    document.getElementById('edit-button').addEventListener('click', () => {
+    editButton.addEventListener('click', () => {
+        if (!navigator.onLine) {
+            alert("You can't edit stock while offline.");
+            return;
+        }
+
         document.getElementById('edit-store-name').disabled = false;
         document.getElementById('edit-product-name').disabled = false;
         document.getElementById('edit-quantity').disabled = false;
         document.getElementById('edit-stock').disabled = false;
-        document.getElementById('save-button').style.display = 'inline-block';
+        saveButton.style.display = 'inline-block';
     });
 
     // Save button functionality
-    document.getElementById('save-button').addEventListener('click', () => {
+    saveButton.addEventListener('click', () => {
         const updatedStock = {
             uid: stock.uid,
             store_name: document.getElementById('edit-store-name').value,
@@ -156,6 +180,7 @@ function openStockModal(stock) {
         saveStockToDatabase(updatedStock);
     });
 }
+
 
 function saveStockToDatabase(updatedStock) {
     fetch('https://earthph.sdevtech.com.ph/stocks/updateStock', {

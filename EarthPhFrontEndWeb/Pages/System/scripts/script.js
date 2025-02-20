@@ -87,13 +87,32 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.getRegistrations().then((registrations) => {
-      registrations.forEach((registration) => {
-          if (registration.active && registration.active.scriptURL.includes("site-static-v8")) {
-              registration.unregister();
-              console.log("Old service worker unregistered.");
-          }
-      });
-  });
+
+const buttonsToDisable = document.querySelectorAll("#addAgentBtn, #addProductSubmit, #addStoreSubmit, #edit-product, #edit-button");
+
+function updateButtonState() {
+    buttonsToDisable.forEach(button => {
+        if (navigator.onLine) {
+            button.removeAttribute("disabled"); // Enable button when online
+        } else {
+            button.setAttribute("disabled", "true"); // Disable button when offline
+        }
+    });
 }
+
+// Check connection on page load
+updateButtonState();
+
+// Listen for connection changes
+window.addEventListener("online", updateButtonState);
+window.addEventListener("offline", updateButtonState);
+
+// Show an alert when clicking while offline
+buttonsToDisable.forEach(button => {
+    button.addEventListener("click", (event) => {
+        if (!navigator.onLine) {
+            event.preventDefault(); // Prevent action
+            alert("You are offline. This action cannot be performed.");
+        }
+    });
+});
