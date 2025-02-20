@@ -85,6 +85,71 @@ self.addEventListener("activate", (event) => {
     );
 });
 
+async function handleSurveyRequest(event) {
+    try {
+        return await fetch(event.request); // Try sending survey online
+    } catch (error) {
+        const formData = await event.request.clone().formData();
+        const survey = {};
+        formData.forEach((value, key) => (survey[key] = value));
+
+        saveSurveyToIndexedDB(survey);
+
+        // ✅ Register background sync for surveys
+        self.registration.sync.register("sync-surveys").catch(err => console.error("Sync registration failed", err));
+
+        return new Response(JSON.stringify({ status: "offline", message: "Survey saved locally." }), {
+            headers: { "Content-Type": "application/json" }
+        });
+    }
+}
+
+async function syncSurveyData() {
+    return new Promise((resolve, reject) => {
+        const dbRequest = indexedDB.open("surveysDB", 1);
+
+        dbRequest.onsuccess = (event) => {
+            let db = event.target.result;
+            let tx = db.transaction("surveys", "readwrite");
+            let store = tx.objectStore("surveys");
+            let getAll = store.getAll();
+
+            getAll.onsuccess = async () => {
+                const surveys = getAll.result;
+
+                if (surveys.length === 0) {
+                    console.log("No survey data to sync.");
+                    return resolve();
+                }
+
+                for (let survey of surveys) {
+                    try {
+                        let response = await fetch("/survey-endpoint", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(survey),
+                        });
+
+                        if (response.ok) {
+                            await deleteSurveyFromIndexedDB(db, survey.id);
+                            console.log(`✅ Survey ${survey.id} synced successfully.`);
+                        }
+                    } catch (error) {
+                        console.error(`❌ Sync failed for survey ${survey.id}`, error);
+                    }
+                }
+
+                resolve();
+            };
+        };
+
+        dbRequest.onerror = (event) => {
+            console.error("❌ IndexedDB error for surveys:", event.target.error);
+            reject(event.target.error);
+        };
+    });
+}
+
 
 
 self.addEventListener("fetch", (event) => {
@@ -94,9 +159,14 @@ self.addEventListener("fetch", (event) => {
         return;
     }
 
-    if (request.method === "POST" && request.url.includes("/order")) {
-        event.respondWith(handleOrderRequest(event));
-        return;
+    if (request.method === "POST") {
+        if (request.url.includes("/order")) {
+            event.respondWith(handleOrderRequest(event));
+            return;
+        } else if (request.url.includes("/survey")) {  // ✅ Handle surveys
+            event.respondWith(handleSurveyRequest(event));
+            return;
+        }
     }
 
     if (request.method === "GET") {
@@ -122,6 +192,7 @@ self.addEventListener("fetch", (event) => {
 });
 
 
+
 async function handleOrderRequest(event) {
     try {
         return await fetch(event.request);
@@ -139,6 +210,25 @@ async function handleOrderRequest(event) {
             headers: { "Content-Type": "application/json" }
         });
     }
+}
+
+
+function saveSurveyToIndexedDB(surveyData) {
+    const dbRequest = indexedDB.open("surveysDB", 1);
+
+    dbRequest.onupgradeneeded = (event) => {
+        let db = event.target.result;
+        if (!db.objectStoreNames.contains("surveys")) {
+            db.createObjectStore("surveys", { keyPath: "id", autoIncrement: true });
+        }
+    };
+
+    dbRequest.onsuccess = (event) => {
+        let db = event.target.result;
+        let tx = db.transaction("surveys", "readwrite");
+        let store = tx.objectStore("surveys");
+        store.add({ ...surveyData, id: Date.now() }); // Ensure unique ID
+    };
 }
 
 
@@ -222,6 +312,25 @@ async function syncData(dbName, storeName, apiEndpoint) {
         };
     });
 }
+
+async function deleteSurveyFromIndexedDB(db, id) {
+    return new Promise((resolve, reject) => {
+        let tx = db.transaction("surveys", "readwrite");
+        let store = tx.objectStore("surveys");
+        let request = store.delete(id);
+
+        request.onsuccess = () => {
+            console.log(`✅ Deleted survey ${id} from IndexedDB.`);
+            resolve();
+        };
+
+        request.onerror = (event) => {
+            console.error(`❌ Failed to delete survey ${id}`, event.target.error);
+            reject(event.target.error);
+        };
+    });
+}
+
 
 // ✅ This function makes sure the order is deleted AFTER successful sync
 async function deleteOrder(db, storeName, id) {
