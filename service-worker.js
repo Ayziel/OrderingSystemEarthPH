@@ -1,5 +1,5 @@
-const staticCacheName = "site-static-v12";
-const dynamicCacheName = "site-dynamic-v12";
+const staticCacheName = "site-static-v13";
+const dynamicCacheName = "site-dynamic-v13";
 const cacheLimit = 100;
 
 const dashboardAssets = [
@@ -48,12 +48,25 @@ const limitCacheSize = (cacheName, size) => {
 self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(staticCacheName).then((cache) => {
-            return cache.addAll(assets);
+            return cache.addAll(assets).catch((error) => {
+                console.error("🚨 Cache addAll failed!", error);
+                return Promise.all(
+                    assets.map((asset) =>
+                        fetch(asset)
+                            .then((response) => {
+                                if (!response.ok) throw new Error(`Failed to fetch ${asset}: ${response.statusText}`);
+                                return cache.put(asset, response);
+                            })
+                            .catch((err) => console.warn(`⚠️ Skipping ${asset}:`, err))
+                    )
+                );
+            });
         }).then(() => {
-            self.skipWaiting(); // Force activation after installation
+            self.skipWaiting();
         })
     );
 });
+
 
 self.addEventListener("activate", (event) => {
     event.waitUntil(
