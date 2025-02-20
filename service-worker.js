@@ -1,5 +1,5 @@
-const staticCacheName = "site-static-v15";
-const dynamicCacheName = "site-dynamic-v15";
+const staticCacheName = "site-static-v16";
+const dynamicCacheName = "site-dynamic-v16";
 const cacheLimit = 100;
 
 const dashboardAssets = [
@@ -176,40 +176,52 @@ self.addEventListener("sync", (event) => {
 });
 
 async function syncData(dbName, storeName, apiEndpoint) {
-    const dbRequest = indexedDB.open(dbName, 1);
+    return new Promise((resolve, reject) => {
+        const dbRequest = indexedDB.open(dbName, 1);
 
-    dbRequest.onsuccess = (event) => {
-        let db = event.target.result;
-        let tx = db.transaction(storeName, "readwrite");
-        let store = tx.objectStore(storeName);
-        let getAll = store.getAll();
+        dbRequest.onsuccess = async (event) => {
+            let db = event.target.result;
+            let tx = db.transaction(storeName, "readwrite");
+            let store = tx.objectStore(storeName);
+            let getAll = store.getAll();
 
-        getAll.onsuccess = async () => {
-            const dataItems = getAll.result;
-            if (dataItems.length > 0) {
-                notifyClients({ type: "sync-start", count: dataItems.length });
-            }
-
-            for (let dataItem of dataItems) {
-                try {
-                    let response = await fetch(apiEndpoint, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(dataItem),
-                    });
-
-                    if (response.ok) {
-                        let deleteTx = db.transaction(storeName, "readwrite"); // Separate transaction
-                        let deleteStore = deleteTx.objectStore(storeName);
-                        deleteStore.delete(dataItem.id);
-
-                        notifyClients({ type: "sync-success", message: `Data synced: ${dataItem.id}` });
-                    }
-                } catch (error) {
-                    console.log("Failed to sync", dataItem);
+            getAll.onsuccess = async () => {
+                const dataItems = getAll.result;
+                if (dataItems.length === 0) {
+                    console.log("No data to sync.");
+                    return resolve();
                 }
-            }
-        };
-    };
-}
 
+                notifyClients({ type: "sync-start", count: dataItems.length });
+
+                for (let dataItem of dataItems) {
+                    try {
+                        let response = await fetch(apiEndpoint, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(dataItem),
+                        });
+
+                        if (response.ok) {
+                            // ✅ DELETE the synced item from IndexedDB
+                            let deleteTx = db.transaction(storeName, "readwrite");
+                            let deleteStore = deleteTx.objectStore(storeName);
+                            deleteStore.delete(dataItem.id);
+
+                            notifyClients({ type: "sync-success", message: `Synced order: ${dataItem.id}` });
+                        }
+                    } catch (error) {
+                        console.error("❌ Sync failed for order:", dataItem.id, error);
+                    }
+                }
+
+                resolve();
+            };
+        };
+
+        dbRequest.onerror = (event) => {
+            console.error("❌ IndexedDB error:", event.target.error);
+            reject(event.target.error);
+        };
+    });
+}
