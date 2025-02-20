@@ -42,12 +42,15 @@ app.get('/', (req, res) => {
     res.redirect('/System/index.html');
 });
 
-app.get("/System/service-worker.js", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "", "service-worker.js"));
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+// Serve manifest and service worker
+app.get("/service-worker.js", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "service-worker.js"));
 });
 
 app.get("/manifest.json", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "", "manifest.json"));
+    res.sendFile(path.resolve(__dirname, "manifest.json"));
 });
 
 // Use Routes
