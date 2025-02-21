@@ -406,10 +406,9 @@ async function exportToExcel(orders) {
                 return {
                     OrderID: order._id,
                     CustomerID: userID,
-                    TranDate: new Date(order.orderDate).toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' }),
-                    ItemCode: productDescription,
+                    TranDate: new Date(order.orderDate).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
                     Location: order.area,
-                    ProductName: matchedProduct ? matchedProduct.productSKU : 'No SKU',
+                    ItemCode: productDescription,
                     QTYSold: product.quantity,
                     UnitPrice: product.price,
                     SalesAmt: product.quantity, // Might need adjustment
