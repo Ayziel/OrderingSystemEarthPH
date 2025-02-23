@@ -44,13 +44,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const usersResponse = await fetch('https://earthph.sdevtech.com.ph/users/getUsers');
         const usersData = await usersResponse.json();
 
-        const agents = usersData.filter(user => user.role === "Agent");
-
-        let nextAgentId = 1;
-        if (agents.length > 0) {
-            const agentIds = agents.map(agent => parseInt(agent.id)).filter(num => !isNaN(num));
-            nextAgentId = (Math.max(...agentIds) || 0) + 1;
+        let nextUserId = 1;
+        if (Array.isArray(usersData) && usersData.length > 0) {
+            const userIds = usersData.map(user => parseInt(user.id)).filter(num => !isNaN(num));
+            nextUserId = (Math.max(...userIds) || 0) + 1;
         }
+        
 
         // Create a data object to send in the request
         const userData = { 
@@ -66,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             userName, 
             password, 
             role,
-            id: nextAgentId // Assign the next agent ID
+            id: nextUserId // Assign the next agent ID
         };
 
         console.log("Captured Form Data:", {
@@ -90,7 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('https://earthph.sdevtech.com.ph/users/createUser', {
                 method: 'POST',
                 headers: headers,
-                body: JSON.stringify(userData) // Convert the data to JSON
+                body: JSON.stringify(userData), // Convert the data to JSON
+                mode: 'cors' // Ensures CORS behavior
             });
 
             const result = await response.json();

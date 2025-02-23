@@ -1,5 +1,5 @@
-const staticCacheName = "site-static-v21";
-const dynamicCacheName = "site-dynamic-v21";
+const staticCacheName = "site-static-v23";
+const dynamicCacheName = "site-dynamic-v23";
 const cacheLimit = 100;
 
 const dashboardAssets = [

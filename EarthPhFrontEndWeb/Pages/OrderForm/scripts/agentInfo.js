@@ -384,7 +384,6 @@ function populateStoresDropdown(stores) {
     storeSelect.on('change', updateStoreDetails);
 }
 
-
 // Form validation before submission
 document.getElementById('orderForm').addEventListener('submit', (event) => {
     const storeSelect = document.getElementById('store-name');
