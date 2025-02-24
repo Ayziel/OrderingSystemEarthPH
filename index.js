@@ -19,7 +19,15 @@ const StockModel = require('./EarthPhBackEndServer/models/stockModel');
 
 const app = express();
 
-app.options('*', cors(corsOptions)); // Handle preflight requests for all routes
+const corsOptions = {
+  origin: ['http://127.0.0.1:5500', 'https://earthph.sdevtech.com.ph', 'https://earthhomecareph.astute.services'], // List only allowed origins
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+// ✅ Apply CORS globally
+app.use(cors(corsOptions));
+
 
 app.use(express.json({ limit: '10mb' })); // Parse incoming JSON requests
 app.use(express.urlencoded({ limit: '10mb', extended: true })); // Parse URL-encoded bodies
