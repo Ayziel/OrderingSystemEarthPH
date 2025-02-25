@@ -5,57 +5,51 @@ console.log("usertoken", usertoken);
 
 document.addEventListener('DOMContentLoaded', () => {
     fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(orders => {
-        if (!orders || orders.length === 0) {
-            console.log('No orders found.');
-            return;
-        }
-        
-        // Get the user data from localStorage
-        const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
-        const userUid = matchedUser ? matchedUser.uid : null;
-        const userRole = matchedUser ? matchedUser.role : null;
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(orders => {
+            if (!orders || orders.length === 0) {
+                console.log('No orders found.');
+                return;
+            }
 
-        // Only filter if role is 'agent'
-        if (userRole === 'agent' && userUid) {
-            orders = orders.filter(order => order.userUid === userUid);
-        }
+            // Get the user data from localStorage
+            const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+            const userUid = matchedUser ? matchedUser.uid : null;
+            const userRole = matchedUser ? matchedUser.role : null;
+            const userName = matchedUser ? matchedUser.name : null;
+            console.log('Matched User:', matchedUser);
 
-        const today = new Date();
-        const startOfDay = new Date(today);
-        const endOfDay = new Date(today);
+            // Get today's date dynamically
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Filtering logic
+            if (userRole === 'agent' && userUid) {
+                console.log("You're an agent")
+                orders = orders.filter(order => order.userUid === userUid && order.orderDate.startsWith(today));
+            } else if (userRole === 'teamLeader') {
+                console.log("You're a Team Leader")
+                orders = orders.filter(order => order.teamLeaderName === matchedUser.firstName + ' ' + matchedUser.lastName && order.orderDate.startsWith(today));
+            } else {
+                // Show only today's orders for other roles
+                orders = orders.filter(order => order.orderDate.startsWith(today));
+            }
 
-        // Adjust startOfDay and endOfDay for today's boundaries
-        startOfDay.setHours(0, 0, 0, 0);
-        endOfDay.setHours(23, 59, 59, 999);
+            // Sort orders by order date (ascending) for better readability
+            orders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
 
-        const todayOrders = orders.filter(order => {
-            const orderDate = new Date(order.orderDate);
-            return orderDate >= startOfDay && orderDate <= endOfDay;
-        });
+            populateOrders(orders); // Display filtered orders
 
-        if (todayOrders.length === 0) {
-            console.log('No orders for today.');
-            return;
-        }
-
-        // Sort today's orders by order date (ascending)
-        todayOrders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
-        populateOrders(todayOrders);
-
-        const exportButton = document.getElementById('export-btn');
-        exportButton.addEventListener('click', () => exportToExcel(todayOrders));
-
-    })
-    .catch(error => console.error('Error fetching orders:', error));
-
+            const exportButton = document.getElementById('export-btn');
+            exportButton.addEventListener('click', () => exportToExcel(orders));
+        })
+        .catch(error => console.error('Error fetching orders:', error));
 });
+
 
 function populateOrders(orders) {
     const ordersBody = document.querySelector('.orders-body');

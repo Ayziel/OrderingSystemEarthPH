@@ -21,46 +21,28 @@ document.addEventListener('DOMContentLoaded', () => {
             const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
             const userUid = matchedUser ? matchedUser.uid : null;
             const userRole = matchedUser ? matchedUser.role : null;
-
-            // Only filter if role is 'agent'
+            const userName = matchedUser ? matchedUser.name : null; // Assuming matchedUser has a "name" property
+            console.log('Matched User:', matchedUser);
+            // Filtering logic
             if (userRole === 'agent' && userUid) {
+                console.log("You're an agent")
                 orders = orders.filter(order => order.userUid === userUid);
+            } else if (userRole === 'teamLeader') {
+                console.log("you're a Team Leader")
+                orders = orders.filter(order => order.teamLeaderName === matchedUser.firstName  + ' ' + matchedUser.lastName);
             }
 
-            const today = new Date();
-            const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
-            const startOfWeek = new Date(today);
-            const endOfWeek = new Date(today);
+            // Sort orders by order date (ascending) for better readability
+            orders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
 
-            // Adjust startOfWeek to the previous Monday
-            startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
-            startOfWeek.setHours(0, 0, 0, 0);
-
-            // Adjust endOfWeek to the upcoming Sunday
-            endOfWeek.setDate(startOfWeek.getDate() + 6);
-            endOfWeek.setHours(23, 59, 59, 999);
-
-            // Filter orders to this week
-            const weekOrders = orders.filter(order => {
-                const orderDate = new Date(order.orderDate);
-                return orderDate >= startOfWeek && orderDate <= endOfWeek;
-            });
-
-            if (weekOrders.length === 0) {
-                console.log('No orders from this week.');
-                return;
-            }
-
-            weekOrders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
-            populateOrders(weekOrders);
+            populateOrders(orders); // Display filtered orders
 
             const exportButton = document.getElementById('export-btn');
-            exportButton.addEventListener('click', () => exportToExcel(weekOrders));
-    
+            exportButton.addEventListener('click', () => exportToExcel(orders));
+
         })
         .catch(error => console.error('Error fetching orders:', error));
 });
-
 
 function populateOrders(orders) {
     const ordersBody = document.querySelector('.orders-body');

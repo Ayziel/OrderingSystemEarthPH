@@ -1,5 +1,5 @@
-const staticCacheName = "site-static-v23";
-const dynamicCacheName = "site-dynamic-v23";
+const staticCacheName = "site-static-v27";
+const dynamicCacheName = "site-dynamic-v27";
 const cacheLimit = 100;
 
 const dashboardAssets = [
@@ -171,25 +171,24 @@ self.addEventListener("fetch", (event) => {
 
     if (request.method === "GET") {
         event.respondWith(
-            caches.match(request).then((cacheResponse) => {
-                if (cacheResponse) return cacheResponse; // Serve cache first
-
-                return fetch(request)
-                    .then((networkResponse) => {
-                        if (networkResponse.ok) {
-                            return caches.open(dynamicCacheName).then((cache) => {
-                                cache.put(request, networkResponse.clone());
-                                limitCacheSize(dynamicCacheName, cacheLimit);
-                                return networkResponse;
-                            });
-                        }
+            fetch(request) // Try fetching from the network first
+                .then((networkResponse) => {
+                    return caches.open(dynamicCacheName).then((cache) => {
+                        cache.put(request, networkResponse.clone()); // Update the cache with fresh data
+                        limitCacheSize(dynamicCacheName, cacheLimit);
                         return networkResponse;
-                    })
-                    .catch(() => caches.match("/EarthPhFrontEndWeb/Pages/System/fallback.html")); // Offline fallback
-            })
+                    });
+                })
+                .catch(() => {
+                    return caches.match(request).then((cacheResponse) => {
+                        if (cacheResponse) return cacheResponse; // Return cached version if available
+                        return caches.match("/EarthPhFrontEndWeb/Pages/System/fallback.html"); // Offline fallback
+                    });
+                })
         );
     }
 });
+
 
 
 
