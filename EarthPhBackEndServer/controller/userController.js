@@ -16,17 +16,15 @@ async function getUsers(req, res) {
 
 // Controller to create a new user
 async function createUser(req, res) {
-  console.log('Request Body:', req.body); // Log the incoming data
+  console.log('Request Body:', req.body);
 
-  // Destructure the required fields from the request body, including tin
-  const { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin, uid, } = req.body;
+  const { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin, uid, id } = req.body;
 
-  // Validation for required fields
-  if (!userName || !password || !role || !firstName || !lastName || !phoneNumber || !workPhone || !email || !team || !address) {
+  if (!userName || !password || !role || !firstName || !lastName || !phoneNumber || !workPhone || !email || !team || !address || !id) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
-  console.log("Validated Fields:", { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin, uid });
+  console.log("Validated Fields:", { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin, uid, id });
 
   const newUser = new UserModel({
     firstName,
@@ -40,20 +38,20 @@ async function createUser(req, res) {
     password,
     role,
     address,
-    tin,  // Added tin here
+    tin,
     uid,
     id,
   });
 
   try {
-    // Save the new user to the database
     await newUser.save();
     res.json({ message: 'User created successfully', user: newUser });
   } catch (err) {
-    console.error('Error:', err);
-    res.status(500).json({ message: 'Error creating user', error: err });
+    console.error('❌ MongoDB Save Error:', err.message);
+    res.status(500).json({ message: 'Error creating user', error: err.message });
   }
 }
+
 
 // Controller to update an existing user
 async function updateUser(req, res) {

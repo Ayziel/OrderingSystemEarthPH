@@ -90,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 headers: headers,
                 body: JSON.stringify(userData), // Convert the data to JSON
-                mode: 'cors' // Ensures CORS behavior
             });
 
             const result = await response.json();

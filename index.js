@@ -19,7 +19,12 @@ const StockModel = require('./EarthPhBackEndServer/models/stockModel');
 
 const app = express();
 
-app.use(cors()); // Fully open CORS policy
+app.use(cors({
+  origin: '*', // Allows all origins (change to specific URL if needed)
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 
 app.use(express.json({ limit: '10mb' })); // Parse incoming JSON requests
 app.use(express.urlencoded({ limit: '10mb', extended: true })); // Parse URL-encoded bodies

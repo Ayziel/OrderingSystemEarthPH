@@ -87,7 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-
 const buttonsToDisable = document.querySelectorAll("#addAgentBtn, #addProductSubmit, #addStoreSubmit, #edit-product, #edit-button");
 
 function updateButtonState() {
