@@ -55,7 +55,7 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
             row.appendChild(statusCell);
 
             const button = document.createElement('td');
-            button.textContent = 'Click me';
+            button.textContent = 'View';
             button.style.padding = '10px';
             button.style.backgroundColor = '#66bb6a';
             button.style.color = 'white';

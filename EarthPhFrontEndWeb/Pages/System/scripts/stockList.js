@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${stock.product_name || 'No product name'}</td>
                 <td>${stock.quantity || '0'}</td>
                 <td>${stock.stock || '0'}</td>
-                <td class="open">Open</td>
+                <td class="open">View</td>
             `;
 
             row.addEventListener('click', () => {

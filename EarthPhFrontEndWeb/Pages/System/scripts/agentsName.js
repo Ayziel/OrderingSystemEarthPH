@@ -46,7 +46,7 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
             row.appendChild(statusCell);
 
             const button = document.createElement('td');
-            button.textContent = 'Click me';
+            button.textContent = 'View';
             button.style.padding = '10px';
             button.style.backgroundColor = '#66bb6a';
             button.style.color = 'white';
@@ -91,6 +91,8 @@ function openModal(user) {
     document.getElementById('modal-team').textContent = user.team;  // NOT EDITABLE
     document.getElementById('modal-role').textContent = user.role;  // NOT EDITABLE
     document.getElementById('modal-address').textContent = user.address;
+    document.getElementById('modal-password').textContent = user.password;
+    
 
     // Show the modal
     document.getElementById('userModal').style.display = "flex";
@@ -114,7 +116,7 @@ function enableEditing() {
     replaceTextWithInput('modal-phoneNumber');
     replaceTextWithInput('modal-email');
     replaceTextWithInput('modal-address');
-
+    replaceTextWithInput('modal-password');
     // Hide Edit button, Show Save button
     document.getElementById('edit-button').style.display = 'none';
     const saveButton = document.getElementById('save-button');
@@ -158,6 +160,7 @@ function saveUpdatedData(userId) {
         address: document.getElementById('modal-address')?.value?.trim() || "",
         team: document.getElementById('modal-team')?.textContent || "",  // Non-editable
         role: document.getElementById('modal-role')?.textContent || "",  // Non-editable
+        password: document.getElementById('modal-password')?.value?.trim() || "",  // Non-editable
         userName: document.getElementById('modal-userName')?.value?.trim() || "",
         tin: document.getElementById('modal-tin')?.value?.trim() || "",
         uid: document.getElementById('modal-uid')?.value?.trim() || "",
@@ -272,3 +275,6 @@ function exportUserData() {
 
 // Add event listener to export button
 document.getElementById('export-btn').addEventListener('click', exportUserData);
+
+  // Initially hide the password
+  document.getElementById("modal-password").style.webkitTextSecurity = "disc";

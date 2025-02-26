@@ -419,7 +419,7 @@ async function exportToExcel(orders) {
                     ItemCode: productDescription,
                     QTYSold: product.quantity,
                     UnitPrice: product.price,
-                    SalesAmt: product.quantity, // Might need adjustment
+                    SalesAmt: product.quantity * product.price, // Might need adjustment
                 };
             });
         });

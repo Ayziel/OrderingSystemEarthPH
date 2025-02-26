@@ -33,8 +33,6 @@
   <nav class="sidebar">
     <div class="menu_content">
       <ul class="menu_items">
-        <!-- duplicate or remove this li tag if you want to add or remove navlink with submenu -->
-        <!-- start -->
         <li class="item">
           <a href="https://earthhomecareph.astute.services/System/index.html" class="nav_link">
             <span class="navlink_icon">
@@ -51,49 +49,58 @@
             <span class="navlink">New Order</span>
           </a>
         </li>
-        <li class="item">
-          <a id="viewOrderLink" href="https://earthhomecareph.astute.services/OrderForm/Agent-Info.html" class="nav_link sublink">
-            <span class="navlink_icon">
-              <i class="bx bx-show"></i>
-            </span>
-            <span class="navlink">View Store</span>
-          </a>
-        </li>
-        <li class="item">
-          <a href="https://earthhomecareph.astute.services/System/Add-Store.html" class="nav_link sublink">
-            <span class="navlink_icon">
-              <i class="bx bx-building-house"></i>
-            </span>
-            <span class="navlink">Add Store</span>
-          </a>
-        </li>
-                <li class="item">
-          <a href="https://earthhomecareph.astute.services/System/Add-Product.html" class="nav_link sublink">
-            <span class="navlink_icon">
-              <i class="bx bxs-check-circle"></i>
-            </span>
-            <span class="navlink">Add Products</span>
-          </a>
-        </li>
-        <li class="item">
-            <a href="https://earthhomecareph.astute.services/System/stock-list.html" class="nav_link sublink">
-              <span class="navlink_icon">
-                <i class="bx bx-package"></i>
-              </span>
-              <span class="navlink">Stocks</span>
-            </a>
-        </li>
-        <!-- end -->
-        <!-- duplicate this li tag if you want to add or remove  navlink with submenu -->
-        <!-- start -->
+
         <li class="item">
           <div href="https://earthhomecareph.astute.services/System/index.html" class="nav_link submenu_item">
             <span class="navlink_icon">
               </i><i class='bx bx-cart-alt'></i>
             </span>
-            <span class="navlink">Orders</span>
+            <span class="navlink">View Form</span>
+            <i class="bx bx-chevron-right arrow-left"></i>
+          </div>
+          <ul class="menu_items submenu">
+            <a href="https://earthhomecareph.astute.services/System/View-Store.html" class="nav_link sublink">View Stores</a>
+            <a id="viewOrderLink" href="https://earthhomecareph.astute.services/OrderForm/Agent-Info.html" class="nav_link sublink">Visited Stores</a>
+          </ul>
+        </li>
+        <li class="item">
+          <div href="https://earthhomecareph.astute.services/System/index.html" class="nav_link submenu_item">
+            <span class="navlink_icon">
+              </i><i class='bx bx-store'></i>
+            </span>
+            <span class="navlink">Store</span>
             <i class="bx bx-chevron-right arrow-left"></i>
             
+          </div>
+          <ul class="menu_items submenu">
+            <a href="https://earthhomecareph.astute.services/System/All-Stores.html" class="nav_link sublink">All Stores</a>
+            <a href="https://earthhomecareph.astute.services/System/Add-Store.html" class="nav_link sublink">Add Stores</a>
+          </ul>
+        </li>
+
+        <li class="item">
+          <div href="https://earthhomecareph.astute.services/System/index.html" class="nav_link submenu_item">
+            <span class="navlink_icon">
+              </i><i class='bx bx-package'></i>
+            </span>
+            <span class="navlink">Product</span>
+            <i class="bx bx-chevron-right arrow-left"></i>
+            
+          </div>
+          <ul class="menu_items submenu">
+            <a href="https://earthhomecareph.astute.services/System/Add-Product.html" class="nav_link sublink">Add Products</a>
+            <a href="https://earthhomecareph.astute.services/System/Product-list.html" class="nav_link sublink">Products</a>
+            <a href="https://earthhomecareph.astute.services/System/stock-list.html" class="nav_link sublink">Stocks</a>
+          </ul>
+        </li>
+
+        <li class="item">
+          <div href="https://earthhomecareph.astute.services/System/index.html" class="nav_link submenu_item">
+            <span class="navlink_icon">
+              </i><i class='bx bx-receipt'></i>
+            </span>
+            <span class="navlink">Order</span>
+            <i class="bx bx-chevron-right arrow-left"></i>
           </div>
           <ul class="menu_items submenu">
             <a href="https://earthhomecareph.astute.services/System/All-Orders.html" class="nav_link sublink">All Orders</a>
@@ -102,47 +109,29 @@
             <a href="https://earthhomecareph.astute.services/System/Orders-Month.html" class="nav_link sublink">Month</a>
           </ul>
         </li>
+
         <li class="item">
-          <div href="#" class="nav_link submenu_item">
+          <div href="https://earthhomecareph.astute.services/System/index.html" class="nav_link submenu_item">
             <span class="navlink_icon">
-              <i class='bx bx-store-alt' ></i>
-            </span>
-            <span class="navlink">Stores</span>
-            <i class="bx bx-chevron-right arrow-left"></i>
-          </div>
-          <ul class="menu_items submenu">
-              <a href="https://earthhomecareph.astute.services/System/All-Stores.html" class="nav_link sublink">All stores</a>
-              <a href="https://earthhomecareph.astute.services/System/Product-list.html" class="nav_link sublink">Products</a>
-              <a href="https://earthhomecareph.astute.services/System/View-Store.html" class="nav_link sublink">Visited Stores</a>
-          </ul>
-        </li>
-        <li class="item">
-          <div href="#" class="nav_link submenu_item">
-            <span class="navlink_icon">
-              <i class='bx bx-support'></i>
+              </i><i class='bx bx-user-check'></i>
             </span>
             <span class="navlink">Agents</span>
             <i class="bx bx-chevron-right arrow-left"></i>
           </div>
           <ul class="menu_items submenu">
-              <a href="https://earthhomecareph.astute.services/System/Agent-Name.html" class="nav_link sublink">By Name</a>
-              <a href="https://earthhomecareph.astute.services/System/Agent-Leader.html" class="nav_link sublink">By Team Leader</a>
+            <a href="https://earthhomecareph.astute.services/System/Agent-Leader.html" class="nav_link sublink">Team Leader</a>
+            <a href="https://earthhomecareph.astute.services/System/Agent-Name.html" class="nav_link sublink">Agent</a>
+            <a href="https://earthhomecareph.astute.services/System/Add-Agent.html" class="nav_link sublink">Add User</a>
           </ul>
         </li>
+
         <li class="item">
-          <div href="#" class="nav_link submenu_item">
+          <a href="https://earthhomecareph.astute.services/System/survey.html" class="nav_link">
             <span class="navlink_icon">
-              <i class='bx bx-user' ></i>
+              <i class="bx bx-poll"></i>
             </span>
-            <span class="navlink">Admin
-            </span>
-            <i class="bx bx-chevron-right arrow-left"></i>
-          </div>
-          <ul class="menu_items submenu">
-            <a href="https://earthhomecareph.astute.services/System/Add-Agent.html" class="nav_link sublink">Add User</a>
-            <a href="https://earthhomecareph.astute.services/System/Add-Product.html" class="nav_link sublink">Add Products</a>
-            <a href="https://earthhomecareph.astute.services/System/survey.html" class="nav_link sublink">Survey</a>
-          </ul>
+            <span class="navlink">Survey</span>
+          </a>
         </li>
         <!-- end -->
       </ul>
