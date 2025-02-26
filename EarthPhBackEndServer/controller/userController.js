@@ -89,4 +89,27 @@ async function updateUser(req, res) {
   }
 }
 
-module.exports = { getUsers, createUser, updateUser};
+
+async function deleteUser(req, res) {
+  console.log('DELETE /deleteUser/:userId route hit');
+
+  const { userId } = req.params;
+
+  try {
+    const deletedUser = await UserModel.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({
+      message: 'User deleted successfully',
+      user: deletedUser,
+    });
+  } catch (err) {
+    console.error('Error deleting user:', err);
+    res.status(500).json({ message: 'Error deleting user', error: err });
+  }
+}
+
+module.exports = { getUsers, createUser, updateUser, deleteUser };

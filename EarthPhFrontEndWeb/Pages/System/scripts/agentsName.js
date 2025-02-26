@@ -107,7 +107,39 @@ function openModal(user) {
         console.log("Saving data for user:", user._id);
         saveUpdatedData(user._id);
     };
+
+    const deleteButton = document.getElementById('delete-button');
+    deleteButton.onclick = function () {
+        deleteUser(user._id);
+    };
 }
+
+function deleteUser(userId) {
+    if (!confirm('Are you sure you want to delete this user?')) return;
+
+    fetch(`https://earthph.sdevtech.com.ph/users/deleteUser/${userId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${usertoken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert('User deleted successfully!');
+            document.getElementById('userModal').style.display = 'none';
+            window.location.reload(); // Refresh to update the user list
+        } else {
+            throw new Error('Failed to delete user.');
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting user:', error);
+        alert(`Error: ${error.message}`);
+    });
+}
+
 
 // Enable editing for specific fields
 function enableEditing() {

@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tableContainer) {
           tableContainer.style.display = 'block'; // Ensure it remains visible for team leaders
         }
-    
         // Hide other sections that are not relevant to team leaders
         sidebarMenu.querySelectorAll('.item').forEach(item => {
           const navlinkText = item.querySelector('.navlink')?.textContent.trim();
@@ -28,9 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
             item.style.display = 'none'; // Hide sections that shouldn't be shown
           }
         });
-    // Hide the New Order link
       }
 
+      if (userRole === 'Admin') {
+        const stockLink = document.getElementById('stockLink');
+        stockLink.style.display = 'none';
+      }
 });
 
 const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
