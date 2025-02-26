@@ -35,7 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // Sort orders by order date (ascending) for better readability
             orders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
 
-            populateOrders(orders); // Display filtered orders
+            // Reverse the orders so the most recent one appears first
+            orders.reverse();
+
+            populateOrders(orders); // Display filtered and reversed orders
 
             const exportButton = document.getElementById('export-btn');
             exportButton.addEventListener('click', () => exportToExcel(orders));
@@ -43,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => console.error('Error fetching orders:', error));
 });
+
 
 function populateOrders(orders) {
     const ordersBody = document.querySelector('.orders-body');

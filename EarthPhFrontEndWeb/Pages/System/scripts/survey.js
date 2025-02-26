@@ -23,7 +23,9 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
                 console.log("Survey Data:", surveys);
 
                 // Loop through each survey and match with the user UID
-                surveys.forEach(survey => {
+                const surveyReversed = surveys.reverse();
+
+                surveyReversed.forEach(survey => {
                     // Find the user that matches the survey's userUid
                     const matchingUser = users.find(user => user.uid === survey.userUid);
                 

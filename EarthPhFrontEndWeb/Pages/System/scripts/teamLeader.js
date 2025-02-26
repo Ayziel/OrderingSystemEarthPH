@@ -32,9 +32,9 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
 
         // Filter users with the role "teamLeader"
         const teamLeaders = users.filter(user => user.role === 'teamLeader');
+        const reversedUsers = [...teamLeaders ].reverse();
 
-        // Loop through each team leader and populate the table rows
-        teamLeaders.forEach(user => {
+        reversedUsers.forEach(user => {
             // Create a new row for each team leader
             const row = document.createElement('tr');
 

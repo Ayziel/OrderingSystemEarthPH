@@ -3,6 +3,19 @@ const usertoken = localStorage.getItem('authToken');
 console.log("userRole", userRole);
 console.log("usertoken", usertoken);
 
+// Function to log all localStorage data
+const logLocalStorageItems = () => {
+    console.log('Logging localStorage contents:');
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const value = localStorage.getItem(key);
+        console.log(`${key}: ${value}`);
+    }
+};
+
+// Call the function to log localStorage contents
+logLocalStorageItems();
+
 // Fetch the users data from the server
 fetch('https://earthph.sdevtech.com.ph/users/getUsers')
     .then(response => {
@@ -14,20 +27,18 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
     .then(data => {
         const users = data.users;
 
-        // Filter users with the role "teamLeader"
-        const teamLeaders = users.filter(user => user.role === 'teamLeader');
-
         // Clear previous data in the table body
         document.getElementById('agent-data').innerHTML = '';
 
-        // Loop through each agent and populate the table rows
+        // Filter users with the role "Admin"
+        const admins = users.filter(user => user.role === 'Admin');
 
-        const reversedUsers = [...users].reverse();
+        // Loop through each admin and populate the table rows
+
+        const reversedUsers = [...admins ].reverse();
 
         reversedUsers.forEach(user => {
-            if (user.role !== 'agent') return; // Skip if the user is not an agent
-
-            // Create a new row for each agent
+            // Create a new row for each admin
             const row = document.createElement('tr');
 
             // Name (combine first and last names)
@@ -35,19 +46,18 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
             nameCell.textContent = `${user.firstName} ${user.lastName}`;
             row.appendChild(nameCell);
 
-            // Find the team leader for the current user's team
-            const teamLeader = teamLeaders.find(leader => leader.team === user.team);
-            const teamLeaderName = teamLeader ? `${teamLeader.firstName} ${teamLeader.lastName}` : 'Unknown';
+            // Admin based on the phone number (or another field)
+            let admin = user.phoneNumber;  // You can modify this if you need a different value
+            const adminCell = document.createElement('td');
+            adminCell.textContent = admin;
+            row.appendChild(adminCell);
 
-            const teamLeaderCell = document.createElement('td');
-            teamLeaderCell.textContent = user.team;
-            row.appendChild(teamLeaderCell);
-
-            // Status (Always ONLINE)
+            // Status (can be 'ONLINE' or another status)
             const statusCell = document.createElement('td');
-            statusCell.textContent = user.phoneNumber;
+            statusCell.textContent = user.team;  // You can change 'team' to another field if needed
             row.appendChild(statusCell);
 
+            // Button to view more details (View button)
             const button = document.createElement('td');
             button.textContent = 'View';
             button.style.padding = '10px';
@@ -57,21 +67,20 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
             button.style.cursor = 'pointer';
             button.style.borderRadius = '5px';
             button.style.transition = 'background-color 0.3s ease';
-            button.style.backgroundColor = 'green'; // Apply background color with !important
 
             button.addEventListener('mouseover', () => {
                 button.style.backgroundColor = '#28a745'; 
             });
-            
+
             button.addEventListener('mouseout', () => {
                 button.style.backgroundColor = '#66bb6a';
             });
-            
+
             row.appendChild(button);
 
-            // Add click event to open the modal with the user data
+            // Add click event to open the modal with the admin data
             row.onclick = function () {
-                openModal(user);
+                openModal(user);  // Modify `openModal` as necessary to open your modal
             };
 
             // Append the row to the table body
@@ -83,7 +92,7 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
         alert('Failed to fetch agent data. Please check your server.');
     });
 
-    
+
 // Function to open modal and populate data
 function openModal(user) {
     // Populate modal with user data
@@ -142,8 +151,6 @@ function deleteUser(userId) {
         alert(`Error: ${error.message}`);
     });
 }
-
-
 // Enable editing for specific fields
 function enableEditing() {
     replaceTextWithInput('modal-firstName');
@@ -151,7 +158,7 @@ function enableEditing() {
     replaceTextWithInput('modal-phoneNumber');
     replaceTextWithInput('modal-email');
     replaceTextWithInput('modal-address');
-    replaceTextWithInput('modal-password');
+
     // Hide Edit button, Show Save button
     document.getElementById('edit-button').style.display = 'none';
     const saveButton = document.getElementById('save-button');
@@ -195,7 +202,6 @@ function saveUpdatedData(userId) {
         address: document.getElementById('modal-address')?.value?.trim() || "",
         team: document.getElementById('modal-team')?.textContent || "",  // Non-editable
         role: document.getElementById('modal-role')?.textContent || "",  // Non-editable
-        password: document.getElementById('modal-password')?.value?.trim() || "",  // Non-editable
         userName: document.getElementById('modal-userName')?.value?.trim() || "",
         tin: document.getElementById('modal-tin')?.value?.trim() || "",
         uid: document.getElementById('modal-uid')?.value?.trim() || "",
@@ -259,7 +265,7 @@ window.onclick = function (event) {
     if (event.target === document.getElementById('userModal')) {
         document.getElementById('userModal').style.display = "none";
     }
-}
+}+
 
 // Function to export data
 function exportUserData() {
@@ -273,14 +279,14 @@ function exportUserData() {
         .then(data => {
             const users = data.users;
 
-            // Filter users with the role "agent"
-            const agents = users.filter(user => user.role === 'agent');
+            // Filter users with the role "Admin"
+            const admins = users.filter(user => user.role === 'Admin');
 
             // Prepare the headers based on the keys you want to export
             const headers = ["First Name", "Last Name", "Phone Number", "Email", "Team", "Role"];
 
-            // Prepare the data by mapping the agents to the format
-            const formattedData = agents.map(user => [
+            // Prepare the data by mapping the admins to the format
+            const formattedData = admins.map(user => [
                 user.firstName,
                 user.lastName,
                 user.phoneNumber,
@@ -308,8 +314,6 @@ function exportUserData() {
         });
 }
 
+
 // Add event listener to export button
 document.getElementById('export-btn').addEventListener('click', exportUserData);
-
-  // Initially hide the password
-  document.getElementById("modal-password").style.webkitTextSecurity = "disc";

@@ -6,7 +6,8 @@ async function getStores() {
             const storesData = await response.json();  // assuming the data is in JSON format
             console.log(storesData); // Log the data for debugging
             if (Array.isArray(storesData.stores)) {  // Ensure stores is an array
-                populateStoresTable(storesData.stores);  // Pass the stores array
+                const reversedStores = [...storesData.stores].reverse(); // Reverse the stores array
+                populateStoresTable(reversedStores);  // Pass the reversed stores array
             } else {
                 console.error('stores is not an array:', storesData.stores);
             }
@@ -17,6 +18,7 @@ async function getStores() {
         console.error('Error fetching stores data:', error);
     }
 }
+
 
 // Function to populate the table with stores data
 function populateStoresTable(stores) {

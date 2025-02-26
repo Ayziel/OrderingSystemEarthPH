@@ -19,6 +19,7 @@ fetch('https://earthph.sdevtech.com.ph/viewStoreRoutes/getStores')
         const tableBody = document.querySelector('.orders-body'); // Select the table body where stores will be displayed
         tableBody.innerHTML = ''; // Clear previous rows
     
+        stores.reverse();
         stores.forEach((store, index) => {
             const row = document.createElement('tr');
     

@@ -5,6 +5,8 @@ const tableContainer = document.querySelector('.table-container'); // Select the
 document.addEventListener('DOMContentLoaded', () => {
 
     if (userRole === 'agent') {
+        const adminLink = document.getElementById('adminLink');
+        adminLink.style.display = 'none';
         // Hide all menu items except Dashboard and Agents
         sidebarMenu.querySelectorAll('.item').forEach(item => {
           const navlinkText = item.querySelector('.navlink')?.textContent.trim();
@@ -16,6 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
       // Additional logic for teamLeader role
       if (userRole === 'teamLeader') {
+        const adminLink = document.getElementById('adminLink');
+        adminLink.style.display = 'none';
         // Show Agent Performance section for teamLeader
         if (tableContainer) {
           tableContainer.style.display = 'block'; // Ensure it remains visible for team leaders
@@ -33,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const stockLink = document.getElementById('stockLink');
         stockLink.style.display = 'none';
       }
+
 });
 
 const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));

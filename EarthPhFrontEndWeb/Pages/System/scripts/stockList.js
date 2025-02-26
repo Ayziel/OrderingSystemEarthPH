@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Sort stocks by store_name
         stocks.sort((a, b) => a.store_name.localeCompare(b.store_name));
-
+        stocks.reverse(); // Reverse the order
         // Populate the stocks
         populateStocks(stocks);
     })

@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Sort orders by order date (ascending) for better readability
             orders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
+            orders.reverse();
 
             populateOrders(orders); // Display filtered orders
 

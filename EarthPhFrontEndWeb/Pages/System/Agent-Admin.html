@@ -6,16 +6,17 @@
 
     <!----======== CSS ======== -->
     <link rel="stylesheet" href="./styles/style.css">
-    <link rel="stylesheet" href="./styles/orders.css">
-    <link rel="stylesheet" href="./styles/productList.css">
+    <link rel="stylesheet" href="./styles/agentlist.css">
      
     <!----===== Icons ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="./styles/navbar.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
     <title>EarthPH</title>
 </head>
+
 <body>
   <nav class="navbar">
     <div class="logo_item">
@@ -151,7 +152,6 @@
 
     <section class="dashboard">
         <div class="top">
-          
             <i class="uil uil-bars sidebar-toggle"></i>
 
             <div class="search-box">
@@ -164,36 +164,67 @@
 
         <div class="dash-content">
           <button id="export-btn" class="export">Export to Excel</button>
-          <div class="table-container">
-            <table class="orders-table">
-                <thead>
-                  <tr>
-                    <th class="order-header">#</th>
-                    <th class="order-header">Store Name</th>
-                    <th class="order-header">Agent Name</th>
-                    <th class="order-header">Order Date</th>
-                    <th class="order-header">Location</th>
-                    <th class="order-header">Quantity</th>
-                    <th class="order-header">Total Amount</th>
-                    <th class="order-header">Payment Method</th>
-                    <th class="order-header">Status</th>
-                    <th class="order-header">Buttons</th>
-                </tr>
-                </thead>
-                <tbody class="orders-body"></tbody>
-            </table>
-        </div>
+          <div class="activity">
+              <div class="title">
+                  <span class="text">Agents</span>
+              </div>
+      
+              <div class="activity-data">
+                  <!-- Create a table for displaying agent data -->
+                  <table class="product-table">
+                      <thead class="agent-header-row">
+                          <tr>
+                              <th>Name</th>
+                              <th>Team</th>
+                              <th>Number</th>
+                              <th>Buttons</th>
+                          </tr>
+                      </thead>
+                      <tbody id="agent-data">
+                          <!-- Dynamic agent data will be inserted here -->
+                      </tbody>
+                  </table>
+              </div>
+          </div>
       </div>
       
-    </section>
-    <div id="order-modal">
-      <div class="modal-content"></div>
+      
+          <!-- Modal -->
+    <!-- Modal -->
+<!-- Modal -->
+<div id="userModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>User Details</h2>
+    <table>
+      <tbody>
+        <tr><td class="modal-label">First Name:</td><td><span id="modal-firstName"></span></td></tr>
+        <tr><td class="modal-label">Last Name:</td><td><span id="modal-lastName"></span></td></tr>
+        <tr><td class="modal-label">Phone Number:</td><td><span id="modal-phoneNumber"></span></td></tr>
+        <tr><td class="modal-label">Email:</td><td><span id="modal-email"></span></td></tr>
+        <tr><td class="modal-label">Team:</td><td><span id="modal-team"></span></td></tr>
+        <tr><td class="modal-label">Role:</td><td><span id="modal-role"></span></td></tr>
+        <tr><td class="modal-label">Location:</td><td><span id="modal-address"></span></td></tr>
+        <tr>
+          <td class="modal-label">Password:</td>
+          <td>
+            <span id="modal-password" data-password="mySecretPassword">*****</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- Edit and Save buttons -->
+    <button id="edit-button" style="background-color: #FF9800; color: white;">Edit</button>
+    <button id="save-button" style="background-color: #66BB6A; color: white;" disabled>Save</button>
+    <button id="delete-button" style="background-color: #961a11; color: white;" >Delete</button>
   </div>
-    
-    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-    <script src="./scripts/sideNavigation.js"></script>
-    <script src="./scripts/script.js"></script>
+</div>
+
+    </section>
     <script src="./scripts/manifestShared.js"></script>
-    <script src="./scripts/ordersMonth.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="./scripts/script.js"></script>
+    <script src="./scripts/sideNavigation.js"></script>
+    <script src="./scripts/admin.js"></script>
 </body>
 </html>

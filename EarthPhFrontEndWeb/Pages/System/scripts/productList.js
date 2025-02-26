@@ -21,9 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('No products found.');
                 return;
             }
-
+            const reversedProducts = data.products.reverse();
             // Populate the UI with the fetched products
-            populateProducts(data.products);
+            populateProducts(reversedProducts);
         })
         .catch(error => console.error('Error fetching products:', error));
 });
