@@ -129,39 +129,41 @@ function openStoreModal(store) {
     });
 
     deleteButton.onclick = function () {
-        deleteStore(storeId);
+        deleteStore(store._id);
     };
 
     // Show the modal
     modal.style.display = "flex";
 }
 
-function deleteStore(storeId) {
-    if (!storeId) {
-        alert("Error: Store ID not found!");
-        return;
+async function deleteStore(storeId) {
+    const confirmDelete = confirm("Are you sure you want to delete this store?");
+    if (!confirmDelete) return; // Exit if user cancels
+
+    try {
+        const response = await fetch(`https://earthph.sdevtech.com.ph/stores/deleteStore/${storeId}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to delete store: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Store deleted:", data);
+
+        // Show success alert
+        alert("Store deleted successfully!");
+
+        // Refresh the page after deletion
+        location.reload();
+    } catch (error) {
+        console.error("Error deleting store:", error);
+        alert("Error deleting store. Please try again.");
     }
-
-    if (!confirm("Are you sure you want to delete this store?")) return;
-
-    fetch(`https://your-api-url/deleteStore/${storeId}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Store deleted:', data);
-        alert('Store deleted successfully');
-        document.getElementById('storeModal').style.display = "none"; // Close modal
-        window.location.reload(); // Refresh page
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Failed to delete store');
-    });
 }
+
 
 
 // Close the modal when the close button is clicked
