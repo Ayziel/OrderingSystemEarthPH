@@ -64,5 +64,26 @@ async function createOrUpdateStore(req, res) {
   }
 }
 
+async function deleteStore(req, res) {
+  console.log('DELETE /deleteStore/:id route hit');
 
-module.exports = { getStores, createOrUpdateStore };
+  const { id } = req.params;
+
+  try {
+    const deletedStore = await StoreModel.findByIdAndDelete(id);
+
+    if (!deletedStore) {
+      return res.status(404).json({ message: 'Store not found' });
+    }
+
+    res.json({
+      message: 'Store deleted successfully',
+      store: deletedStore
+    });
+  } catch (err) {
+    console.error('Error deleting store:', err);
+    res.status(500).json({ message: 'Error deleting store', error: err });
+  }
+}
+
+module.exports = { getStores, createOrUpdateStore, deleteStore };

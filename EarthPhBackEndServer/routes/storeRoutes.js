@@ -8,4 +8,6 @@ router.get('/getStores', getStores);
 // Route to create or update a store
 router.post('/createOrUpdateStore', createOrUpdateStore);
 
+router.delete('/deleteStore/:id', deleteStore);
+
 module.exports = router;

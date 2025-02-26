@@ -98,7 +98,7 @@ function openStoreModal(store) {
     // Get modal elements
     const modal = document.getElementById('storeModal');
     const modalTableBody = document.getElementById('modalTableBody');
-
+    const deleteButton = document.getElementById('delete-store');
     // Prepare the store data
     const storeData = [
         { label: "Store Name", value: store.name || "Unknown" },
@@ -128,9 +128,41 @@ function openStoreModal(store) {
         modalTableBody.appendChild(row);
     });
 
+    deleteButton.onclick = function () {
+        deleteStore(storeId);
+    };
+
     // Show the modal
     modal.style.display = "flex";
 }
+
+function deleteStore(storeId) {
+    if (!storeId) {
+        alert("Error: Store ID not found!");
+        return;
+    }
+
+    if (!confirm("Are you sure you want to delete this store?")) return;
+
+    fetch(`https://your-api-url/deleteStore/${storeId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Store deleted:', data);
+        alert('Store deleted successfully');
+        document.getElementById('storeModal').style.display = "none"; // Close modal
+        window.location.reload(); // Refresh page
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to delete store');
+    });
+}
+
 
 // Close the modal when the close button is clicked
 document.getElementById('closeModal').addEventListener('click', () => {
