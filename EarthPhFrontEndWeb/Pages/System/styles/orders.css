@@ -168,6 +168,10 @@ td {
     background-color: #45a049; /* Darker green on hover */
 }
 
+.dash-content {
+    margin-left: 0!important;
+}
+
 @media (max-width: 768px) {
     th {
         display: block;

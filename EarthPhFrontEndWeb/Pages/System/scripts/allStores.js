@@ -7,7 +7,18 @@ async function getStores() {
             console.log(storesData); // Log the data for debugging
             if (Array.isArray(storesData.stores)) {  // Ensure stores is an array
                 const reversedStores = [...storesData.stores].reverse(); // Reverse the stores array
-                populateStoresTable(reversedStores);  // Pass the reversed stores array
+
+                $('#pagination-container').pagination({
+                    dataSource: reversedStores,
+                    pageSize: 10, // Change this to the number of rows per page
+                    showPageNumbers: true,
+                    showPrevious: true,
+                    showNext: true,
+                    callback: function (data, pagination) {
+                        populateStoresTable(data);
+                    }
+                });
+
             } else {
                 console.error('stores is not an array:', storesData.stores);
             }

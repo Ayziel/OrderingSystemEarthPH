@@ -4,16 +4,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.5/pagination.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <!----======== CSS ======== -->
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/orders.css">
     <link rel="stylesheet" href="./styles/productList.css">
-     
-    <!----===== Icons ===== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.5/pagination.css">
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="./styles/navbar.css">
+    <!----===== Icons ===== -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
     <title>EarthPH</title>
 </head>
 <body>
@@ -58,8 +60,8 @@
             <i class="bx bx-chevron-right arrow-left"></i>
           </div>
           <ul class="menu_items submenu">
-            <a href="https://earthhomecareph.astute.services/System/View-Store.html" class="nav_link sublink">View Stores</a>
-            <a id="viewOrderLink" href="https://earthhomecareph.astute.services/OrderForm/Agent-Info.html" class="nav_link sublink">Visited Stores</a>
+            <a href="https://earthhomecareph.astute.services/System/View-Store.html" class="nav_link sublink">Visited Store</a>
+            <a id="viewOrderLink" href="https://earthhomecareph.astute.services/OrderForm/Agent-Info.html" class="nav_link sublink">View Store</a>
           </ul>
         </li>
         <li class="item">
@@ -182,9 +184,9 @@
                 </thead>
                 <tbody class="orders-body"></tbody>
             </table>
+            <div id="pagination-container"></div>
         </div>
       </div>
-      
     </section>
     <div id="order-modal">
       <div class="modal-content"></div>
@@ -195,5 +197,7 @@
     <script src="./scripts/script.js"></script>
     <script src="./scripts/sideNavigation.js"></script>
     <script src="./scripts/ordersDay.js"></script>
+    <script src="./scripts/pagination.js"></script>
+    <link rel="stylesheet" href="./styles/orders.css">
 </body>
 </html>

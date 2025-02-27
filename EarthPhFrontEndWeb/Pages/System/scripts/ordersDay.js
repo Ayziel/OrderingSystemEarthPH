@@ -43,7 +43,18 @@ document.addEventListener('DOMContentLoaded', () => {
             orders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
             orders.reverse();
 
-            populateOrders(orders); // Display filtered orders
+            $('#pagination-container').pagination({
+                dataSource: orders,
+                pageSize: 10, // Change this to the number of rows per page
+                showPageNumbers: true,
+                showPrevious: true,
+                showNext: true,
+                callback: function (data, pagination) {
+                    populateOrders(data);
+                }
+            });
+
+            
 
             const exportButton = document.getElementById('export-btn');
             exportButton.addEventListener('click', () => exportToExcel(orders));

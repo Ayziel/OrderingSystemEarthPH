@@ -58,6 +58,37 @@ th {
     background-color: #45a049; /* Darker green on hover */
 }
 
+.delete-btn {
+    background-color: #9c0f0f;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    font-size: 0.9rem;
+}
+
+.delete-btn:hover {
+    background-color: #e41818; /* Darker red on hover */
+}
+
+.delete-btn:active {
+    transform: scale(0.95); /* Slight click effect */
+}
+
+.delete-btn:disabled {
+    background-color: #b1b1b1;
+    cursor: not-allowed;
+}
+
+/* Optional: Add a trash icon using FontAwesome */
+.delete-btn::before {
+    font-family: "Font Awesome 5 Free"; 
+    font-weight: 900;
+}
+
+
 @media (max-width: 768px) {
 
     .modal-content {

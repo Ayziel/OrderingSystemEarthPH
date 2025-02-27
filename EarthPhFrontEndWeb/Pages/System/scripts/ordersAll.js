@@ -38,7 +38,17 @@ document.addEventListener('DOMContentLoaded', () => {
             // Reverse the orders so the most recent one appears first
             orders.reverse();
 
-            populateOrders(orders); // Display filtered and reversed orders
+            $('#pagination-container').pagination({
+                dataSource: orders,
+                pageSize: 10, // Change this to the number of rows per page
+                showPageNumbers: true,
+                showPrevious: true,
+                showNext: true,
+                callback: function (data, pagination) {
+                    populateOrders(data);
+                }
+            });
+
 
             const exportButton = document.getElementById('export-btn');
             exportButton.addEventListener('click', () => exportToExcel(orders));
