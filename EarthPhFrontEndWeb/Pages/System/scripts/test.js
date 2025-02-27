@@ -1,78 +1,75 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // Static test data (6 items)
-    const data = [
-        { id: 1, name: 'Alice', email: 'alice@example.com' },
-        { id: 2, name: 'Bob', email: 'bob@example.com' },
-        { id: 3, name: 'Charlie', email: 'charlie@example.com' },
-        { id: 4, name: 'David', email: 'david@example.com' },
-        { id: 5, name: 'Eva', email: 'eva@example.com' },
-        { id: 6, name: 'Frank', email: 'frank@example.com' }
-    ];
-
-    const tableBody = document.getElementById('tableBody');
-    const paginationControls = document.getElementById('paginationControls');
-
-    // Pagination settings
-    const itemsPerPage = 2;  // Show 2 items per page
-    const totalPages = Math.ceil(data.length / itemsPerPage);
-
-    // Function to display data in the table
-    function displayData(page) {
-        // Clear current table body
-        tableBody.innerHTML = '';
-
-        // Get the slice of data for the current page
-        const start = (page - 1) * itemsPerPage;
-        const end = page * itemsPerPage;
-        const currentPageData = data.slice(start, end);
-
-        // Populate the table body
-        currentPageData.forEach(item => {
-            const row = document.createElement('tr');
-            row.innerHTML = `<td>${item.id}</td><td>${item.name}</td><td>${item.email}</td>`;
-            tableBody.appendChild(row);
-        });
-    }
-
-    // Function to create pagination controls
-    function createPagination() {
-        paginationControls.innerHTML = ''; // Clear any existing pagination controls
-
-        // Create previous button
-        const prevButton = document.createElement('button');
-        prevButton.textContent = 'Previous';
-        prevButton.onclick = function () {
-            if (currentPage > 1) {
-                currentPage--;
-                displayData(currentPage);
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        };
-        paginationControls.appendChild(prevButton);
-
-        // Create page number buttons
-        for (let i = 1; i <= totalPages; i++) {
-            const pageButton = document.createElement('button');
-            pageButton.textContent = i;
-            pageButton.onclick = function () {
-                currentPage = i;
-                displayData(currentPage);
-            };
-            paginationControls.appendChild(pageButton);
-        }
-
-        // Create next button
-        const nextButton = document.createElement('button');
-        nextButton.textContent = 'Next';
-        nextButton.onclick = function () {
-            if (currentPage < totalPages) {
-                currentPage++;
-                displayData(currentPage);
+            return response.json();
+        })
+        .then(orders => {
+            if (!orders || orders.length === 0) {
+                console.log('No orders found.');
+                return;
             }
-        };
-        paginationControls.appendChild(nextButton);
-    }
 
-    let currentPage = 1;
-    displayData(currentPage); // Initial display of the first page
-    createPagination(); // Create pagination buttons
+            // Get the user data from localStorage
+            const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+            const userUid = matchedUser ? matchedUser.uid : null;
+            const userRole = matchedUser ? matchedUser.role : null;
+            console.log('Matched User:', matchedUser);
+
+            // Filtering logic based on user role
+            if (userRole === 'agent' && userUid) {
+                console.log("You're an agent");
+                orders = orders.filter(order => order.userUid === userUid);
+            } else if (userRole === 'teamLeader') {
+                console.log("You're a Team Leader");
+                orders = orders.filter(order => order.teamLeaderName === matchedUser.firstName + ' ' + matchedUser.lastName);
+            }
+
+            // Sort orders by order date (newest first)
+            orders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+
+            // Initialize Pagination
+            $('#pagination-container').pagination({
+                dataSource: orders,
+                pageSize: 10, // Change this to the number of rows per page
+                showPageNumbers: true,
+                showPrevious: true,
+                showNext: true,
+                callback: function (data, pagination) {
+                    populateOrders(data);
+                }
+            });
+
+            // Export to Excel
+            const exportButton = document.getElementById('export-btn');
+            if (exportButton) {
+                exportButton.addEventListener('click', () => exportToExcel(orders));
+            }
+        })
+        .catch(error => console.error('Error fetching orders:', error));
 });
+
+// Function to populate the orders in the table
+function populateOrders(data) {
+    const tbody = document.getElementById('data-body');
+    tbody.innerHTML = ''; // Clear existing rows
+
+    data.forEach(order => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${order.uid}</td>
+            <td>${order.storeName}</td>
+            <td>${order.agentName}</td>
+            <td>${order.orderDate}</td>
+            <td>${order.area}</td>
+            <td>${order.totalItems}</td>
+            <td>${order.totalAmount}</td>
+            <td>${order.paymentMode}</td>
+            <td>${order.status}</td>
+            <td>View</td>
+        `;
+        tbody.appendChild(row);
+    });
+}

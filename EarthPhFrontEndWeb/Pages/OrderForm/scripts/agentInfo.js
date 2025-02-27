@@ -106,6 +106,35 @@ function findTeamLeader(users, team) {
 }
 
 document.getElementById('confirm-button').addEventListener('click', (event) => {
+    const missingFields = [];
+
+    if (!matchedUserullName || matchedUserullName.trim() === "") {
+        missingFields.push("Agent Name");
+    }
+    if (!matchedUserUID || matchedUserUID.trim() === "") {
+        missingFields.push("Agent UID");
+    }
+    if (!selectedStoreData) {
+        missingFields.push("Store Data");
+    } else {
+        if (!selectedStoreData.address || selectedStoreData.address.trim() === "") {
+            missingFields.push("Store Address");
+        }
+        if (!selectedStoreData.name || selectedStoreData.name.trim() === "") {
+            missingFields.push("Store Name");
+        }
+        if (!selectedStoreData.uid || selectedStoreData.uid.trim() === "") {
+            missingFields.push("Store UID");
+        }
+    }
+
+    if (missingFields.length > 0) {
+        alert(`Please fill in the following required fields before submitting:\n- ${missingFields.join("\n- ")}`);
+        return;
+    }
+
+
+
     event.preventDefault();  // Prevent any default form submission behavior
 
     const storeSelect = document.getElementById('store-name');
@@ -166,7 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listener for the Apply button
     applybtnLabel.addEventListener('click', (event) => {
         event.preventDefault(); // Prevent the page from reloading
-
         // Static data that you want to submit
         const agentName = matchedUserullName;
         const agentUid =  matchedUserUID;
@@ -308,11 +336,6 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
-
-document.getElementById('confirm-button').addEventListener('click', () => {
-    // Placeholder for handling data and creating the second HTML file.
-    alert('Data confirmed. Process the filtered data as required.');
-});
 
 async function getStores() {
     try {
