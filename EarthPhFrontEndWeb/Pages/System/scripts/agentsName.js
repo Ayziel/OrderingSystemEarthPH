@@ -3,87 +3,101 @@ const usertoken = localStorage.getItem('authToken');
 console.log("userRole", userRole);
 console.log("usertoken", usertoken);
 
-// Fetch the users data from the server
-fetch('https://earthph.sdevtech.com.ph/users/getUsers')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        const users = data.users;
+// Function to log all localStorage data
+const logLocalStorageItems = () => {
+    console.log('Logging localStorage contents:');
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const value = localStorage.getItem(key);
+        console.log(`${key}: ${value}`);
+    }
+};
 
-        // Filter users with the role "teamLeader"
-        const teamLeaders = users.filter(user => user.role === 'teamLeader');
+// Call the function to log localStorage contents
+logLocalStorageItems();
 
-        // Clear previous data in the table body
-        document.getElementById('agent-data').innerHTML = '';
+document.addEventListener('DOMContentLoaded', function () {
+    fetch('https://earthph.sdevtech.com.ph/users/getUsers')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const agents = data.users.filter(user => user.role === 'agent').reverse();
 
-        // Loop through each agent and populate the table rows
-
-        const reversedUsers = [...users].reverse();
-
-        reversedUsers.forEach(user => {
-            if (user.role !== 'agent') return; // Skip if the user is not an agent
-
-            // Create a new row for each agent
-            const row = document.createElement('tr');
-
-            // Name (combine first and last names)
-            const nameCell = document.createElement('td');
-            nameCell.textContent = `${user.firstName} ${user.lastName}`;
-            row.appendChild(nameCell);
-
-            // Find the team leader for the current user's team
-            const teamLeader = teamLeaders.find(leader => leader.team === user.team);
-            const teamLeaderName = teamLeader ? `${teamLeader.firstName} ${teamLeader.lastName}` : 'Unknown';
-
-            const teamLeaderCell = document.createElement('td');
-            teamLeaderCell.textContent = user.team;
-            row.appendChild(teamLeaderCell);
-
-            // Status (Always ONLINE)
-            const statusCell = document.createElement('td');
-            statusCell.textContent = user.phoneNumber;
-            row.appendChild(statusCell);
-
-            const button = document.createElement('td');
-            button.textContent = 'View';
-            button.style.padding = '10px';
-            button.style.backgroundColor = '#66bb6a';
-            button.style.color = 'white';
-            button.style.textAlign = 'center';
-            button.style.cursor = 'pointer';
-            button.style.borderRadius = '5px';
-            button.style.transition = 'background-color 0.3s ease';
-            button.style.backgroundColor = 'green'; // Apply background color with !important
-
-            button.addEventListener('mouseover', () => {
-                button.style.backgroundColor = '#28a745'; 
+            // Initialize pagination
+            $('#pagination-container').pagination({
+                dataSource: agents,
+                pageSize: 10, // Number of users per page
+                showPageNumbers: true,
+                showPrevious: true,
+                showNext: true,
+                callback: function (data, pagination) {
+                    populateUsers(data); // Call populateUsers with paginated data
+                }
             });
-            
-            button.addEventListener('mouseout', () => {
-                button.style.backgroundColor = '#66bb6a';
-            });
-            
-            row.appendChild(button);
-
-            // Add click event to open the modal with the user data
-            row.onclick = function () {
-                openModal(user);
-            };
-
-            // Append the row to the table body
-            document.getElementById('agent-data').appendChild(row);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+            alert('Failed to fetch agent data. Please check your server.');
         });
-    })
-    .catch(error => {
-        console.error('Error fetching data:', error);
-        alert('Failed to fetch agent data. Please check your server.');
-    });
+});
 
-    
+/**
+ * Populates the users table with the provided data
+ * @param {Array} users - List of users to display
+ */
+function populateUsers(users) {
+    const userTableBody = document.getElementById('agent-data');
+
+    if (!userTableBody) {
+        console.error("Error: Element with ID 'agent-data' not found.");
+        return;
+    }
+
+    userTableBody.innerHTML = ''; // Clear previous data
+
+    users.forEach(user => {
+        const row = document.createElement('tr');
+
+        // Name (combine first and last names)
+        const nameCell = document.createElement('td');
+        nameCell.textContent = `${user.firstName} ${user.lastName}`;
+        row.appendChild(nameCell);
+
+        // Phone Number
+        const adminCell = document.createElement('td');
+        adminCell.textContent = user.phoneNumber;
+        row.appendChild(adminCell);
+
+        // Status (Team)
+        const statusCell = document.createElement('td');
+        statusCell.textContent = user.team;
+        row.appendChild(statusCell);
+
+        // View Button
+        const buttonCell = document.createElement('td');
+        const button = document.createElement('div');
+        button.textContent = 'View';
+        button.classList.add('view-button');
+
+        button.addEventListener('click', (event) => {
+            event.stopPropagation();
+            openModal(user);
+        });
+
+        buttonCell.appendChild(button);
+        row.appendChild(buttonCell);
+
+        row.addEventListener('click', () => openModal(user));
+
+        userTableBody.appendChild(row);
+    });
+}
+
+
 // Function to open modal and populate data
 function openModal(user) {
     // Populate modal with user data
@@ -142,8 +156,6 @@ function deleteUser(userId) {
         alert(`Error: ${error.message}`);
     });
 }
-
-
 // Enable editing for specific fields
 function enableEditing() {
     replaceTextWithInput('modal-firstName');
@@ -151,7 +163,7 @@ function enableEditing() {
     replaceTextWithInput('modal-phoneNumber');
     replaceTextWithInput('modal-email');
     replaceTextWithInput('modal-address');
-    replaceTextWithInput('modal-password');
+
     // Hide Edit button, Show Save button
     document.getElementById('edit-button').style.display = 'none';
     const saveButton = document.getElementById('save-button');
@@ -195,7 +207,6 @@ function saveUpdatedData(userId) {
         address: document.getElementById('modal-address')?.value?.trim() || "",
         team: document.getElementById('modal-team')?.textContent || "",  // Non-editable
         role: document.getElementById('modal-role')?.textContent || "",  // Non-editable
-        password: document.getElementById('modal-password')?.value?.trim() || "",  // Non-editable
         userName: document.getElementById('modal-userName')?.value?.trim() || "",
         tin: document.getElementById('modal-tin')?.value?.trim() || "",
         uid: document.getElementById('modal-uid')?.value?.trim() || "",
@@ -273,14 +284,14 @@ function exportUserData() {
         .then(data => {
             const users = data.users;
 
-            // Filter users with the role "agent"
-            const agents = users.filter(user => user.role === 'agent');
+            // Filter users with the role "Admin"
+            const admins = users.filter(user => user.role === 'Admin');
 
             // Prepare the headers based on the keys you want to export
             const headers = ["First Name", "Last Name", "Phone Number", "Email", "Team", "Role"];
 
-            // Prepare the data by mapping the agents to the format
-            const formattedData = agents.map(user => [
+            // Prepare the data by mapping the admins to the format
+            const formattedData = admins.map(user => [
                 user.firstName,
                 user.lastName,
                 user.phoneNumber,
@@ -308,8 +319,6 @@ function exportUserData() {
         });
 }
 
+
 // Add event listener to export button
 document.getElementById('export-btn').addEventListener('click', exportUserData);
-
-  // Initially hide the password
-  document.getElementById("modal-password").style.webkitTextSecurity = "disc";

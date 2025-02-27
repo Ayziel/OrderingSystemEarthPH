@@ -1,31 +1,57 @@
 document.addEventListener('DOMContentLoaded', () => {
-
-    function logAllLocalStorageItems() {
-        console.log("Items in localStorage:");
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i); // Get the key at index `i`
-            const value = localStorage.getItem(key); // Get the value associated with the key
-            console.log(`${key}: ${value}`);
-        }
-    }
-
-    // Call the function
-    logAllLocalStorageItems();
-
-    // Retrieve the saved data from localStorage
-
     const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
     console.log("Matched Usersss:", matchedUser.uid);
     let userUID = null;
 
-
-            // Access and set the user UID from matchedUser
-            if (matchedUser && matchedUser.uid) {
-                userUID = matchedUser.uid;
-                console.log("User UID from matchedUser:", userUID);
-            } else {
-                console.warn("No user UID found in the matchedUser.");
+        // Fetch the stock data from the API
+    fetch('https://earthph.sdevtech.com.ph/stocks/getStock')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Full Response:", data);
+    
+            // Get the matchedUser from local storage
+            const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+            const userUid = matchedUser ? matchedUser.uid : null;
+    
+            // Get the stocks (adjust this if needed)
+            let stocks = data.stocks || data; // Adjust this if the array is inside a property
+    
+            if (userUid) {
+                // Filter stocks based on matching uid
+                stocks = stocks.filter(stock => stock.parent_uid === userUid);
+            }
+    
+            // Sort stocks by store_name
+            stocks.sort((a, b) => a.store_name.localeCompare(b.store_name));
+            stocks.reverse(); // Reverse the order
+            
+            $('#pagination-container').pagination({
+                dataSource: stocks,
+                pageSize: 10, // Number of users per page
+                showPageNumbers: true,
+                showPrevious: true,
+                showNext: true,
+                callback: function (data, pagination) {
+                    populateStocks(data); // Call populateUsers with paginated data
+                }
+            });
+        })
+        .catch(error => console.error('Error fetching stocks:', error));
+    
+    });
+
+    // Access and set the user UID from matchedUser
+    if (matchedUser && matchedUser.uid) {
+        userUID = matchedUser.uid;
+        console.log("User UID from matchedUser:", userUID);
+    } else {
+        console.warn("No user UID found in the matchedUser.");
+    }
 
     function populateStocks(stocks) {
         const ordersBody = document.querySelector('.orders-body');
@@ -57,38 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Fetch the stock data from the API
-    fetch('https://earthph.sdevtech.com.ph/stocks/getStock')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Full Response:", data);
 
-        // Get the matchedUser from local storage
-        const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
-        const userUid = matchedUser ? matchedUser.uid : null;
-
-        // Get the stocks (adjust this if needed)
-        let stocks = data.stocks || data; // Adjust this if the array is inside a property
-
-        if (userUid) {
-            // Filter stocks based on matching uid
-            stocks = stocks.filter(stock => stock.parent_uid === userUid);
-        }
-
-        // Sort stocks by store_name
-        stocks.sort((a, b) => a.store_name.localeCompare(b.store_name));
-        stocks.reverse(); // Reverse the order
-        // Populate the stocks
-        populateStocks(stocks);
-    })
-    .catch(error => console.error('Error fetching stocks:', error));
-
-});
 
 function openStockModal(stock) {
     const modal = document.getElementById('stock-modal');

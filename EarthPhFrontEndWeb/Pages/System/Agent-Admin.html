@@ -7,8 +7,11 @@
     <!----======== CSS ======== -->
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/agentlist.css">
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
      
     <!----===== Icons ===== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.5/pagination.css">
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="./styles/navbar.css">
@@ -166,7 +169,7 @@
           <button id="export-btn" class="export">Export to Excel</button>
           <div class="activity">
               <div class="title">
-                  <span class="text">Agents</span>
+                  <span class="text">Admins</span>
               </div>
       
               <div class="activity-data">
@@ -185,6 +188,7 @@
                       </tbody>
                   </table>
               </div>
+              <div id="pagination-container"></div>
           </div>
       </div>
       
@@ -222,6 +226,7 @@
 
     </section>
     <script src="./scripts/manifestShared.js"></script>
+    <script src="./scripts/pagination.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     <script src="./scripts/script.js"></script>
     <script src="./scripts/sideNavigation.js"></script>

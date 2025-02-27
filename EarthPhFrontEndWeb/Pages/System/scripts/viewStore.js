@@ -11,9 +11,23 @@ fetch('https://earthph.sdevtech.com.ph/viewStoreRoutes/getStores')
     })
     .then(data => {
         console.log("GET Response Data:", data);
-        populateStores(data.stores || data);  // Pass the stores array to the function
+
+        const stores = data.stores || data;  // Pass the stores array to the function
+
+        // Initialize pagination
+        $('#pagination-container').pagination({
+            dataSource: stores.reverse(), // Reverse the array to show the latest stores first
+            pageSize: 10, // Number of stores per page
+            showPageNumbers: true,
+            showPrevious: true,
+            showNext: true,
+            callback: function (data, pagination) {
+                populateStores(data);  // Call populateStores with paginated data
+            }
+        });
     })
     .catch(error => console.error('Error during GET request:', error));
+
 
     function populateStores(stores) {
         const tableBody = document.querySelector('.orders-body'); // Select the table body where stores will be displayed

@@ -4,7 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <!----======== CSS ======== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.5/pagination.css">
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/allStores.css">
     <link rel="stylesheet" href="./styles/survey.css">
@@ -164,9 +168,8 @@
         <button id="export-btn" class="export">Export to Excel</button>
         <div class="activity">
             <div class="title">
-                <span class="text">Preferences</span>
+                <span class="text">Surveys</span>
             </div>
-    
             <div class="activity-data">
                 <!-- Create a table for displaying agent data -->
                 <table class="product-table">
@@ -181,15 +184,16 @@
                         <th>Created at</th>
                     </tr>
                 </thead>
-                
                     <tbody id="survey-data">
                         <!-- Dynamic agent data will be inserted here -->
                     </tbody>
                 </table>
             </div>
+            <div id="pagination-container"></div>
         </div>
     </div>
   </section>
+  <script src="./scripts/pagination.js"></script>
     <script src="./scripts/script.js"></script>
     <script src="./scripts/sideNavigation.js"></script>
     <script src="./scripts/survey.js"></script>

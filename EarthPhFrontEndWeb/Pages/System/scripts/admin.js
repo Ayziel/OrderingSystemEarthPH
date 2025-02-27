@@ -16,81 +16,86 @@ const logLocalStorageItems = () => {
 // Call the function to log localStorage contents
 logLocalStorageItems();
 
-// Fetch the users data from the server
-fetch('https://earthph.sdevtech.com.ph/users/getUsers')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        const users = data.users;
+document.addEventListener('DOMContentLoaded', function () {
+    fetch('https://earthph.sdevtech.com.ph/users/getUsers')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const admins = data.users.filter(user => user.role === 'Admin').reverse();
 
-        // Clear previous data in the table body
-        document.getElementById('agent-data').innerHTML = '';
-
-        // Filter users with the role "Admin"
-        const admins = users.filter(user => user.role === 'Admin');
-
-        // Loop through each admin and populate the table rows
-
-        const reversedUsers = [...admins ].reverse();
-
-        reversedUsers.forEach(user => {
-            // Create a new row for each admin
-            const row = document.createElement('tr');
-
-            // Name (combine first and last names)
-            const nameCell = document.createElement('td');
-            nameCell.textContent = `${user.firstName} ${user.lastName}`;
-            row.appendChild(nameCell);
-
-            // Admin based on the phone number (or another field)
-            let admin = user.phoneNumber;  // You can modify this if you need a different value
-            const adminCell = document.createElement('td');
-            adminCell.textContent = admin;
-            row.appendChild(adminCell);
-
-            // Status (can be 'ONLINE' or another status)
-            const statusCell = document.createElement('td');
-            statusCell.textContent = user.team;  // You can change 'team' to another field if needed
-            row.appendChild(statusCell);
-
-            // Button to view more details (View button)
-            const button = document.createElement('td');
-            button.textContent = 'View';
-            button.style.padding = '10px';
-            button.style.backgroundColor = '#66bb6a';
-            button.style.color = 'white';
-            button.style.textAlign = 'center';
-            button.style.cursor = 'pointer';
-            button.style.borderRadius = '5px';
-            button.style.transition = 'background-color 0.3s ease';
-
-            button.addEventListener('mouseover', () => {
-                button.style.backgroundColor = '#28a745'; 
+            // Initialize pagination
+            $('#pagination-container').pagination({
+                dataSource: admins,
+                pageSize: 10, // Number of users per page
+                showPageNumbers: true,
+                showPrevious: true,
+                showNext: true,
+                callback: function (data, pagination) {
+                    populateUsers(data); // Call populateUsers with paginated data
+                }
             });
-
-            button.addEventListener('mouseout', () => {
-                button.style.backgroundColor = '#66bb6a';
-            });
-
-            row.appendChild(button);
-
-            // Add click event to open the modal with the admin data
-            row.onclick = function () {
-                openModal(user);  // Modify `openModal` as necessary to open your modal
-            };
-
-            // Append the row to the table body
-            document.getElementById('agent-data').appendChild(row);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+            alert('Failed to fetch agent data. Please check your server.');
         });
-    })
-    .catch(error => {
-        console.error('Error fetching data:', error);
-        alert('Failed to fetch agent data. Please check your server.');
+});
+
+/**
+ * Populates the users table with the provided data
+ * @param {Array} users - List of users to display
+ */
+function populateUsers(users) {
+    const userTableBody = document.getElementById('agent-data');
+
+    if (!userTableBody) {
+        console.error("Error: Element with ID 'agent-data' not found.");
+        return;
+    }
+
+    userTableBody.innerHTML = ''; // Clear previous data
+
+    users.forEach(user => {
+        const row = document.createElement('tr');
+
+        // Name (combine first and last names)
+        const nameCell = document.createElement('td');
+        nameCell.textContent = `${user.firstName} ${user.lastName}`;
+        row.appendChild(nameCell);
+
+        // Phone Number
+        const adminCell = document.createElement('td');
+        adminCell.textContent = user.phoneNumber;
+        row.appendChild(adminCell);
+
+        // Status (Team)
+        const statusCell = document.createElement('td');
+        statusCell.textContent = user.team;
+        row.appendChild(statusCell);
+
+        // View Button
+        const buttonCell = document.createElement('td');
+        const button = document.createElement('div');
+        button.textContent = 'View';
+        button.classList.add('view-button');
+
+        button.addEventListener('click', (event) => {
+            event.stopPropagation();
+            openModal(user);
+        });
+
+        buttonCell.appendChild(button);
+        row.appendChild(buttonCell);
+
+        row.addEventListener('click', () => openModal(user));
+
+        userTableBody.appendChild(row);
     });
+}
 
 
 // Function to open modal and populate data
@@ -265,7 +270,7 @@ window.onclick = function (event) {
     if (event.target === document.getElementById('userModal')) {
         document.getElementById('userModal').style.display = "none";
     }
-}+
+}
 
 // Function to export data
 function exportUserData() {

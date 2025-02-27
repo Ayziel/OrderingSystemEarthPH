@@ -4,7 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!----======== CSS ======== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.5/pagination.css">
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/navbar.css">
     <link rel="stylesheet" href="./styles/productList.css">
@@ -173,6 +176,7 @@
           </tbody>
       </table>
   </div>
+  <div id="pagination-container"></div>
 </div>
 
 <!-- Modal Specific to Product -->
@@ -201,6 +205,7 @@
       <button id="delete-product" class="delete-product">Delete</button>
   </div>
 </div>
+    <script src="./scripts/pagination.js"></script>
     <script src="./scripts/manifestShared.js"></script>
     <script src="./scripts/script.js"></script>
     <script src="./scripts/sideNavigation.js"></script>

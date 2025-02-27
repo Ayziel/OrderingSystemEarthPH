@@ -19,71 +19,21 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
                 return response.json();
             })
             .then(surveyData => {
-                const surveys = surveyData.surveys;
+                const surveys = surveyData.surveys.reverse(); // Reverse the survey order
+
                 console.log("Survey Data:", surveys);
 
-                // Loop through each survey and match with the user UID
-                const surveyReversed = surveys.reverse();
-
-                surveyReversed.forEach(survey => {
-                    // Find the user that matches the survey's userUid
-                    const matchingUser = users.find(user => user.uid === survey.userUid);
-                
-                    if (matchingUser) {
-                        // Create a new row for each survey and append user details
-                        const row = document.createElement('tr');
-                
-                        // Add the userName value
-                        const userNameCell = document.createElement('td');
-                        userNameCell.textContent = matchingUser.userName;
-                        userNameCell.classList.add('survey-cell');  // Adding common class
-                        row.appendChild(userNameCell);
-                
-                        const storeName = document.createElement('td');
-                        storeName.textContent = survey.storeName;
-                        storeName.classList.add('survey-cell');  // Adding common class
-                        row.appendChild(storeName);
-                
-                        // Add the lionTigerCoil value
-                        const lionTigerCoilCell = document.createElement('td');
-                        lionTigerCoilCell.textContent = survey.lionTigerCoil === '1' ? 'Yes' : 'No';  // Check for 1 or 0
-                        lionTigerCoilCell.classList.add('survey-cell');  // Adding common class
-                        row.appendChild(lionTigerCoilCell);
-                
-                        // Add the bayconCoil value
-                        const bayconCoilCell = document.createElement('td');
-                        bayconCoilCell.textContent = survey.bayconCoil === '1' ? 'Yes' : 'No';  // Check for 1 or 0
-                        bayconCoilCell.classList.add('survey-cell');  // Adding common class
-                        row.appendChild(bayconCoilCell);
-                
-                        // Add the otherBrandsCoil value
-                        const otherBrandsCoilCell = document.createElement('td');
-                        otherBrandsCoilCell.textContent = survey.otherBrandsCoil === '1' ? 'Yes' : 'No';  // Check for 1 or 0
-                        otherBrandsCoilCell.classList.add('survey-cell');  // Adding common class
-                        row.appendChild(otherBrandsCoilCell);
-                
-                        // Add the arsCoil value
-                        const arsCoilCell = document.createElement('td');
-                        arsCoilCell.textContent = survey.arsCoil === '1' ? 'Yes' : 'No';  // Check for 1 or 0
-                        arsCoilCell.classList.add('survey-cell');  // Adding common class
-                        row.appendChild(arsCoilCell);
-                
-                        // Add the createdAt value
-                        const createdAtCell = document.createElement('td');
-                        const createdAtDate = new Date(survey.createdAt);  // Convert the date to a Date object
-                
-                        // Format the date to "YYYY-MM-DD" format
-                        const formattedDate = createdAtDate.toLocaleDateString();  // This gives you the date in a human-readable format without time
-                        
-                        createdAtCell.textContent = formattedDate;
-                        createdAtCell.classList.add('survey-cell');  // Adding common class
-                        row.appendChild(createdAtCell);
-                
-                        // Append the row to the table body
-                        document.getElementById('survey-data').appendChild(row);
+                // Initialize pagination
+                $('#pagination-container').pagination({
+                    dataSource: surveys,
+                    pageSize: 10, // Number of surveys per page
+                    showPageNumbers: true,
+                    showPrevious: true,
+                    showNext: true,
+                    callback: function (data, pagination) {
+                        populateSurveys(data, users);
                     }
                 });
-                
             })
             .catch(error => {
                 console.error('Error fetching survey data:', error);
@@ -94,3 +44,52 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
         console.error('Error fetching users data:', error);
         alert('Failed to fetch users data. Please check your server.');
     });
+
+/**
+ * Populates the survey table with paginated data
+ * @param {Array} surveys - List of surveys to display
+ * @param {Array} users - List of users to match surveys with
+ */
+function populateSurveys(surveys, users) {
+    const surveyTableBody = document.getElementById('survey-data');
+    surveyTableBody.innerHTML = ''; // Clear previous data
+
+    surveys.forEach(survey => {
+        const matchingUser = users.find(user => user.uid === survey.userUid);
+
+        if (matchingUser) {
+            const row = document.createElement('tr');
+
+            const userNameCell = document.createElement('td');
+            userNameCell.textContent = matchingUser.userName;
+            row.appendChild(userNameCell);
+
+            const storeNameCell = document.createElement('td');
+            storeNameCell.textContent = survey.storeName;
+            row.appendChild(storeNameCell);
+
+            const lionTigerCoilCell = document.createElement('td');
+            lionTigerCoilCell.textContent = survey.lionTigerCoil === '1' ? 'Yes' : 'No';
+            row.appendChild(lionTigerCoilCell);
+
+            const bayconCoilCell = document.createElement('td');
+            bayconCoilCell.textContent = survey.bayconCoil === '1' ? 'Yes' : 'No';
+            row.appendChild(bayconCoilCell);
+
+            const otherBrandsCoilCell = document.createElement('td');
+            otherBrandsCoilCell.textContent = survey.otherBrandsCoil === '1' ? 'Yes' : 'No';
+            row.appendChild(otherBrandsCoilCell);
+
+            const arsCoilCell = document.createElement('td');
+            arsCoilCell.textContent = survey.arsCoil === '1' ? 'Yes' : 'No';
+            row.appendChild(arsCoilCell);
+
+            const createdAtCell = document.createElement('td');
+            const createdAtDate = new Date(survey.createdAt);
+            createdAtCell.textContent = createdAtDate.toLocaleDateString(); // Format date
+            row.appendChild(createdAtCell);
+
+            surveyTableBody.appendChild(row);
+        }
+    });
+}

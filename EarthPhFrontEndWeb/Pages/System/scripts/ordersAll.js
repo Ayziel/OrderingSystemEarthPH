@@ -38,6 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // Reverse the orders so the most recent one appears first
             orders.reverse();
 
+            const originalConsoleError = console.error;
+            console.error = function () {};
+
             $('#pagination-container').pagination({
                 dataSource: orders,
                 pageSize: 10, // Change this to the number of rows per page
@@ -48,6 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     populateOrders(data);
                 }
             });
+            
+            console.error = originalConsoleError;
 
 
             const exportButton = document.getElementById('export-btn');

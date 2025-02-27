@@ -16,78 +16,87 @@ const logLocalStorageItems = () => {
 // Call the function to log localStorage contents
 logLocalStorageItems();
 
-// Fetch the users data from the server
-fetch('https://earthph.sdevtech.com.ph/users/getUsers')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        const users = data.users;
+document.addEventListener('DOMContentLoaded', function () {
+    fetch('https://earthph.sdevtech.com.ph/users/getUsers')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const teamLeaders = data.users.filter(user => user.role === 'teamLeader').reverse();
 
-        // Clear previous data in the table body
-        document.getElementById('agent-data').innerHTML = '';
-
-        // Filter users with the role "teamLeader"
-        const teamLeaders = users.filter(user => user.role === 'teamLeader');
-        const reversedUsers = [...teamLeaders ].reverse();
-
-        reversedUsers.forEach(user => {
-            // Create a new row for each team leader
-            const row = document.createElement('tr');
-
-            // Name (combine first and last names)
-            const nameCell = document.createElement('td');
-            nameCell.textContent = `${user.firstName} ${user.lastName}`;
-            row.appendChild(nameCell);
-
-            // Team Leader based on the team
-            let teamLeader = user.phoneNumber;
-            const teamLeaderCell = document.createElement('td');
-            teamLeaderCell.textContent = teamLeader;
-            row.appendChild(teamLeaderCell);
-
-            // Status (Always ONLINE)
-            const statusCell = document.createElement('td');
-            statusCell.textContent = user.team;
-            row.appendChild(statusCell);
-
-            const button = document.createElement('td');
-            button.textContent = 'View';
-            button.style.padding = '10px';
-            button.style.backgroundColor = '#66bb6a';
-            button.style.color = 'white';
-            button.style.textAlign = 'center';
-            button.style.cursor = 'pointer';
-            button.style.borderRadius = '5px';
-            button.style.transition = 'background-color 0.3s ease';
-            button.style.backgroundColor = 'green !important'; // Apply background color with !important
-
-            button.addEventListener('mouseover', () => {
-                button.style.backgroundColor = '#28a745'; 
+            // Initialize pagination
+            $('#pagination-container').pagination({
+                dataSource: teamLeaders,
+                pageSize: 10, // Number of users per page
+                showPageNumbers: true,
+                showPrevious: true,
+                showNext: true,
+                callback: function (data, pagination) {
+                    populateUsers(data); // Call populateUsers with paginated data
+                }
             });
-            
-            button.addEventListener('mouseout', () => {
-                button.style.backgroundColor = '#66bb6a';
-            });
-            
-            row.appendChild(button);
-
-            // Add click event to open the modal with the user data
-            row.onclick = function () {
-                openModal(user);
-            };
-
-            // Append the row to the table body
-            document.getElementById('agent-data').appendChild(row);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+            alert('Failed to fetch agent data. Please check your server.');
         });
-    })
-    .catch(error => {
-        console.error('Error fetching data:', error);
-        alert('Failed to fetch agent data. Please check your server.');
+});
+
+/**
+ * Populates the users table with the provided data
+ * @param {Array} users - List of users to display
+ */
+function populateUsers(users) {
+    const userTableBody = document.getElementById('agent-data');
+
+    if (!userTableBody) {
+        console.error("Error: Element with ID 'agent-data' not found.");
+        return;
+    }
+
+    userTableBody.innerHTML = ''; // Clear previous data
+
+    users.forEach(user => {
+        const row = document.createElement('tr');
+
+        // Name (combine first and last names)
+        const nameCell = document.createElement('td');
+        nameCell.textContent = `${user.firstName} ${user.lastName}`;
+        row.appendChild(nameCell);
+
+        // Phone Number
+        const adminCell = document.createElement('td');
+        adminCell.textContent = user.phoneNumber;
+        row.appendChild(adminCell);
+
+        // Status (Team)
+        const statusCell = document.createElement('td');
+        statusCell.textContent = user.team;
+        row.appendChild(statusCell);
+
+        // View Button
+        const buttonCell = document.createElement('td');
+        const button = document.createElement('div');
+        button.textContent = 'View';
+        button.classList.add('view-button');
+
+        button.addEventListener('click', (event) => {
+            event.stopPropagation();
+            openModal(user);
+        });
+
+        buttonCell.appendChild(button);
+        row.appendChild(buttonCell);
+
+        row.addEventListener('click', () => openModal(user));
+
+        userTableBody.appendChild(row);
     });
+}
+
 
 // Function to open modal and populate data
 function openModal(user) {
@@ -99,6 +108,8 @@ function openModal(user) {
     document.getElementById('modal-team').textContent = user.team;  // NOT EDITABLE
     document.getElementById('modal-role').textContent = user.role;  // NOT EDITABLE
     document.getElementById('modal-address').textContent = user.address;
+    document.getElementById('modal-password').textContent = user.password;
+    
 
     // Show the modal
     document.getElementById('userModal').style.display = "flex";
@@ -113,8 +124,38 @@ function openModal(user) {
         console.log("Saving data for user:", user._id);
         saveUpdatedData(user._id);
     };
+
+    const deleteButton = document.getElementById('delete-button');
+    deleteButton.onclick = function () {
+        deleteUser(user._id);
+    };
 }
 
+function deleteUser(userId) {
+    if (!confirm('Are you sure you want to delete this user?')) return;
+
+    fetch(`https://earthph.sdevtech.com.ph/users/deleteUser/${userId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${usertoken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert('User deleted successfully!');
+            document.getElementById('userModal').style.display = 'none';
+            window.location.reload(); // Refresh to update the user list
+        } else {
+            throw new Error('Failed to delete user.');
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting user:', error);
+        alert(`Error: ${error.message}`);
+    });
+}
 // Enable editing for specific fields
 function enableEditing() {
     replaceTextWithInput('modal-firstName');
@@ -229,7 +270,7 @@ window.onclick = function (event) {
     if (event.target === document.getElementById('userModal')) {
         document.getElementById('userModal').style.display = "none";
     }
-}+
+}
 
 // Function to export data
 function exportUserData() {
@@ -243,14 +284,14 @@ function exportUserData() {
         .then(data => {
             const users = data.users;
 
-            // Filter users with the role "teamLeader"
-            const teamLeaders = users.filter(user => user.role === 'teamLeader');
+            // Filter users with the role "Admin"
+            const admins = users.filter(user => user.role === 'Admin');
 
             // Prepare the headers based on the keys you want to export
             const headers = ["First Name", "Last Name", "Phone Number", "Email", "Team", "Role"];
 
-            // Prepare the data by mapping the teamLeaders to the format
-            const formattedData = teamLeaders.map(user => [
+            // Prepare the data by mapping the admins to the format
+            const formattedData = admins.map(user => [
                 user.firstName,
                 user.lastName,
                 user.phoneNumber,
@@ -277,6 +318,7 @@ function exportUserData() {
             alert('Failed to export user data. Please try again later.');
         });
 }
+
 
 // Add event listener to export button
 document.getElementById('export-btn').addEventListener('click', exportUserData);

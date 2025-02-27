@@ -23,7 +23,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const reversedProducts = data.products.reverse();
             // Populate the UI with the fetched products
-            populateProducts(reversedProducts);
+            $('#pagination-container').pagination({
+                dataSource: reversedProducts,
+                pageSize: 10, // Number of users per page
+                showPageNumbers: true,
+                showPrevious: true,
+                showNext: true,
+                callback: function (data, pagination) {
+                    populateProducts(data); // Call populateUsers with paginated data
+                }
+            });
+
         })
         .catch(error => console.error('Error fetching products:', error));
 });
