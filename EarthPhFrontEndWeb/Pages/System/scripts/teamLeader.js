@@ -170,13 +170,44 @@ function enableEditing() {
     replaceTextWithInput('modal-email');
     replaceTextWithInput('modal-address');
     replaceTextWithInput('modal-password');
+    replaceTextWithDropdown('modal-team', [
+        { label: 'Betta', value: 'Betta' },
+        { label: 'Alpha', value: 'Alpha' },
+        { label: 'Gamma', value: 'Gamma' },
+        { label: 'Delta', value: 'Delta' }
+    ]);
+    replaceTextWithDropdown('modal-role', [
+        { label: 'Agent', value: 'agent' },
+        { label: 'Team Leader', value: 'teamLeader' },
+        { label: 'Manager', value: 'manager' },
+        { label: 'Admin', value: 'admin' }
+    ]);
     // Hide Edit button, Show Save button
     document.getElementById('edit-button').style.display = 'none';
     const saveButton = document.getElementById('save-button');
     saveButton.style.display = 'block';
     saveButton.removeAttribute('disabled');  // ✅ Enable save button
 }
+function replaceTextWithDropdown(id, options) {
+    const span = document.getElementById(id);
+    const selectedValue = span.textContent.trim();
 
+    const select = document.createElement('select');
+    select.id = id;
+
+    // Populate dropdown with options
+    options.forEach(option => {
+        const optionElement = document.createElement('option');
+        optionElement.value = option.value;
+        optionElement.textContent = option.label;
+        if (option.label === selectedValue || option.value === selectedValue) {
+            optionElement.selected = true;
+        }
+        select.appendChild(optionElement);
+    });
+
+    span.replaceWith(select);
+}
 // Function to replace text with an input field (only for editable fields)
 function replaceTextWithInput(id) {
     const span = document.getElementById(id);
@@ -211,11 +242,12 @@ function saveUpdatedData(userId) {
         workPhone: document.getElementById('modal-workPhone')?.value?.trim() || "",
         email: document.getElementById('modal-email')?.value?.trim() || "",
         address: document.getElementById('modal-address')?.value?.trim() || "",
-        team: document.getElementById('modal-team')?.textContent || "",  // Non-editable
-        role: document.getElementById('modal-role')?.textContent || "",  // Non-editable
+        team: document.getElementById('modal-team')?.value?.trim() || "",
+        role: document.getElementById('modal-role')?.value?.trim() || "",
         userName: document.getElementById('modal-userName')?.value?.trim() || "",
         tin: document.getElementById('modal-tin')?.value?.trim() || "",
         uid: document.getElementById('modal-uid')?.value?.trim() || "",
+        password:document.getElementById('modal-password')?.value?.trim() || "",
     };
 
     console.log("Updating user:", userId, updatedUser);

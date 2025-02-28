@@ -1,8 +1,6 @@
 const userRole = localStorage.getItem('userRole');
 const usertoken = localStorage.getItem('authToken');
 
-
-
 document.addEventListener('DOMContentLoaded', function () {
     fetch('https://earthph.sdevtech.com.ph/users/getUsers')
         .then(response => {
@@ -12,7 +10,22 @@ document.addEventListener('DOMContentLoaded', function () {
             return response.json();
         })
         .then(data => {
-            const agents = data.users.filter(user => user.role === 'agent').reverse();
+            // Retrieve matchedUser from localStorage
+            const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+
+            if (!matchedUser) {
+                console.error('Matched user not found in local storage.');
+                return;
+            }
+
+            let agents;
+
+            // Apply filter only if matchedUser is a teamLeader
+            if (matchedUser.role === 'teamLeader') {
+                agents = data.users.filter(user => user.role === 'agent' && user.team === matchedUser.team);
+            } else {
+                agents = data.users.filter(user => user.role === 'agent');
+            }
 
             // Initialize pagination
             $('#pagination-container').pagination({
@@ -31,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Failed to fetch agent data. Please check your server.');
         });
 });
-
 /**
  * Populates the users table with the provided data
  * @param {Array} users - List of users to display
@@ -92,8 +104,8 @@ function openModal(user) {
     document.getElementById('modal-lastName').textContent = user.lastName;
     document.getElementById('modal-phoneNumber').textContent = user.phoneNumber;
     document.getElementById('modal-email').textContent = user.email;
-    document.getElementById('modal-team').textContent = user.team;  // NOT EDITABLE
-    document.getElementById('modal-role').textContent = user.role;  // NOT EDITABLE
+    document.getElementById('modal-team').textContent = user.team;  
+    document.getElementById('modal-role').textContent = user.role;  
     document.getElementById('modal-address').textContent = user.address;
     document.getElementById('modal-password').textContent = user.password;
     
@@ -102,7 +114,12 @@ function openModal(user) {
     document.getElementById('userModal').style.display = "flex";
 
     // Reset buttons
-    document.getElementById('edit-button').style.display = 'block';
+    if (userRole === 'agent') {
+        document.getElementById('edit-button').style.display = 'none';
+    } else {
+        document.getElementById('edit-button').style.display = 'block';
+    }
+ 
     document.getElementById('save-button').style.display = 'none';
 
     // Set button functionalities
@@ -110,8 +127,11 @@ function openModal(user) {
     document.getElementById('save-button').onclick = function () {
         saveUpdatedData(user._id);
     };
-
     const deleteButton = document.getElementById('delete-button');
+    if (userRole === 'agent') {
+        deleteButton.style.display = 'none';
+    }
+    
     deleteButton.onclick = function () {
         deleteUser(user._id);
     };
@@ -150,6 +170,19 @@ function enableEditing() {
     replaceTextWithInput('modal-email');
     replaceTextWithInput('modal-address');
     replaceTextWithInput('modal-password');
+    replaceTextWithDropdown('modal-team', [
+        { label: 'Betta', value: 'Betta' },
+        { label: 'Alpha', value: 'Alpha' },
+        { label: 'Gamma', value: 'Gamma' },
+        { label: 'Delta', value: 'Delta' }
+    ]);
+    replaceTextWithDropdown('modal-role', [
+        { label: 'Agent', value: 'agent' },
+        { label: 'Team Leader', value: 'teamLeader' },
+        { label: 'Manager', value: 'manager' },
+        { label: 'Admin', value: 'admin' }
+    ]);
+
     // Hide Edit button, Show Save button
     document.getElementById('edit-button').style.display = 'none';
     const saveButton = document.getElementById('save-button');
@@ -157,6 +190,27 @@ function enableEditing() {
     saveButton.removeAttribute('disabled');  // ✅ Enable save button
 }
 // Function to replace text with an input field (only for editable fields)
+
+function replaceTextWithDropdown(id, options) {
+    const span = document.getElementById(id);
+    const selectedValue = span.textContent.trim();
+
+    const select = document.createElement('select');
+    select.id = id;
+
+    // Populate dropdown with options
+    options.forEach(option => {
+        const optionElement = document.createElement('option');
+        optionElement.value = option.value;
+        optionElement.textContent = option.label;
+        if (option.label === selectedValue || option.value === selectedValue) {
+            optionElement.selected = true;
+        }
+        select.appendChild(optionElement);
+    });
+
+    span.replaceWith(select);
+}
 function replaceTextWithInput(id) {
     const span = document.getElementById(id);
     const text = span.textContent;
@@ -190,11 +244,12 @@ function saveUpdatedData(userId) {
         workPhone: document.getElementById('modal-workPhone')?.value?.trim() || "",
         email: document.getElementById('modal-email')?.value?.trim() || "",
         address: document.getElementById('modal-address')?.value?.trim() || "",
-        team: document.getElementById('modal-team')?.textContent || "",  // Non-editable
-        role: document.getElementById('modal-role')?.textContent || "",  // Non-editable
+        team: document.getElementById('modal-team')?.value?.trim() || "",
+        role: document.getElementById('modal-role')?.value?.trim() || "",
         userName: document.getElementById('modal-userName')?.value?.trim() || "",
         tin: document.getElementById('modal-tin')?.value?.trim() || "",
         uid: document.getElementById('modal-uid')?.value?.trim() || "",
+        password:document.getElementById('modal-password')?.value?.trim() || "",
     };
 
     if (!usertoken) {

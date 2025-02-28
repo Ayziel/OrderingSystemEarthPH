@@ -18,13 +18,13 @@ async function getUsers(req, res) {
 async function createUser(req, res) {
   console.log('Request Body:', req.body);
 
-  const { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin, uid, id } = req.body;
+  const { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin, uid, area, id } = req.body;
 
-  if (!userName || !password || !role || !firstName || !lastName || !phoneNumber || !workPhone || !email || !team || !address || !id) {
+  if (!userName || !password || !role || !firstName || !lastName || !phoneNumber || !workPhone || !email || !team || !address || !id ) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
-  console.log("Validated Fields:", { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin, uid, id });
+  console.log("Validated Fields:", { firstName, middleName, lastName, workPhone, phoneNumber, email, team, userName, password, role, address, tin, uid, area, id });
 
   const newUser = new UserModel({
     firstName,
@@ -40,6 +40,7 @@ async function createUser(req, res) {
     address,
     tin,
     uid,
+    area,
     id,
   });
 
@@ -51,8 +52,6 @@ async function createUser(req, res) {
     res.status(500).json({ message: 'Error creating user', error: err.message });
   }
 }
-
-
 // Controller to update an existing user
 async function updateUser(req, res) {
   const { userId } = req.params;  
@@ -88,7 +87,6 @@ async function updateUser(req, res) {
       res.status(500).json({ message: "Error updating user", error: err });
   }
 }
-
 
 async function deleteUser(req, res) {
   console.log('DELETE /deleteUser/:userId route hit');

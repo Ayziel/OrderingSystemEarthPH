@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = document.getElementById('password').value;
         const repeatPassword = document.getElementById('repeat_password').value;
         const role = document.getElementById('role').value;
+        const area = document.getElementById('area').value;
         const uid = uuid.v4();
 
         // Validate fields
@@ -64,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             userName, 
             password, 
             role,
+            area,
             id: nextUserId // Assign the next agent ID
         };
 

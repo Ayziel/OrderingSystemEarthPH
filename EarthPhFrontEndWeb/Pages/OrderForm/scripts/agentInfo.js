@@ -341,10 +341,14 @@ async function getStores() {
     try {
         const response = await fetch('https://earthph.sdevtech.com.ph/stores/getStores');
         if (response.ok) {
-            const storesData = await response.json();  // assuming the data is in JSON format
+            const storesData = await response.json(); // assuming the data is in JSON format
             console.log(storesData); // Log the data for debugging
-            if (Array.isArray(storesData.stores)) {  // Ensure stores is an array
-                populateStoresDropdown(storesData.stores);  // Pass the stores array
+            
+            if (Array.isArray(storesData.stores)) { // Ensure stores is an array
+                // Trim names and sort alphabetically
+                storesData.stores.sort((a, b) => a.name.trim().localeCompare(b.name.trim(), 'en', { sensitivity: 'base' }));
+                
+                populateStoresDropdown(storesData.stores); // Pass the sorted stores array
             } else {
                 console.error('stores is not an array:', storesData.stores);
             }
@@ -355,6 +359,8 @@ async function getStores() {
         console.error('Error fetching stores data:', error);
     }
 }
+
+
 
 function populateStoresDropdown(stores) {
     const storeSelect = $('#store-name');

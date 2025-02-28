@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      if (userRole === 'Admin') {
+      if (userRole === 'Admin' || userRole === 'teamLeader') {
         const stockLink = document.getElementById('stockLink');
         stockLink.style.display = 'none';
       }
