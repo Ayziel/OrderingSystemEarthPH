@@ -56,9 +56,9 @@ input {
 }
 
 .team-item:hover {
-    background-color: #4CAF50;
+    background-color: #c51f1f;
     color: white;
-    border-color: #4CAF50;
+
 }
 
 .btn {

@@ -1,4 +1,3 @@
-// Global variables to track total sales and product sales
 let totalSales = 0; // Variable to store the total sales amount
 let productSales = {}; // Object to store the quantity sold for each product
 let overAllProfit = 0;

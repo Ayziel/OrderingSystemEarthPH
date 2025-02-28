@@ -204,5 +204,28 @@ function populateTeamDropdown() {
             alert('Error fetching teams. Please try again.');
         });
 }
+document.getElementById("tin").addEventListener("input", function(event) {
+    let tin = event.target.value;
+
+    // Remove all non-numeric characters
+    tin = tin.replace(/\D/g, "");
+
+    // Limit to 11 digits
+    tin = tin.substring(0, 12);
+
+    // Add hyphens after every 3 digits
+    let formattedTin = "";
+    for (let i = 0; i < tin.length; i++) {
+        if (i > 0 && i % 3 === 0) {
+            formattedTin += '-';
+        }
+        formattedTin += tin[i];
+    }
+
+    // Update the input value
+    event.target.value = formattedTin;
+});
+
+
 
 });

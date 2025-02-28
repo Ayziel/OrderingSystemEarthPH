@@ -1,4 +1,5 @@
-// On page load, fetch all teams
+const userRole = localStorage.getItem('userRole');
+const usertoken = localStorage.getItem('authToken');
 window.onload = function () {
     fetchTeams();
 };

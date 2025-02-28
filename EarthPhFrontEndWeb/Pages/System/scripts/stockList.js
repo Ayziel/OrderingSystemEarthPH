@@ -1,3 +1,5 @@
+const userRole = localStorage.getItem('userRole');
+const usertoken = localStorage.getItem('authToken');
 document.addEventListener('DOMContentLoaded', () => {
     const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
     let userUID = null;

@@ -1,4 +1,5 @@
-// Function to fetch the stores data
+const userRole = localStorage.getItem('userRole');
+const usertoken = localStorage.getItem('authToken');
 async function getStores() {
     try {
         const response = await fetch('https://earthph.sdevtech.com.ph/stores/getStores');
