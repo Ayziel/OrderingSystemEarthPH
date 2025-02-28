@@ -130,4 +130,79 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('There was an error with the request.');
         }
     });
+    
+    // populateAreas.js
+
+// Fetch and populate the area dropdown on page load
+window.onload = function () {
+    populateAreaDropdown();
+    populateTeamDropdown()
+};
+
+// Function to fetch areas from the backend and populate the select dropdown
+function populateAreaDropdown() {
+    fetch('https://earthph.sdevtech.com.ph/area/getAreas') // Replace with your actual endpoint
+        .then(response => response.json())
+        .then(data => {
+            const areaSelect = document.getElementById("area");
+            areaSelect.innerHTML = ''; // Clear current options
+
+            // Add a default option
+            const defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            defaultOption.textContent = "Select an area";
+            areaSelect.appendChild(defaultOption);
+
+            // Loop through the fetched areas and create option elements
+            data.areas.forEach(area => {
+                const option = document.createElement("option");
+                option.value = area.area;  // Value to be sent in the form
+                option.textContent = `${area.area}`; // Display the area and its code
+                areaSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching areas:', error);
+            alert('Error fetching areas. Please try again.');
+        });
+}
+
+function populateTeamDropdown() {
+    fetch('https://earthph.sdevtech.com.ph/team/getTeam') // Replace with your actual endpoint for teams
+        .then(response => response.json())
+        .then(data => {
+            const teamSelect = document.getElementById("team");
+            teamSelect.innerHTML = ''; // Clear current options
+
+            // Add a default option
+            const defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            defaultOption.textContent = "Select a team";
+            teamSelect.appendChild(defaultOption);
+
+            // Loop through the fetched teams and create option elements
+            if (data.teams && data.teams.length > 0) {
+                data.teams.forEach(team => {
+                    const option = document.createElement("option");
+                    option.value = team.teamName;  // Value to be sent in the form
+                    option.textContent = team.teamName; // Display the team name
+                    teamSelect.appendChild(option);
+                });
+            } else {
+                const noTeamsOption = document.createElement("option");
+                noTeamsOption.disabled = true;
+                noTeamsOption.textContent = "No teams available";
+                teamSelect.appendChild(noTeamsOption);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching teams:', error);
+            alert('Error fetching teams. Please try again.');
+        });
+}
+
 });

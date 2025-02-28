@@ -4,63 +4,79 @@ window.onload = function () {
 };
 
 // Fetch teams from the backend
+// Fetch teams from the backend
+// Fetch teams from the backend
 function fetchTeams() {
-    fetch('https://earthph.sdevtech.com.ph/team/getTeams')
+    fetch('https://earthph.sdevtech.com.ph/team/getTeam')
         .then(response => response.json())
         .then(data => {
-            const teamList = document.getElementById("teamList");
-            teamList.innerHTML = ''; // Clear current list
+            console.log('Fetched data:', data);  // Add a log to see the data structure
 
-            // Loop through the teams and create the list items
-            data.teams.forEach(team => {
-                const teamItem = document.createElement("p");
-                teamItem.textContent = team.team;
-                teamItem.classList.add("team-item");
+            const teams = data.teams || (data.team ? [data.team] : []);  // If 'team' exists, wrap it in an array
 
-                // Add delete functionality to each team
-                teamItem.onclick = function () {
-                    if (confirm(`Remove "${team.team}"?`)) {
-                        deleteTeam(team._id, teamItem);
-                    }
-                };
+            if (Array.isArray(teams)) {
+                const teamList = document.getElementById("teamList");
+                teamList.innerHTML = ''; // Clear current list
 
-                teamList.appendChild(teamItem);
-            });
+                // Loop through the teams and create the list items
+                teams.forEach(team => {
+                    const teamItem = document.createElement("p");
+                    teamItem.textContent = team.teamName; // Display team name
+                    teamItem.classList.add("team-item");
+
+                    // Add delete functionality to each team
+                    teamItem.onclick = function () {
+                        if (confirm(`Remove "${team.teamName}"?`)) {
+                            deleteTeam(team._id, teamItem);
+                        }
+                    };
+
+                    teamList.appendChild(teamItem);
+                });
+            } else {
+                console.error('Teams data is not in expected format:', data);
+                alert('Failed to load teams. Please try again later.');
+            }
         })
         .catch(error => {
             console.error('Error fetching teams:', error);
+            alert('Failed to load teams. Please try again later.');
         });
 }
 
+
+
+// Handle creating a new team
 // Handle creating a new team
 document.getElementById("addTeamBtn").addEventListener("click", function () {
-    const input = document.getElementById("teamInput");
+    const teamInput = document.getElementById("teamInput");
 
-    if (input.value.trim() !== "") {
-        const teamName = input.value.trim();
+    const teamName = teamInput.value.trim();
 
+    if (teamName !== "") {
         // Send new team to the backend
-        fetch('https://earthph.sdevtech.com.ph/team/createTeam', {
+        fetch('https://earthph.sdevtech.com.ph/team/createOrUpdateTeam', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                team: teamName,
+                teamName: teamName,  // Sending the team name
             }),
         })
             .then(response => response.json())
             .then(data => {
-                console.log('Team created:', data);
-                if (data.team) {
-                    // Create a team item in the list after it's saved
+                console.log('Team created or updated:', data);
+
+                if (data.message === 'Team created successfully' || data.message === 'Team updated successfully') {
+                    // If the response indicates success, create the team item in the list
                     const teamItem = document.createElement("p");
-                    teamItem.textContent = data.team.team;
+                    teamItem.textContent = data.team.teamName; // Display team name
                     teamItem.classList.add("team-item");
 
                     // Make item clickable to delete
                     teamItem.onclick = function () {
-                        if (confirm(`Remove "${teamItem.textContent}"?`)) {
+                        if (confirm(`Remove "${data.team.teamName}"?`)) {
                             deleteTeam(data.team._id, teamItem);
                         }
                     };
@@ -69,17 +85,20 @@ document.getElementById("addTeamBtn").addEventListener("click", function () {
                     teamList.appendChild(teamItem);
 
                     // Clear input field
-                    input.value = "";
+                    teamInput.value = "";
+                } else {
+                    alert('Unexpected message: ' + data.message);
                 }
             })
             .catch(error => {
-                console.error('Error creating team:', error);
-                alert('Error creating team. Please try again.');
+                console.error('Error creating/updating team:', error);
+                alert('Error creating/updating team. Please try again.');
             });
     } else {
         alert('Please enter a team name.');
     }
 });
+
 
 // Handle deleting a team
 function deleteTeam(teamId, teamItem) {

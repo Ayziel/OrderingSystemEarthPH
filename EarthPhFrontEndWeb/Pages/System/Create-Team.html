@@ -6,7 +6,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!----======== CSS ======== -->
     <link rel="stylesheet" href="./styles/style.css">
-    <link rel="stylesheet" href="./styles/createArea.css">
+    <link rel="stylesheet" href="./styles/createTeam.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.5/pagination.css">
     <!----===== Icons ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
@@ -150,29 +150,28 @@
   </nav>
   <section class="dashboard">
     <div class="dash-content">
-      <div class="overview"> 
-  
-        <div class="team-container">
-          <div class="input-team">
-            <div class="title">
-              <span class="text">
-                Create Team
-              </span>
-            </div> 
-            <div class="team-divider">
-              <label for="teamInput">Add Team Name</label>
-              <input type="text" id="teamInput" placeholder="Enter Team Name" />
-              <button class="btn" id="addTeamBtn">Submit</button>
-              <div class="team-list" id="teamList">
-                <!-- Clickable teams will be added here -->
-              </div>
+        <div class="overview">
+            <div class="team-container">
+                <div class="input-team">
+                    <div class="title">
+                        <span class="text">
+                            Create Team
+                        </span>
+                    </div>
+                    <div class="team-divider">
+                        <label for="teamInput">Add Team Name</label>
+                        <input type="text" id="teamInput" placeholder="Enter Team Name" />
+                        <button class="btn" id="addTeamBtn">Submit</button>
+                        <div class="team-list" id="teamList">
+                            <!-- Clickable teams will be added here -->
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-  
-      </div>
     </div>
-  </section>
+</section>
+
   
     <script src="./scripts/manifestShared.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
@@ -180,4 +179,5 @@
     <script src="./scripts/sideNavigation.js"></script>
     <script src="./scripts/createTeam.js"></script>
 </body>
-</html>s
+
+</html>

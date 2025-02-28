@@ -1,21 +1,23 @@
 const TeamModel = require('../models/teamModel');
 
 // Controller to get the team (there should only be one)
+// Controller to get the team (returns an array of teams, even if there is only one)
 async function getTeam(req, res) {
   console.log('GET /getTeam route hit');
   
   try {
-    const team = await TeamModel.findOne({});
-    if (!team) {
-      return res.status(404).json({ message: 'No team found' });
+    const teams = await TeamModel.find({}); // Find all teams (even if it's just one)
+    if (teams.length === 0) {
+      return res.status(404).json({ message: 'No teams found' });
     }
-    console.log("Fetched Team:", team);
-    res.json({ team });
+    console.log("Fetched Teams:", teams);
+    res.json({ teams }); // Return teams as an array
   } catch (err) {
-    console.error('Error fetching team:', err);
-    res.status(500).json({ message: 'Error fetching team', error: err });
+    console.error('Error fetching teams:', err);
+    res.status(500).json({ message: 'Error fetching teams', error: err });
   }
 }
+
 
 // Controller to create or update the team (only one team allowed)
 async function createOrUpdateTeam(req, res) {

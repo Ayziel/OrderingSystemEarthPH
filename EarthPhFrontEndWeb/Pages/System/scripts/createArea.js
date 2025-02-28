@@ -14,7 +14,7 @@ function fetchAreas() {
             // Loop through the areas and create the list items
             data.areas.forEach(area => {
                 const areaItem = document.createElement("p");
-                areaItem.textContent = area.area;
+                areaItem.textContent = `${area.area} [${area.areaCode}]`; // Display area and area code inside []
                 areaItem.classList.add("area-item");
 
                 // Add delete functionality to each area
@@ -34,11 +34,13 @@ function fetchAreas() {
 
 // Handle creating a new area
 document.getElementById("addAreaBtn").addEventListener("click", function () {
-    const input = document.getElementById("areaInput");
+    const areaInput = document.getElementById("areaInput");
+    const areaCodeInput = document.getElementById("areaCode");
 
-    if (input.value.trim() !== "") {
-        const areaName = input.value.trim();
+    const areaName = areaInput.value.trim();
+    const areaCode = areaCodeInput.value.trim();
 
+    if (areaName !== "" && areaCode !== "") {
         // Send new area to the backend
         fetch('https://earthph.sdevtech.com.ph/area/createArea', {
             method: 'POST',
@@ -47,7 +49,7 @@ document.getElementById("addAreaBtn").addEventListener("click", function () {
             },
             body: JSON.stringify({
                 area: areaName,
-                areaCode: generateAreaCode() // Assuming you want to generate an area code
+                areaCode: areaCode, // Use the user-provided area code
             }),
         })
             .then(response => response.json())
@@ -56,12 +58,12 @@ document.getElementById("addAreaBtn").addEventListener("click", function () {
                 if (data.area) {
                     // Create an area item in the list after it's saved
                     const areaItem = document.createElement("p");
-                    areaItem.textContent = data.area.area;
+                    areaItem.textContent = `${data.area.area} [${data.area.areaCode}]`; // Display area and code inside []
                     areaItem.classList.add("area-item");
 
                     // Make item clickable to delete
                     areaItem.onclick = function () {
-                        if (confirm(`Remove "${areaItem.textContent}"?`)) {
+                        if (confirm(`Remove "${data.area.area}"?`)) {
                             deleteArea(data.area._id, areaItem);
                         }
                     };
@@ -69,8 +71,9 @@ document.getElementById("addAreaBtn").addEventListener("click", function () {
                     const areaList = document.getElementById("areaList");
                     areaList.appendChild(areaItem);
 
-                    // Clear input field
-                    input.value = "";
+                    // Clear input fields
+                    areaInput.value = "";
+                    areaCodeInput.value = "";
                 }
             })
             .catch(error => {
@@ -78,7 +81,7 @@ document.getElementById("addAreaBtn").addEventListener("click", function () {
                 alert('Error creating area. Please try again.');
             });
     } else {
-        alert('Please enter an area name.');
+        alert('Please enter both area name and area code.');
     }
 });
 
@@ -98,10 +101,4 @@ function deleteArea(areaId, areaItem) {
             console.error('Error deleting area:', error);
             alert('Error deleting area. Please try again.');
         });
-}
-
-// Helper function to generate an area code (you can customize this)
-function generateAreaCode() {
-    // Example: Generate a random area code (you could improve this logic)
-    return Math.random().toString(36).substr(2, 5).toUpperCase();
 }
