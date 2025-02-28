@@ -81,7 +81,7 @@ function populateUsers(users) {
         const buttonCell = document.createElement('td');
         const button = document.createElement('div');
         button.textContent = 'View';
-        button.classList.add('view-button');
+        buttonCell.classList.add('view-button');
 
         button.addEventListener('click', (event) => {
             event.stopPropagation();
@@ -115,7 +115,9 @@ function openModal(user) {
     document.getElementById('userModal').style.display = "flex";
 
     // Reset buttons
-    document.getElementById('edit-button').style.display = 'block';
+    if (userRole !== 'Admin') {
+        document.getElementById('edit-button').style.display = 'block';
+    }
     document.getElementById('save-button').style.display = 'none';
 
     // Set button functionalities
@@ -126,7 +128,11 @@ function openModal(user) {
     };
 
     const deleteButton = document.getElementById('delete-button');
-    deleteButton.onclick = function () {
+
+    if (userRole !== 'Admin') {
+        deleteButton = document.getElementById('delete-button').style.display = 'none';
+    }
+    deleteButton.onclick = function () {s
         deleteUser(user._id);
     };
 }

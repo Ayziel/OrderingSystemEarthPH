@@ -1,8 +1,7 @@
 const userRole = localStorage.getItem('userRole');
 const usertoken = localStorage.getItem('authToken');
 
-// Call the function to log localStorage contents
-logLocalStorageItems();
+
 
 document.addEventListener('DOMContentLoaded', function () {
     fetch('https://earthph.sdevtech.com.ph/users/getUsers')
@@ -69,7 +68,7 @@ function populateUsers(users) {
         const buttonCell = document.createElement('td');
         const button = document.createElement('div');
         button.textContent = 'View';
-        button.classList.add('view-button');
+        buttonCell.classList.add('view-button');
 
         button.addEventListener('click', (event) => {
             event.stopPropagation();
@@ -307,3 +306,4 @@ function exportUserData() {
 
 // Add event listener to export button
 document.getElementById('export-btn').addEventListener('click', exportUserData);
+document.getElementById("modal-password").style.webkitTextSecurity = "disc";  // Initially hide the password

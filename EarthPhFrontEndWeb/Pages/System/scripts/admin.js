@@ -1,7 +1,6 @@
 const userRole = localStorage.getItem('userRole');
 const usertoken = localStorage.getItem('authToken');
-// Call the function to log localStorage contents
-logLocalStorageItems();
+
 
 document.addEventListener('DOMContentLoaded', function () {
     fetch('https://earthph.sdevtech.com.ph/users/getUsers')
@@ -68,7 +67,7 @@ function populateUsers(users) {
         const buttonCell = document.createElement('td');
         const button = document.createElement('div');
         button.textContent = 'View';
-        button.classList.add('view-button');
+        buttonCell.classList.add('view-button');
 
         button.addEventListener('click', (event) => {
             event.stopPropagation();
@@ -102,7 +101,9 @@ function openModal(user) {
     document.getElementById('userModal').style.display = "flex";
 
     // Reset buttons
-    document.getElementById('edit-button').style.display = 'block';
+    if (userRole !== 'Admin') { 
+        document.getElementById('edit-button').style.display = 'none';
+    }
     document.getElementById('save-button').style.display = 'none';
 
     // Set button functionalities
@@ -113,6 +114,10 @@ function openModal(user) {
     };
 
     const deleteButton = document.getElementById('delete-button');
+
+    if (userRole !== 'Admin') { 
+        deleteButton = document.getElementById('delete-button').style.display = 'none';
+    }
     deleteButton.onclick = function () {
         deleteUser(user._id);
     };
@@ -233,7 +238,13 @@ function saveUpdatedData(userId) {
         }
 
         // Reset buttons
-        document.getElementById('edit-button').style.display = 'block';
+
+        if (userRole !== 'Admin') { 
+            document.getElementById('edit-button').style.display = 'none';
+        }
+        else {
+            document.getElementById('edit-button').style.display = 'block';
+        }
         document.getElementById('save-button').style.display = 'none';
 
         // Close modal
