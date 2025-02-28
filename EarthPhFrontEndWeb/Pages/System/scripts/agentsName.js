@@ -149,14 +149,13 @@ function enableEditing() {
     replaceTextWithInput('modal-phoneNumber');
     replaceTextWithInput('modal-email');
     replaceTextWithInput('modal-address');
-
+    replaceTextWithInput('modal-password');
     // Hide Edit button, Show Save button
     document.getElementById('edit-button').style.display = 'none';
     const saveButton = document.getElementById('save-button');
     saveButton.style.display = 'block';
     saveButton.removeAttribute('disabled');  // ✅ Enable save button
 }
-
 // Function to replace text with an input field (only for editable fields)
 function replaceTextWithInput(id) {
     const span = document.getElementById(id);
@@ -247,6 +246,7 @@ function saveUpdatedData(userId) {
 // Close modal when clicking the close button
 document.querySelector('.close').onclick = function () {
     document.getElementById('userModal').style.display = "none";
+    window.location.reload();
 }
 
 // Close modal when clicking outside

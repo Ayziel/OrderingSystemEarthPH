@@ -115,7 +115,7 @@ function openModal(user) {
     document.getElementById('userModal').style.display = "flex";
 
     // Reset buttons
-    if (userRole !== 'Admin') {
+    if (userRole == 'Admin') {
         document.getElementById('edit-button').style.display = 'block';
     }
     document.getElementById('save-button').style.display = 'none';
@@ -169,7 +169,7 @@ function enableEditing() {
     replaceTextWithInput('modal-phoneNumber');
     replaceTextWithInput('modal-email');
     replaceTextWithInput('modal-address');
-
+    replaceTextWithInput('modal-password');
     // Hide Edit button, Show Save button
     document.getElementById('edit-button').style.display = 'none';
     const saveButton = document.getElementById('save-button');
@@ -269,6 +269,7 @@ function saveUpdatedData(userId) {
 // Close modal when clicking the close button
 document.querySelector('.close').onclick = function () {
     document.getElementById('userModal').style.display = "none";
+    window.location.reload();
 }
 
 // Close modal when clicking outside
@@ -328,3 +329,4 @@ function exportUserData() {
 
 // Add event listener to export button
 document.getElementById('export-btn').addEventListener('click', exportUserData);
+document.getElementById("modal-password").style.webkitTextSecurity = "disc";  // Initially hide the password
