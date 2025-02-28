@@ -20,7 +20,7 @@ async function getTeam(req, res) {
 
 
 // Controller to create or update the team (only one team allowed)
-async function createOrUpdateTeam(req, res) {
+async function createTeam(req, res) {
   console.log('Request Body:', req.body);
 
   const { teamName } = req.body;
@@ -29,18 +29,8 @@ async function createOrUpdateTeam(req, res) {
     return res.status(400).json({ message: 'Missing required field: teamName' });
   }
 
-  // If the team already exists, update it; otherwise, create a new one
   try {
-    let team = await TeamModel.findOne({});
-    
-    if (team) {
-      // Update existing team
-      team.teamName = teamName;
-      await team.save();
-      return res.json({ message: 'Team updated successfully', team });
-    }
-
-    // If no team exists, create one
+    // Create a new team regardless of whether one exists
     const newTeam = new TeamModel({
       teamName,
     });
@@ -48,9 +38,10 @@ async function createOrUpdateTeam(req, res) {
     res.json({ message: 'Team created successfully', team: newTeam });
   } catch (err) {
     console.error('❌ MongoDB Save Error:', err.message);
-    res.status(500).json({ message: 'Error creating or updating team', error: err.message });
+    res.status(500).json({ message: 'Error creating team', error: err.message });
   }
 }
+
 
 // Controller to delete the team (if allowed, but should only be one team)
 async function deleteTeam(req, res) {
@@ -73,4 +64,4 @@ async function deleteTeam(req, res) {
   }
 }
 
-module.exports = { getTeam, createOrUpdateTeam, deleteTeam };
+module.exports = { getTeam, createTeam, deleteTeam };

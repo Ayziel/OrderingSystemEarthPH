@@ -6,20 +6,18 @@ window.onload = function () {
 // Fetch teams from the backend
 // Fetch teams from the backend
 // Fetch teams from the backend
+// Fetch teams from the backend
+// Fetch teams from the backend
 function fetchTeams() {
     fetch('https://earthph.sdevtech.com.ph/team/getTeam')
         .then(response => response.json())
         .then(data => {
-            console.log('Fetched data:', data);  // Add a log to see the data structure
+            const teamList = document.getElementById("teamList");
+            teamList.innerHTML = ''; // Clear current list
 
-            const teams = data.teams || (data.team ? [data.team] : []);  // If 'team' exists, wrap it in an array
-
-            if (Array.isArray(teams)) {
-                const teamList = document.getElementById("teamList");
-                teamList.innerHTML = ''; // Clear current list
-
+            if (data.teams && Array.isArray(data.teams)) {
                 // Loop through the teams and create the list items
-                teams.forEach(team => {
+                data.teams.forEach(team => {
                     const teamItem = document.createElement("p");
                     teamItem.textContent = team.teamName; // Display team name
                     teamItem.classList.add("team-item");
@@ -34,15 +32,15 @@ function fetchTeams() {
                     teamList.appendChild(teamItem);
                 });
             } else {
-                console.error('Teams data is not in expected format:', data);
-                alert('Failed to load teams. Please try again later.');
+                console.error("Teams data is not in expected format: ", data);
             }
         })
         .catch(error => {
             console.error('Error fetching teams:', error);
-            alert('Failed to load teams. Please try again later.');
         });
 }
+
+
 
 
 
@@ -55,7 +53,7 @@ document.getElementById("addTeamBtn").addEventListener("click", function () {
 
     if (teamName !== "") {
         // Send new team to the backend
-        fetch('https://earthph.sdevtech.com.ph/team/createOrUpdateTeam', {
+        fetch('https://earthph.sdevtech.com.ph/team/createTeam', {  // Changed endpoint to 'createTeam'
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -66,9 +64,9 @@ document.getElementById("addTeamBtn").addEventListener("click", function () {
         })
             .then(response => response.json())
             .then(data => {
-                console.log('Team created or updated:', data);
+                console.log('Team created:', data);
 
-                if (data.message === 'Team created successfully' || data.message === 'Team updated successfully') {
+                if (data.message === 'Team created successfully') {
                     // If the response indicates success, create the team item in the list
                     const teamItem = document.createElement("p");
                     teamItem.textContent = data.team.teamName; // Display team name
@@ -91,13 +89,14 @@ document.getElementById("addTeamBtn").addEventListener("click", function () {
                 }
             })
             .catch(error => {
-                console.error('Error creating/updating team:', error);
-                alert('Error creating/updating team. Please try again.');
+                console.error('Error creating team:', error);
+                alert('Error creating team. Please try again.');
             });
     } else {
         alert('Please enter a team name.');
     }
 });
+
 
 
 // Handle deleting a team

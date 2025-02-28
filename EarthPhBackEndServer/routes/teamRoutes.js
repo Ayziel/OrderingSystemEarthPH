@@ -3,7 +3,7 @@ const router = express.Router();
 const teamController = require('../controller/teamController');
 
 // Route to create or update the team
-router.post('/createOrUpdateTeam', teamController.createOrUpdateTeam);
+router.post('/createTeam', teamController.createOrUpdateTeam);
 
 // Route to get the team
 router.get('/getTeam', teamController.getTeam);
