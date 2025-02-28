@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
-    console.log("Matched Usersss:", matchedUser.uid);
     let userUID = null;
 
         // Fetch the stock data from the API
@@ -12,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return response.json();
         })
         .then(data => {
-            console.log("Full Response:", data);
     
             // Get the matchedUser from local storage
             const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
@@ -48,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Access and set the user UID from matchedUser
     if (matchedUser && matchedUser.uid) {
         userUID = matchedUser.uid;
-        console.log("User UID from matchedUser:", userUID);
     } else {
         console.warn("No user UID found in the matchedUser.");
     }
@@ -56,15 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function populateStocks(stocks) {
         const ordersBody = document.querySelector('.orders-body');
         ordersBody.innerHTML = ''; // Clear previous rows
-        console.log("Stocks:", stocks);
-        console.log("UserUID", userUID);
         let globalCounter = 1;
 
         // Loop through filtered stocks
         stocks.forEach(stock => {
             const row = document.createElement('tr');
-            console.log("Stock parent_uid:", stock.parent_uid);
-
             // Populate row with stock data
             row.innerHTML = `
                 <td>${globalCounter++}</td>
@@ -190,7 +183,6 @@ function saveStockToDatabase(updatedStock) {
             return response.json();
         })
         .then(data => {
-            console.log("Updated Stock:", data);
             alert('Stock updated successfully!');
             location.reload(); // Refresh the page
         })

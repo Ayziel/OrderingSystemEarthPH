@@ -1,17 +1,5 @@
 const userRole = localStorage.getItem('userRole');
 const usertoken = localStorage.getItem('authToken');
-console.log("userRole", userRole);
-console.log("usertoken", usertoken);
-
-// Function to log all localStorage data
-const logLocalStorageItems = () => {
-    console.log('Logging localStorage contents:');
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        const value = localStorage.getItem(key);
-        console.log(`${key}: ${value}`);
-    }
-};
 
 // Call the function to log localStorage contents
 logLocalStorageItems();
@@ -121,7 +109,6 @@ function openModal(user) {
     // Set button functionalities
     document.getElementById('edit-button').onclick = enableEditing;
     document.getElementById('save-button').onclick = function () {
-        console.log("Saving data for user:", user._id);
         saveUpdatedData(user._id);
     };
 
@@ -211,8 +198,6 @@ function saveUpdatedData(userId) {
         tin: document.getElementById('modal-tin')?.value?.trim() || "",
         uid: document.getElementById('modal-uid')?.value?.trim() || "",
     };
-
-    console.log("Updating user:", userId, updatedUser);
 
     if (!usertoken) {
         alert("User token is missing.");

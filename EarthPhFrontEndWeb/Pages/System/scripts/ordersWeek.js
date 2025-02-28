@@ -1,7 +1,5 @@
 const userRole = localStorage.getItem('userRole');
 const usertoken = localStorage.getItem('authToken');
-console.log("userRole", userRole);
-console.log("usertoken", usertoken);
 
 document.addEventListener('DOMContentLoaded', () => {
     fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
@@ -22,8 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const userUid = matchedUser ? matchedUser.uid : null;
             const userRole = matchedUser ? matchedUser.role : null;
             const userName = matchedUser ? matchedUser.name : null;
-            console.log('Matched User:', matchedUser);
-
             // Get current week's start and end date (Monday - Sunday)
             const now = new Date();
             const dayOfWeek = now.getDay();
@@ -37,13 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Filtering logic
             if (userRole === 'agent' && userUid) {
-                console.log("You're an agent");
                 orders = orders.filter(order => {
                     const orderDate = new Date(order.orderDate);
                     return order.userUid === userUid && orderDate >= monday && orderDate <= sunday;
                 });
             } else if (userRole === 'teamLeader') {
-                console.log("You're a Team Leader");
                 orders = orders.filter(order => {
                     const orderDate = new Date(order.orderDate);
                     return order.teamLeaderName === matchedUser.firstName + ' ' + matchedUser.lastName && orderDate >= monday && orderDate <= sunday;
@@ -120,8 +114,7 @@ function populateOrders(orders) {
         row.querySelector('.status-dropdown').addEventListener('change', (e) => {
             const updatedStatus = e.target.value;
             const orderId = e.target.getAttribute('data-order-id');
-            console.log(`Order ID: ${orderId}, Updated Status: ${updatedStatus}`);
-            
+
             // Call the updateOrderStatus function
             updateOrderStatus(orderId, updatedStatus);
         });
@@ -291,7 +284,6 @@ function openModal(order) {
     // Update the order summary (total amount and total items)
     const updateOrderSummary = (products) => {
         const { totalAmount, totalItems } = calculateTotalAmountAndItems(products);
-        console.log('Updating order summary: totalAmount', totalAmount, 'totalItems', totalItems);
         document.getElementById('total-amount').textContent = `₱ ${totalAmount.toFixed(2)}`;
         document.getElementById('total-items').textContent = totalItems;
     };
@@ -304,7 +296,6 @@ function openModal(order) {
             totalAmount += product.total;
             totalItems += product.quantity;
         });
-        console.log('Calculated totalAmount:', totalAmount, 'totalItems:', totalItems);
         return { totalAmount, totalItems };
     }
 
@@ -322,7 +313,6 @@ function openModal(order) {
 
     // Handle save button click
     document.getElementById('save-button').addEventListener('click', () => {
-        console.log('Save button clicked');
 
         const updatedProducts = order.products.map((product, index) => {
             const price = parseFloat(document.querySelectorAll('.product-price')[index].value);
@@ -337,8 +327,6 @@ function openModal(order) {
 
         // Recalculate total amount and total items after the update
         const { totalAmount, totalItems } = calculateTotalAmountAndItems(updatedProducts);
-        console.log('Updated products:', updatedProducts);
-        console.log('Sending data to the backend: totalAmount', totalAmount, 'totalItems', totalItems);
 
         // Update the order with new products, totalAmount, and totalItems
         fetch(`https://earthph.sdevtech.com.ph/orders/updateOrders/${order._id}`, {

@@ -1,10 +1,11 @@
 // Function to fetch the stores data
+const userRole = localStorage.getItem('userRole');
+const usertoken = localStorage.getItem('authToken');
 async function getStores() {
     try {
         const response = await fetch('https://earthph.sdevtech.com.ph/stores/getStores');
         if (response.ok) {
             const storesData = await response.json();  // assuming the data is in JSON format
-            console.log(storesData); // Log the data for debugging
             if (Array.isArray(storesData.stores)) {  // Ensure stores is an array
                 const reversedStores = [...storesData.stores].reverse(); // Reverse the stores array
 

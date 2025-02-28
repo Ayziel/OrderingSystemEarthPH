@@ -1,8 +1,7 @@
 const userRole = localStorage.getItem('userRole');
 const usertoken = localStorage.getItem('authToken');
-console.log("userRole", userRole);
-console.log("usertoken", usertoken);
 const chosenStoresArray = [];
+
 document.addEventListener('DOMContentLoaded', () => {
     const productForm = document.querySelector('.form');
     
@@ -57,9 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
             free,
             bundle
         };
-    
-        console.log('Product Data to send:', productData);
-    
         try {
             const response = await fetch('https://earthph.sdevtech.com.ph/products/createProduct', {
                 method: 'POST',
@@ -122,7 +118,6 @@ async function getStores() {
         const response = await fetch('https://earthph.sdevtech.com.ph/stores/getStores');
         if (response.ok) {
             const storesData = await response.json();
-            console.log(storesData);  // Log data for debugging
             if (Array.isArray(storesData.stores)) {
                 populateStoresDropdown(storesData.stores);
             } else {
@@ -135,12 +130,6 @@ async function getStores() {
         console.error('Error fetching stores data:', error);
     }
 }
-
-// Function to populate the dropdown with store data
-// Array to hold the chosen stores
-
-
-console.log("Chosen Stores Array:", chosenStoresArray);
 
 function populateStoresDropdown(stores) {
     const storeSelect = document.getElementById('store-name');
@@ -199,9 +188,6 @@ function addToChosenStores(storeSelect) {
     
     // Optional: Reset the "Choose a Store" dropdown
     storeSelect.value = "";
-
-    // Debugging: Log the chosen stores array
-    console.log("Chosen Stores Array:", chosenStoresArray);
 }
 
 
@@ -221,9 +207,6 @@ function removeFromChosenStores(uid) {
     if (optionToRemove) {
         chosenStoresSelect.removeChild(optionToRemove);
     }
-
-    // Debugging: Log the updated chosen stores array
-    console.log("Updated Chosen Stores Array:", chosenStoresArray);
 }
 
 

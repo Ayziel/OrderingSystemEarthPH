@@ -10,7 +10,6 @@ const todaysOrders = () => {
     .then(data => {
         // Get the matched user data from localStorage
         const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
-        console.log("Matched User:", matchedUser);
 
         // Check if the userUid from the order data matches the localStorage UID
         let totalAmount = 0; // Variable to store the total amount of chosen items
@@ -25,7 +24,6 @@ const todaysOrders = () => {
             const isToday = orderDate.toDateString() === today.toDateString();
         
             if (isToday && order.userUid === matchedUser.uid) {
-                console.log(`Order found for user UID: ${matchedUser.uid}`);
         
                 // Accumulate the totalAmount directly from the order
                 totalAmount += order.totalAmount;
@@ -55,7 +53,6 @@ const todaysOrders = () => {
 
 
 const matchedUsers = JSON.parse(localStorage.getItem('matchedUser'));
-console.log("Matched Usersssssssssssssssssssssssssssss:", matchedUsers);
 if (matchedUser.role === "agent") {
     todaysOrders();
 } 
@@ -84,12 +81,10 @@ const logGCashData = () => {
         }
         if (matchedUser && matchedUser.uid) {
             const userUid = matchedUser.uid;
-            console.log("User UID for GCash data logging:", userUid);
             
             // Fetch GCash data for the user
             fetch(`https://earthph.sdevtech.com.ph/gCash/getGcash/${userUid}`)
             .then(response => {
-                console.log("Response Status:", response.status);
         
                 // If the response is not OK, log a message instead of throwing an error
                 if (!response.ok) {
@@ -100,20 +95,12 @@ const logGCashData = () => {
                 return response.json();
                 })
                 .then(data => {
+
                     if (data && data.gcash && data.gcash.userUid === userUid) {
-                        console.log("GCash data found for user:", data.gcash);
-                        
-                        // Update the #gcash element with the cash value (Peso sign)
                         document.getElementById('gcash').textContent = `₱${(parseFloat(data.gcash.cash || '0')).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
-
-
-
-                        // Use '₱0' if no cash value is found
-                        
-                        resolve(data.gcash);  // Resolve the promise with the GCash data
+                        resolve(data.gcash); 
                     } else {
                         console.log("No GCash data found for user UID:", userUid);
-                        
                         // Set the #gcash element to '₱0' if no data is found
                         document.getElementById('gcash').textContent = '₱0';
                         
@@ -135,17 +122,12 @@ logGCashData();
 
 // Function to open modal and show GCash data in a table format
 const openGCashModal = () => {
-    console.log('Opening GCash Modal...'); // Add this log to confirm it's being triggered
-
     // Fetch all users and GCash data
     Promise.all([
         fetch('https://earthph.sdevtech.com.ph/users/getUsers').then(response => response.json()),
         fetch('https://earthph.sdevtech.com.ph/gCash/getAllGcash').then(response => response.json())
     ])
     .then(([usersData, gcashData]) => {
-        console.log('Fetched users and GCash data:', usersData, gcashData); // Log the fetched data
-
-
         let userqualification = "";
         // Clear existing rows in all tables
         const adminTableBody = document.getElementById('adminTableBody');
@@ -163,8 +145,6 @@ const openGCashModal = () => {
             console.error("Matched user not found in localStorage");
             return;
         }
-
-        console.log('Matched User:', matchedUser); // Log matched user data
 
         if (matchedUser.role === "Admin") {
             userqualification = "teamLeader";
@@ -185,11 +165,8 @@ const openGCashModal = () => {
                 
                 // Add a click event listener to the row
                 row.addEventListener('click', () => {
-                    console.log('User data clicked:', user); // Log the user data for the clicked row
-        
                     // Open the Send Funds modal
-                    $('#sendFundsModal').modal('show');  // Open the modal using Bootstrap's modal method
-        
+                    $('#sendFundsModal').modal('show');  // Open the modal using Bootstrap's modal method        
                     // Populate the admin name in the modal
                     document.getElementById('adminName').textContent = `${user.firstName} ${user.lastName}`;
         

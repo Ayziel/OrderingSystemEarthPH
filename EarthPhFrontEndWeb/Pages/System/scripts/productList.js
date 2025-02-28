@@ -1,7 +1,5 @@
 const userRole = localStorage.getItem('userRole');
 const usertoken = localStorage.getItem('authToken');
-console.log("userRole", userRole);
-console.log("usertoken", usertoken);
 
 // Function to truncate text for display
 function truncateText(text, maxLength) {
@@ -62,8 +60,6 @@ function populateProducts(products) {
     products.forEach(product => {
         const row = document.createElement('tr');
         row.setAttribute('data-product-id', product._id); // Store product ID in dataset
-        console.log("Product ID:", product._id);
-
         const priceWithDiscount = product.discount ? (product.price - (product.price * product.discount / 100)) : product.price;
 
         row.innerHTML = `
@@ -168,25 +164,12 @@ function populateProducts(products) {
     });
 }
 
-
-// Example function to update the product data
-function updateProductData(productId, updatedProduct) {
-    // Here, you would typically make an API call to update the product data
-    // For now, we're just logging the updated product
-    console.log(`Updating product ${productId}:`, updatedProduct);
-}
-
-
 // Ensure the delete button exists before adding an event listener
 const deleteProductButton = document.getElementById('delete-product');
 
 if (deleteProductButton) {
     deleteProductButton.addEventListener('click', async () => {
         const modalProductId = document.getElementById('modal-product-id').dataset.productId;
-    
-        // Log the product ID before making the delete request
-        console.log("Deleting Product ID:", modalProductId);
-    
         if (!modalProductId) {
             alert('No product selected to delete!');
             return;
@@ -202,10 +185,7 @@ if (deleteProductButton) {
                     'Content-Type': 'application/json'
                 }
             });
-    
             const responseText = await response.text(); // Get raw response text
-            console.log('Response text:', responseText);
-    
             if (!response.ok) {
                 throw new Error(responseText || 'Failed to delete product.');
             }
@@ -225,11 +205,7 @@ if (deleteProductButton) {
     
     
 }
-
-
-
 function exportToExcel() {
-    console.log("Exporting products to Excel...");
 
     fetch('https://earthph.sdevtech.com.ph/products/getProduct')
         .then(response => {

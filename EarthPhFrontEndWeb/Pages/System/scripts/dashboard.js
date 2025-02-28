@@ -8,29 +8,11 @@ let customers = 0;
 let agents = 0;
 let topSales = [];
 let myLineChart= null;
-
-
 const userRole = localStorage.getItem('userRole');
 const usertoken = localStorage.getItem('authToken');
-console.log("userRole", userRole);
-console.log("usertoken", usertoken);
-
-// function logAllLocalStorageItems() {
-//     console.log("Items in localStorage:");
-//     for (let i = 0; i < localStorage.length; i++) {
-//         const key = localStorage.key(i); // Get the key at index `i`
-//         const value = localStorage.getItem(key); // Get the value associated with the key
-//         console.log(`${key}: ${value}`);
-//     }
-// }
-
-// // Call the function
-// logAllLocalStorageItems();
-
 
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
-    console.log("token", token);
     if (!token) {
         window.location.href = 'https://earthhomecareph.astute.services/System/login.html';  // Redirect to login page if no token
     }
@@ -455,7 +437,6 @@ function getBackgroundColor(index) {
 
 // Process and send order data function
 function processAndSendOrderData() {
-    console.log('Fetching orders from the backend...');
     fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
         .then(response => {
             if (!response.ok) {
@@ -465,7 +446,6 @@ function processAndSendOrderData() {
             return response.json();
         })
         .then(orders => {
-            console.log('Orders fetched:', orders);
             if (!orders || orders.length === 0) {
                 console.log('No orders found.');
                 return;

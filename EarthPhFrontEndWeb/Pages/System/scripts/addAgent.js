@@ -2,8 +2,7 @@
 
 const userRole = localStorage.getItem('userRole');
 const usertoken = localStorage.getItem('authToken');
-console.log("userRole", userRole);
-console.log("usertoken", usertoken);
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const userForm = document.getElementById('userForm');

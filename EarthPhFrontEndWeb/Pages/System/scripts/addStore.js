@@ -1,7 +1,5 @@
 const userRole = localStorage.getItem('userRole');
 const usertoken = localStorage.getItem('authToken');
-console.log("userRole", userRole);
-console.log("usertoken", usertoken);
 let tin = '';
 document.addEventListener('DOMContentLoaded', () => {
     const userForm = document.getElementById('userForm');
@@ -48,11 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
             uid,
             tin
           };
-          
-        
-        
-        // Log the data being sent for debugging
-        console.log('Request Body:', storeData);
 
         try {
             const response = await fetch('https://earthph.sdevtech.com.ph/stores/createOrUpdateStore', {

@@ -1,8 +1,5 @@
 const userRole = localStorage.getItem('userRole');
 const usertoken = localStorage.getItem('authToken');
-console.log("userRole", userRole);
-console.log("usertoken", usertoken);
-
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
 
@@ -129,7 +126,6 @@ document.getElementById('installButton').addEventListener('click', () => {
 
 // Event to hide the install button if the app is already installed
 window.addEventListener('appinstalled', () => {
-    console.log('PWA installed');
     // Hide the install button after installation
     document.getElementById('installButton').style.display = 'none';
 });

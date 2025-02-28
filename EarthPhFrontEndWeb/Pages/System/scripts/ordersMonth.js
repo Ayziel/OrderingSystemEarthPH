@@ -1,8 +1,5 @@
 const userRole = localStorage.getItem('userRole');
 const usertoken = localStorage.getItem('authToken');
-console.log("userRole", userRole);
-console.log("usertoken", usertoken);
-
 document.addEventListener('DOMContentLoaded', () => {
     fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
         .then(response => {
@@ -22,17 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const userUid = matchedUser ? matchedUser.uid : null;
             const userRole = matchedUser ? matchedUser.role : null;
             const userName = matchedUser ? matchedUser.name : null;
-            console.log('Matched User:', matchedUser);
 
             // Get current month dynamically
             const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
             
             // Filtering logic
             if (userRole === 'agent' && userUid) {
-                console.log("You're an agent")
                 orders = orders.filter(order => order.userUid === userUid && order.orderDate.startsWith(currentMonth));
             } else if (userRole === 'teamLeader') {
-                console.log("You're a Team Leader")
                 orders = orders.filter(order => order.teamLeaderName === matchedUser.firstName + ' ' + matchedUser.lastName && order.orderDate.startsWith(currentMonth));
             } else {
                 // Show only current month's orders for other roles
@@ -102,8 +96,6 @@ function populateOrders(orders) {
         row.querySelector('.status-dropdown').addEventListener('change', (e) => {
             const updatedStatus = e.target.value;
             const orderId = e.target.getAttribute('data-order-id');
-            console.log(`Order ID: ${orderId}, Updated Status: ${updatedStatus}`);
-            
             // Call the updateOrderStatus function
             updateOrderStatus(orderId, updatedStatus);
         });
@@ -273,7 +265,6 @@ function openModal(order) {
     // Update the order summary (total amount and total items)
     const updateOrderSummary = (products) => {
         const { totalAmount, totalItems } = calculateTotalAmountAndItems(products);
-        console.log('Updating order summary: totalAmount', totalAmount, 'totalItems', totalItems);
         document.getElementById('total-amount').textContent = `₱ ${totalAmount.toFixed(2)}`;
         document.getElementById('total-items').textContent = totalItems;
     };
@@ -286,7 +277,6 @@ function openModal(order) {
             totalAmount += product.total;
             totalItems += product.quantity;
         });
-        console.log('Calculated totalAmount:', totalAmount, 'totalItems:', totalItems);
         return { totalAmount, totalItems };
     }
 
@@ -304,7 +294,6 @@ function openModal(order) {
 
     // Handle save button click
     document.getElementById('save-button').addEventListener('click', () => {
-        console.log('Save button clicked');
 
         const updatedProducts = order.products.map((product, index) => {
             const price = parseFloat(document.querySelectorAll('.product-price')[index].value);
@@ -319,9 +308,6 @@ function openModal(order) {
 
         // Recalculate total amount and total items after the update
         const { totalAmount, totalItems } = calculateTotalAmountAndItems(updatedProducts);
-        console.log('Updated products:', updatedProducts);
-        console.log('Sending data to the backend: totalAmount', totalAmount, 'totalItems', totalItems);
-
         // Update the order with new products, totalAmount, and totalItems
         fetch(`https://earthph.sdevtech.com.ph/orders/updateOrders/${order._id}`, {
             method: 'PUT',
@@ -337,9 +323,7 @@ function openModal(order) {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Response from backend:', data);
             if (data.message === 'Order updated successfully') {
-                console.log('Order updated successfully');
                 window.location.reload(); // Refresh the page to get the updated data
             } else {
                 console.error('Failed to update order:', data.message);
@@ -380,8 +364,6 @@ async function exportToExcel(orders) {
         // Fetch users
         const usersResponse = await fetch('https://earthph.sdevtech.com.ph/users/getUsers');
         const usersData = await usersResponse.json();
-        console.log('Users API Response:', usersData); // Debugging step
-
         // Ensure usersData is an array
         const users = Array.isArray(usersData) ? usersData : usersData.users;
         if (!Array.isArray(users)) {

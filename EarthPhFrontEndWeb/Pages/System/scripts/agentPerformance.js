@@ -24,9 +24,7 @@ fetch('https://earthph.sdevtech.com.ph/users/getUsers')
                 return orderResponse.json();
             })
             .then(orderData => {
-                console.log("Order Data:", orderData); // Log order data for debugging
 
-                // Check if 'orders' exists in the response and handle errors if not
                 const orders = orderData || [];
                 if (orders.length === 0) {
                     console.log('No orders found.');

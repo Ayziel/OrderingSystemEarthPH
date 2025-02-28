@@ -1,3 +1,6 @@
+const userRole = localStorage.getItem('userRole');
+const usertoken = localStorage.getItem('authToken');
+
 fetch('https://earthph.sdevtech.com.ph/viewStoreRoutes/getStores')
     .then(response => {
         if (response.status === 404) {

@@ -1,4 +1,7 @@
 // Fetch the users data from the server
+const userRole = localStorage.getItem('userRole');
+const usertoken = localStorage.getItem('authToken');
+
 fetch('https://earthph.sdevtech.com.ph/users/getUsers')
     .then(response => {
         if (!response.ok) {
