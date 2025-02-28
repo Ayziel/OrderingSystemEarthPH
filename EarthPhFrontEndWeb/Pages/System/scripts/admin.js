@@ -93,8 +93,10 @@ function openModal(user) {
     document.getElementById('modal-email').textContent = user.email;
     document.getElementById('modal-team').textContent = user.team;  // NOT EDITABLE
     document.getElementById('modal-role').textContent = user.role;  // NOT EDITABLE
+    document.getElementById('modal-area').textContent = user.area ? user.area : "No Area";
     document.getElementById('modal-address').textContent = user.address;
     document.getElementById('modal-password').textContent = user.password;
+ 
     
 
     // Show the modal
@@ -156,6 +158,12 @@ function enableEditing() {
     replaceTextWithInput('modal-email');
     replaceTextWithInput('modal-address');
     replaceTextWithInput('modal-password');
+    replaceTextWithDropdown('modal-area', [
+        { label: 'Cavite', value: 'Cavite' },
+        { label: 'Pampanga', value: 'Pampanga'},
+        { label: 'GMA', value: 'GMA' }
+
+    ]);
     replaceTextWithDropdown('modal-team', [
         { label: 'Betta', value: 'Betta' },
         { label: 'Alpha', value: 'Alpha' },
@@ -236,7 +244,8 @@ function saveUpdatedData(userId) {
         userName: document.getElementById('modal-userName')?.value?.trim() || "",
         tin: document.getElementById('modal-tin')?.value?.trim() || "",
         uid: document.getElementById('modal-uid')?.value?.trim() || "",
-        password: document.getElementById('modal-password')?.value?.trim() || ""
+        password: document.getElementById('modal-password')?.value?.trim() || "",
+        area:document.getElementById('modal-area')?.value?.trim() || "",
     };
 
     console.log("Updating user:", userId, updatedUser);

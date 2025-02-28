@@ -15,6 +15,7 @@ const surveyRoutes = require('./EarthPhBackEndServer/routes/surveyRoutes');
 const stockRoutes = require('./EarthPhBackEndServer/routes/stockRoutes');
 const gCashRoutes = require('./EarthPhBackEndServer/routes/gcashMoneyRoutes');
 const viewStoreRoutes = require('./EarthPhBackEndServer/routes/viewStoreRoutes');
+const areaRoutes = require('./EarthPhBackEndServer/routes/areaRoutes');
 const StockModel = require('./EarthPhBackEndServer/models/stockModel');
 
 const app = express();
@@ -69,6 +70,7 @@ app.use('/survey', surveyRoutes);
 app.use('/stocks', stockRoutes);
 app.use('/gcash', gCashRoutes);
 app.use('/viewStoreRoutes', viewStoreRoutes);
+app.use('/area', areaRoutes);
 
 // Error handling middleware (if needed)
 app.use((err, req, res, next) => {
