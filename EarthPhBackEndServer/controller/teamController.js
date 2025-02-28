@@ -48,7 +48,11 @@ async function deleteTeam(req, res) {
   console.log('DELETE /deleteTeam route hit');
 
   try {
-    const deletedTeam = await TeamModel.findOneAndDelete({});
+    // Get teamId from request params
+    const teamId = req.params.id;
+
+    // Find and delete the team by its ID
+    const deletedTeam = await TeamModel.findByIdAndDelete(teamId);
     
     if (!deletedTeam) {
       return res.status(404).json({ message: 'No team found to delete' });
@@ -65,3 +69,4 @@ async function deleteTeam(req, res) {
 }
 
 module.exports = { getTeam, createTeam, deleteTeam };
+

@@ -99,7 +99,7 @@ document.getElementById("addTeamBtn").addEventListener("click", function () {
 
 
 
-// Handle deleting a team
+
 function deleteTeam(teamId, teamItem) {
     fetch(`https://earthph.sdevtech.com.ph/team/deleteTeam/${teamId}`, {
         method: 'DELETE',
@@ -109,6 +109,8 @@ function deleteTeam(teamId, teamItem) {
             if (data.message === 'Team deleted successfully') {
                 teamItem.remove();
                 alert('Team deleted successfully');
+            } else {
+                alert('Failed to delete team: ' + data.message);
             }
         })
         .catch(error => {

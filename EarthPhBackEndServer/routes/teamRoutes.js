@@ -9,6 +9,6 @@ router.post('/createTeam', teamController.createTeam);
 router.get('/getTeam', teamController.getTeam);
 
 // Route to delete the team
-router.delete('/deleteTeam', teamController.deleteTeam);
+router.delete('/deleteTeam/:id', teamController.deleteTeam);
 
 module.exports = router;
