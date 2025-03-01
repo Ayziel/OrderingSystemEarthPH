@@ -17,7 +17,7 @@ async function getStores(req, res) {
 async function createStore(req, res) {
   console.log('Request Body (Create):', req.body);
 
-  const { storeName, firstName, lastName, storeAddress, phoneNumber, email, status, uid, tin, guid } = req.body;
+  const { storeName, firstName, lastName, storeAddress, phoneNumber, email, status, uid, tin, guid, area } = req.body;
 
   try {
     // Create a new store instance
@@ -31,7 +31,8 @@ async function createStore(req, res) {
       status,
       uid,
       tin,
-      guid
+      guid,
+      area,
     });
 
     await newStore.save();
@@ -46,7 +47,7 @@ async function createStore(req, res) {
 async function updateStore(req, res) {
   console.log('Request Body (Update):', req.body);
 
-  const { storeId, storeName, firstName, lastName, storeAddress, phoneNumber, email, status, tin, guid } = req.body;
+  const { storeId, storeName, firstName, lastName, storeAddress, phoneNumber, email, status, tin, guid, area } = req.body;
 
   if (!storeId) {
     return res.status(400).json({ message: 'Store ID is required for updating' });
@@ -69,6 +70,7 @@ async function updateStore(req, res) {
     store.status = status || store.status;
     store.tin = tin || store.tin;
     store.guid = guid || store.guid;
+    store.area = area || store.area;
 
     await store.save();
     res.json({ message: 'Store updated successfully', store });

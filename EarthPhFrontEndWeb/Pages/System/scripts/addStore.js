@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const phoneNumber = document.getElementById('phoneNumber').value;
         const email = document.getElementById('email').value;
         const storeId = document.getElementById('storeId')?.value || null; // Check if updating
-
+        const area = document.getElementById('areaSelect').value;
         const uid = storeId ? document.getElementById('uid').value : uuid.v4(); // Use existing UID if updating
         const guid = generateGUID(); // Generate GUID
 
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Check if any required fields are empty
-        if (!storeAddress || !storeName || !status || !firstName || !lastName || !phoneNumber || !email || !tin) {
+        if (!storeAddress || !storeName || !status || !firstName || !lastName || !phoneNumber || !email || !tin || !area) {
             alert("Please fill in all fields.");
             return;
         }
@@ -48,7 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
             email,
             uid,
             guid,  // Add GUID right after UID
-            tin
+            tin,
+            area
         };
 
         // Decide whether to create or update the store
@@ -114,3 +115,26 @@ document.getElementById('tin').addEventListener('input', function (event) {
     event.target.value = formatted;
     tin = formatted;
 });
+
+function fetchAreas() {
+    fetch('https://earthph.sdevtech.com.ph/area/getAreas')
+        .then(response => response.json())
+        .then(data => {
+            const areaSelect = document.getElementById("areaSelect");
+            areaSelect.innerHTML = '<option value="" disabled selected>Select Area</option>'; // Reset options
+
+            data.areas.forEach(area => {
+                const option = document.createElement("option");
+                option.value = area.areaCode; // Use areaCode as value
+                option.textContent = `${area.area} [${area.areaCode}]`; // Display "Area [Area Code]"
+                areaSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching areas:', error);
+            document.getElementById("areaSelect").innerHTML = '<option value="" disabled selected>Error loading areas</option>';
+        });
+}
+
+// Fetch areas when page loads
+document.addEventListener('DOMContentLoaded', fetchAreas);

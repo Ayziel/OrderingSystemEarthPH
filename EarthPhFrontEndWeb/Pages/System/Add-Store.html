@@ -7,7 +7,7 @@
     <!----======== CSS ======== -->
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/navbar.css">
-    <link rel="stylesheet" href="./styles/addAgent.css">
+    <link rel="stylesheet" href="./styles/addStore.css">
     <!----===== Icons ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
@@ -159,53 +159,62 @@
             </div>
 
             <form action="#" class="form" id="userForm">
-                <div class="column">
-                    <div class="input-box">
-                        <label>Store Name</label>
-                        <input type="text" id="storeName" placeholder="Enter store name" required />
-                    </div>
-                    <div class="input-box">
-                        <label>Store Address</label>
-                        <input type="text" id="storeAddress" placeholder="Enter store address" required />
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="input-box">
-                        <label>Status</label>
-                        <select id="role" required class="roles">
-                            <option value="" disabled selected>Select status</option>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                    </div>
-                    <div class="input-box">
-                        <label>First Name</label>
-                        <input type="text" id="firstName" placeholder="Enter first name" required />
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="input-box">
-                        <label>Last Name</label>
-                        <input type="text" id="lastName" placeholder="Enter last name" required />
-                    </div>
-                    <div class="input-box">
-                        <label>Phone Number</label>
-                        <input type="number" id="phoneNumber" placeholder="Enter phone number" required />
-                    </div>
-                </div>
-                <div class="column">
+              <div class="column">
                   <div class="input-box">
-                    <label>Email Address</label>
-                    <input type="email" id="email" placeholder="Enter email address" required />
+                      <label>Store Name</label>
+                      <input type="text" id="storeName" placeholder="Enter store name" required />
+                  </div>
+                  <div class="input-box">
+                    <label>Status</label>
+                    <select id="role" required class="roles">
+                        <option value="" disabled selected>Select status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
                 </div>
-                <div class="input-box">
-                  <label>Tin</label>
-                  <input type="text" id="tin" placeholder="Enter TIN (XXX-XXX-XXX-XXX)" maxlength="15" required/>
               </div>
+              <div class="column">
+                  <div class="input-box">
+                      <label>Area</label>
+                      <select id="areaSelect" class="areas">
+                          <option value="" disabled selected>Loading areas...</option>
+                      </select>
+                  </div>
+                  <div class="input-box">
+                    <label>Store Address (Location)</label>
+                    <input type="text" id="storeAddress" placeholder="Enter store address" required />
+                </div>
               </div>
-
-                <button id="addStoreSubmit" type="submit">Submit</button>
-            </form>
+              <div class="column">
+                  <div class="input-box">
+                      <label>First Name</label>
+                      <input type="text" id="firstName" placeholder="Enter first name" required />
+                  </div>
+                  <div class="input-box">
+                      <label>Last Name</label>
+                      <input type="text" id="lastName" placeholder="Enter last name" required />
+                  </div>
+              </div>
+              <div class="column">
+                  <div class="input-box">
+                      <label>Phone Number</label>
+                      <input type="number" id="phoneNumber" placeholder="Enter phone number" required />
+                  </div>
+                  <div class="input-box">
+                      <label>Email Address</label>
+                      <input type="email" id="email" placeholder="Enter email address" required />
+                  </div>
+              </div>
+              <div class="column">
+                  <div class="input-box">
+                      <label>TIN</label>
+                      <input type="text" id="tin" placeholder="Enter TIN (XXX-XXX-XXX-XXX)" maxlength="15" required />
+                  </div>
+              </div>
+              <button id="addStoreSubmit" type="submit">Submit</button>
+          </form>
+          
+          
         </div>
     </div>
 </section>

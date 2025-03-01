@@ -44,6 +44,10 @@ const storeSchema = new mongoose.Schema({
   guid: {
     type: String,
     required: true // Optional status field
+  },
+  area: {
+    type: String,
+    required: true
   }
 });
 
