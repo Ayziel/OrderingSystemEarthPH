@@ -51,6 +51,7 @@ exports.createOrder = async (req, res) => {
             remarks: orderData.remarks,
             products: products,
             uid: orderData.uid,
+            guid: orderData.guid,
             storeUid: orderData.storeUid,
             userUid: orderData.userUid,
             receiptUid: orderData.receiptUid,

@@ -217,6 +217,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Check if an image was selected and convert it to base64
         const file = imageInput.files[0];
+        if (!file) {
+            window.alert('Please select an image before submitting.');
+            return
+        }
+
         if (file) {
             const reader = new FileReader();
             reader.onloadend = function() {

@@ -500,11 +500,22 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     */
 
+    function generateGUID() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hour = String(now.getHours()).padStart(2, '0');
+        const minute = String(now.getMinutes()).padStart(2, '0');
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        return `${year}${month}${day}${hour}${minute}${randomNum}`;
+    }
+
 
     const initialize = () => {
         handleModals();
         handleReceiptModal();
-
+        const GUID = generateGUID(); //ADD: Introduced GUID
         const orderUid = uuid.v4();
         const stockUid = uuid.v4();
         const generateReceiptUid = () => {
@@ -561,6 +572,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 remarks: document.getElementById('remarks').value ? document.getElementById('remarks').value : "No Remarks",
                 paymentImage: document.getElementById('paymentMode').value === 'credit' ? base64PaymentImage : "No Image",
                 uid: orderUid,
+                guid: GUID,
                 storeUid: storeData.uid, //none
                 userUid: matchedUser.uid,
                 receiptUid: receiptUid,

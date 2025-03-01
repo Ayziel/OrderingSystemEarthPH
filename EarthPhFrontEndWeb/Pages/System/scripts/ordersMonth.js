@@ -1,5 +1,6 @@
 const userRole = localStorage.getItem('userRole');
 const usertoken = localStorage.getItem('authToken');
+
 document.addEventListener('DOMContentLoaded', () => {
     fetch('https://earthph.sdevtech.com.ph/orders/getOrders')
         .then(response => {
@@ -14,45 +15,66 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Get the user data from localStorage
+            // Get user details from localStorage
             const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
-            const userUid = matchedUser ? matchedUser.uid : null;
-            const userRole = matchedUser ? matchedUser.role : null;
-            const userName = matchedUser ? matchedUser.name : null;
+            const userUid = matchedUser?.uid || null;
+            const userRole = matchedUser?.role || null;
+            const fullName = matchedUser?.firstName + ' ' + matchedUser?.lastName;
 
-            // Get current month dynamically
-            const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
-            
-            // Filtering logic
-            if (userRole === 'agent' && userUid) {
-                orders = orders.filter(order => order.userUid === userUid && order.orderDate.startsWith(currentMonth));
-            } else if (userRole === 'teamLeader') {
-                orders = orders.filter(order => order.teamLeaderName === matchedUser.firstName + ' ' + matchedUser.lastName && order.orderDate.startsWith(currentMonth));
+            // Get the first and last day of the current month in UTC
+            const now = new Date();
+            const firstDayOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+            const lastDayOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0, 23, 59, 59, 999));
+
+            console.log("Filtering from:", firstDayOfMonth.toISOString(), "to:", lastDayOfMonth.toISOString());
+
+            // Ensure orderDate is valid before filtering
+            const isValidDate = (date) => date && !isNaN(new Date(date).getTime());
+
+            // Filtering orders for the current month
+            orders = orders.filter(order => {
+                const orderDate = isValidDate(order.orderDate) ? new Date(order.orderDate) : null;
+                if (!orderDate) return false; // Skip invalid dates
+
+                return orderDate >= firstDayOfMonth && orderDate <= lastDayOfMonth &&
+                    (userRole === 'agent' && order.userUid === userUid || 
+                     userRole === 'teamLeader' && order.teamLeaderName === fullName || 
+                     userRole !== 'agent' && userRole !== 'teamLeader'); 
+            });
+
+            console.log("Filtered orders:", orders.length);
+
+            // Sort orders by date (latest first)
+            orders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+
+            // Ensure pagination only runs if orders exist
+            if (orders.length > 0) {
+                $('#pagination-container').pagination({
+                    dataSource: orders,
+                    pageSize: 10,
+                    showPageNumbers: true,
+                    showPrevious: true,
+                    showNext: true,
+                    callback: function (data) {
+                        populateOrders(data);
+                    }
+                });
             } else {
-                // Show only current month's orders for other roles
-                orders = orders.filter(order => order.orderDate.startsWith(currentMonth));
+                console.log('No orders found for this month.');
+                document.querySelector('.orders-body').innerHTML = `<tr><td colspan="10">No orders available for this month.</td></tr>`;
             }
 
-            // Sort orders by order date (ascending) for better readability
-            orders.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
-            orders.reverse();
-            $('#pagination-container').pagination({
-                dataSource: orders,
-                pageSize: 10, // Change this to the number of rows per page
-                showPageNumbers: true,
-                showPrevious: true,
-                showNext: true,
-                callback: function (data, pagination) {
-                    populateOrders(data);
-                }
-            });
-            
-
+            // Export to Excel button
             const exportButton = document.getElementById('export-btn');
-            exportButton.addEventListener('click', () => exportToExcel(orders));
+            if (exportButton) {
+                exportButton.addEventListener('click', () => exportToExcel(orders));
+            }
         })
         .catch(error => console.error('Error fetching orders:', error));
 });
+
+
+
 
 
 function populateOrders(orders) {
@@ -96,6 +118,7 @@ function populateOrders(orders) {
         row.querySelector('.status-dropdown').addEventListener('change', (e) => {
             const updatedStatus = e.target.value;
             const orderId = e.target.getAttribute('data-order-id');
+
             // Call the updateOrderStatus function
             updateOrderStatus(orderId, updatedStatus);
         });
@@ -308,6 +331,7 @@ function openModal(order) {
 
         // Recalculate total amount and total items after the update
         const { totalAmount, totalItems } = calculateTotalAmountAndItems(updatedProducts);
+
         // Update the order with new products, totalAmount, and totalItems
         fetch(`https://earthph.sdevtech.com.ph/orders/updateOrders/${order._id}`, {
             method: 'PUT',
@@ -323,7 +347,9 @@ function openModal(order) {
         })
         .then(response => response.json())
         .then(data => {
+            console.log('Response from backend:', data);
             if (data.message === 'Order updated successfully') {
+                console.log('Order updated successfully');
                 window.location.reload(); // Refresh the page to get the updated data
             } else {
                 console.error('Failed to update order:', data.message);
@@ -332,12 +358,6 @@ function openModal(order) {
         .catch(error => console.error('Error updating order:', error));
     });
 }
-
-
-
-
-
-
 
 function updateOrderStatus(orderId, status) {
     fetch(`https://earthph.sdevtech.com.ph/orders/updateOrders/${orderId}`, {
@@ -364,6 +384,8 @@ async function exportToExcel(orders) {
         // Fetch users
         const usersResponse = await fetch('https://earthph.sdevtech.com.ph/users/getUsers');
         const usersData = await usersResponse.json();
+        console.log('Users API Response:', usersData); // Debugging step
+
         // Ensure usersData is an array
         const users = Array.isArray(usersData) ? usersData : usersData.users;
         if (!Array.isArray(users)) {

@@ -18,6 +18,10 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    guid: {
+        type: String,
+        required: true
+    },
     storeUid: {
         type: String,
         required: true
