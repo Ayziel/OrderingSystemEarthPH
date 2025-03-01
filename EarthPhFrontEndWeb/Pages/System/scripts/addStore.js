@@ -5,7 +5,7 @@ let tin = '';
 document.addEventListener('DOMContentLoaded', () => {
     const userForm = document.getElementById('userForm');
 
-    userForm.addEventListener('submit', async function(event) {
+    userForm.addEventListener('submit', async function (event) {
         event.preventDefault(); // Prevent the form from refreshing the page
 
         // Capture the form data
@@ -16,11 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const lastName = document.getElementById('lastName').value;
         const phoneNumber = document.getElementById('phoneNumber').value;
         const email = document.getElementById('email').value;
-        const uid = uuid.v4(); // Generate UID
+        const storeId = document.getElementById('storeId')?.value || null; // Check if updating
+
+        const uid = storeId ? document.getElementById('uid').value : uuid.v4(); // Use existing UID if updating
         const guid = generateGUID(); // Generate GUID
 
         // Restrict input to only numbers and dashes, ensuring TIN format
-        document.getElementById('tin').addEventListener('keypress', function(event) {
+        document.getElementById('tin').addEventListener('keypress', function (event) {
             if (!/[\d\-]/.test(event.key)) {
                 event.preventDefault();
             }
@@ -35,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Convert phone numbers to numbers (ensure they're treated as numeric values)
         const parsedPhoneNumber = parseInt(phoneNumber, 10);
 
-        // Create a data object to send in the request
+        // Create a data object
         const storeData = {
             storeAddress,
             storeName,
@@ -49,23 +51,30 @@ document.addEventListener('DOMContentLoaded', () => {
             tin
         };
 
+        // Decide whether to create or update the store
+        let apiUrl = storeId
+            ? `https://earthph.sdevtech.com.ph/stores/updateStore`
+            : `https://earthph.sdevtech.com.ph/stores/createStore`;
+
+        let method = storeId ? 'PUT' : 'POST';
+
         try {
-            const response = await fetch('https://earthph.sdevtech.com.ph/stores/createOrUpdateStore', {
-                method: 'POST',
+            const response = await fetch(apiUrl, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${usertoken}`
                 },
-                body: JSON.stringify(storeData) // Convert the data to JSON
+                body: JSON.stringify(storeId ? { storeId, ...storeData } : storeData)
             });
 
             const result = await response.json();
 
             if (response.ok) {
-                alert('Store created successfully');
+                alert(storeId ? 'Store updated successfully' : 'Store created successfully');
                 window.location.reload();
             } else {
-                alert('Error creating store: ' + result.message);
+                alert('Error: ' + result.message);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -86,7 +95,8 @@ function generateGUID() {
     return `${year}${month}${day}${hour}${minute}${randomNum}`;
 }
 
-document.getElementById('tin').addEventListener('input', function(event) {
+// Format TIN input
+document.getElementById('tin').addEventListener('input', function (event) {
     let value = event.target.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
     let formatted = '';
 

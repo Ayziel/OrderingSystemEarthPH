@@ -13,39 +13,15 @@ async function getStores(req, res) {
   }
 }
 
-// Controller to create or update a store
-async function createOrUpdateStore(req, res) {
-  console.log('Request Body:', req.body);
+// Controller to create a new store
+async function createStore(req, res) {
+  console.log('Request Body (Create):', req.body);
 
-  const { storeId, storeName, firstName, lastName, storeAddress, phoneNumber, workPhone, email, status, uid, tin, guid } = req.body;
+  const { storeName, firstName, lastName, storeAddress, phoneNumber, email, status, uid, tin, guid } = req.body;
 
-  // If storeId is provided, it means we're updating an existing store
   try {
-    let store;
-    if (storeId) {
-      // Check if the store exists
-      store = await StoreModel.findById(storeId);
-      if (!store) {
-        return res.status(404).json({ message: 'Store not found' });
-      }
-
-      // Update store fields
-      store.name = storeName || store.name;
-      store.firstName = firstName || store.firstName;
-      store.lastName = lastName || store.lastName;
-      store.address = storeAddress || store.address;
-      store.phone = phoneNumber || store.phone;
-      store.email = email || store.email;
-      store.status = status || store.status;
-      store.tin = tin || store.tin;
-      store.guid = guid || store.guid;
-
-      await store.save();
-      return res.json({ message: 'Store updated successfully', store });
-    }
-
-    // If storeId is not provided, create a new store
-    store = new StoreModel({
+    // Create a new store instance
+    const newStore = new StoreModel({
       name: storeName,
       firstName,
       lastName,
@@ -54,17 +30,55 @@ async function createOrUpdateStore(req, res) {
       email,
       status,
       uid,
-      tin
+      tin,
+      guid
     });
 
-    await store.save();
-    res.json({ message: 'Store created successfully', store });
+    await newStore.save();
+    res.json({ message: 'Store created successfully', store: newStore });
   } catch (err) {
-    console.error('Error creating or updating store:', err);
-    res.status(500).json({ message: 'Error creating or updating store', error: err });
+    console.error('Error creating store:', err);
+    res.status(500).json({ message: 'Error creating store', error: err });
   }
 }
 
+// Controller to update an existing store
+async function updateStore(req, res) {
+  console.log('Request Body (Update):', req.body);
+
+  const { storeId, storeName, firstName, lastName, storeAddress, phoneNumber, email, status, tin, guid } = req.body;
+
+  if (!storeId) {
+    return res.status(400).json({ message: 'Store ID is required for updating' });
+  }
+
+  try {
+    // Find store by ID
+    const store = await StoreModel.findById(storeId);
+    if (!store) {
+      return res.status(404).json({ message: 'Store not found' });
+    }
+
+    // Update store fields
+    store.name = storeName || store.name;
+    store.firstName = firstName || store.firstName;
+    store.lastName = lastName || store.lastName;
+    store.address = storeAddress || store.address;
+    store.phone = phoneNumber || store.phone;
+    store.email = email || store.email;
+    store.status = status || store.status;
+    store.tin = tin || store.tin;
+    store.guid = guid || store.guid;
+
+    await store.save();
+    res.json({ message: 'Store updated successfully', store });
+  } catch (err) {
+    console.error('Error updating store:', err);
+    res.status(500).json({ message: 'Error updating store', error: err });
+  }
+}
+
+// Controller to delete a store
 async function deleteStore(req, res) {
   console.log('DELETE /deleteStore/:id route hit');
 
@@ -87,4 +101,4 @@ async function deleteStore(req, res) {
   }
 }
 
-module.exports = { getStores, createOrUpdateStore, deleteStore };
+module.exports = { getStores, createStore, updateStore, deleteStore };
