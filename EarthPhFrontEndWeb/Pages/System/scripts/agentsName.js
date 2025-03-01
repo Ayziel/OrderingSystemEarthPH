@@ -171,31 +171,79 @@ function enableEditing() {
     replaceTextWithInput('modal-email');
     replaceTextWithInput('modal-address');
     replaceTextWithInput('modal-password');
-    replaceTextWithDropdown('modal-area', [
-        { label: 'Cavite', value: 'Cavite' },
-        { label: 'Pampanga', value: 'Pampanga'},
-        { label: 'GMA', value: 'GMA' }
 
-    ]);
-    replaceTextWithDropdown('modal-team', [
-        { label: 'Betta', value: 'Betta' },
-        { label: 'Alpha', value: 'Alpha' },
-        { label: 'Gamma', value: 'Gamma' },
-        { label: 'Delta', value: 'Delta' }
-    ]);
+    // Fetch areas and populate modal-area dropdown
+    fetchAreas();
+
+    // Fetch teams and populate modal-team dropdown
+    fetchTeams();
+
     replaceTextWithDropdown('modal-role', [
         { label: 'Agent', value: 'agent' },
         { label: 'Team Leader', value: 'teamLeader' },
-        { label: 'Manager', value: 'manager' },
-        { label: 'Admin', value: 'admin' }
+        { label: 'Admin', value: 'Admin' }
     ]);
 
     // Hide Edit button, Show Save button
     document.getElementById('edit-button').style.display = 'none';
     const saveButton = document.getElementById('save-button');
     saveButton.style.display = 'block';
+
     saveButton.removeAttribute('disabled');  // ✅ Enable save button
 }
+
+function fetchAreas() {
+    fetch('https://earthph.sdevtech.com.ph/area/getAreas')
+        .then(response => response.json())
+        .then(data => {
+            const areaDropdown = document.getElementById('modal-area');
+            areaDropdown.innerHTML = ''; // Clear current dropdown options
+
+            // Populate with areas
+            data.areas.forEach(area => {
+                const option = document.createElement('option');
+                option.value = area.area; // or area._id if needed
+                option.textContent = area.area;
+                areaDropdown.appendChild(option);
+            });
+
+            // Replace text content with dropdown after fetching
+            replaceTextWithDropdown('modal-area', data.areas.map(area => ({
+                label: area.area,
+                value: area.area // Assuming areaCode is the value used
+            })));
+        })
+        .catch(error => {
+            console.error('Error fetching areas:', error);
+        });
+}
+
+function fetchTeams() {
+    fetch('https://earthph.sdevtech.com.ph/team/getTeam')
+        .then(response => response.json())
+        .then(data => {
+            const teamDropdown = document.getElementById('modal-team');
+            teamDropdown.innerHTML = ''; // Clear current dropdown options
+
+            // Populate with teams
+            data.teams.forEach(team => {
+                const option = document.createElement('option');
+                option.value = team.teamName; // Assuming _id is used as value
+                option.textContent = team.teamName;
+                teamDropdown.appendChild(option);
+            });
+
+            // Replace text content with dropdown after fetching
+            replaceTextWithDropdown('modal-team', data.teams.map(team => ({
+                label: team.teamName,
+                value: team.teamName // Assuming _id is used as value
+            })));
+        })
+        .catch(error => {
+            console.error('Error fetching teams:', error);
+        });
+}
+
 // Function to replace text with an input field (only for editable fields)
 
 function replaceTextWithDropdown(id, options) {
