@@ -1,12 +1,13 @@
 const userRole = localStorage.getItem('userRole');
 const usertoken = localStorage.getItem('authToken');
 let tin = '';
+
 document.addEventListener('DOMContentLoaded', () => {
     const userForm = document.getElementById('userForm');
-  
+
     userForm.addEventListener('submit', async function(event) {
         event.preventDefault(); // Prevent the form from refreshing the page
-        
+
         // Capture the form data
         const storeAddress = document.getElementById('storeAddress').value;
         const storeName = document.getElementById('storeName').value;
@@ -15,11 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const lastName = document.getElementById('lastName').value;
         const phoneNumber = document.getElementById('phoneNumber').value;
         const email = document.getElementById('email').value;
-        const uid = uuid.v4();
+        const uid = uuid.v4(); // Generate UID
+        const guid = generateGUID(); // Generate GUID
 
         // Restrict input to only numbers and dashes, ensuring TIN format
-        document.getElementById('tin').addEventListener('keypress', function (event) {
-            // Allow numbers and dashes only
+        document.getElementById('tin').addEventListener('keypress', function(event) {
             if (!/[\d\-]/.test(event.key)) {
                 event.preventDefault();
             }
@@ -34,18 +35,19 @@ document.addEventListener('DOMContentLoaded', () => {
         // Convert phone numbers to numbers (ensure they're treated as numeric values)
         const parsedPhoneNumber = parseInt(phoneNumber, 10);
 
-        // Create a data object to send in the request (removed workPhone)
+        // Create a data object to send in the request
         const storeData = {
             storeAddress,
             storeName,
             status,
             firstName,
             lastName,
-            phoneNumber: parsedPhoneNumber,  // Use parsed phone number here
+            phoneNumber: parsedPhoneNumber,
             email,
             uid,
+            guid,  // Add GUID right after UID
             tin
-          };
+        };
 
         try {
             const response = await fetch('https://earthph.sdevtech.com.ph/stores/createOrUpdateStore', {
@@ -58,31 +60,36 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const result = await response.json();
-            
+
             if (response.ok) {
                 alert('Store created successfully');
-                // Reload the current window
                 window.location.reload();
             } else {
                 alert('Error creating store: ' + result.message);
             }
         } catch (error) {
-            if (error.response) {
-                console.error('API Error Response:', error.response);
-            } else {
-                console.error('Error:', error);
-            }
+            console.error('Error:', error);
             alert('There was an error with the request.');
         }
     });
 });
 
+// Generate GUID function
+function generateGUID() {
+    const date = new Date();
+    const year = String(date.getFullYear()).slice(2);
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hour = String(date.getHours()).padStart(2, '0');
+    const minute = String(date.getMinutes()).padStart(2, '0');
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    return `${year}${month}${day}${hour}${minute}${randomNum}`;
+}
 
-document.getElementById('tin').addEventListener('input', function (event) {
+document.getElementById('tin').addEventListener('input', function(event) {
     let value = event.target.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
     let formatted = '';
 
-    // Add dashes after every 3 digits
     for (let i = 0; i < value.length; i += 3) {
         if (formatted.length > 0) {
             formatted += '-';
@@ -90,14 +97,10 @@ document.getElementById('tin').addEventListener('input', function (event) {
         formatted += value.substring(i, i + 3);
     }
 
-    // Limit to 12 digits (15 characters including dashes)
     if (formatted.length > 15) {
         formatted = formatted.substring(0, 15);
     }
 
-    // Update the input field with the formatted TIN
     event.target.value = formatted;
-
-    // Store the formatted value in the global variable
     tin = formatted;
 });

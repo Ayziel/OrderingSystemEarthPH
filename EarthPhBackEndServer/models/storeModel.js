@@ -41,6 +41,10 @@ const storeSchema = new mongoose.Schema({
     type: String,
     required: true // Optional status field
   },
+  guid: {
+    type: String,
+    required: true // Optional status field
+  }
 });
 
 const Store = mongoose.model('Store', storeSchema);

@@ -88,7 +88,7 @@ function populateOrders(orders) {
     
         // Populate row with order data and add the button for 'Status' after the totalAmount
         row.innerHTML = `
-            <td class="table-data">${globalCounter++}</td>
+            <td class="table-data">${order.guid || 'No GUID'}</td>
             <td class="table-data">${order.storeName || 'No store name'}</td>
             <td class="table-data">${order.agentName || 'No agent name'}</td>
             <td class="table-data">${new Date(order.orderDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
@@ -104,24 +104,26 @@ function populateOrders(orders) {
                             : 'No method'
                     }
                 </td>
-            <td class="table-data">
-                <select class="status-dropdown" data-order-id="${order._id}" ${userRole === 'agent' ? 'disabled' : ''}>
-                    <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                    <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
-                    <option value="received" ${order.status === 'received' ? 'selected' : ''}>Received</option>
-                </select>
-            </td>
+
             <td class="open-button table-data">Open</td>
         `;
+
+        //     <td class="table-data">
+        //     <select class="status-dropdown" data-order-id="${order._id}" ${userRole === 'agent' ? 'disabled' : ''}>
+        //         <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+        //         <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
+        //         <option value="received" ${order.status === 'received' ? 'selected' : ''}>Received</option>
+        //     </select>
+        // </td>
     
         // Add change event listener to status dropdown (inside the loop)
-        row.querySelector('.status-dropdown').addEventListener('change', (e) => {
-            const updatedStatus = e.target.value;
-            const orderId = e.target.getAttribute('data-order-id');
-
-            // Call the updateOrderStatus function
-            updateOrderStatus(orderId, updatedStatus);
-        });
+        // row.querySelector('.status-dropdown').addEventListener('change', (e) => {
+        //     const updatedStatus = e.target.value;
+        //     const orderId = e.target.getAttribute('data-order-id');
+        
+        //     // Call the updateOrderStatus function
+        //     updateOrderStatus(orderId, updatedStatus);
+        // });
     
         // Add click event listener to row
         row.addEventListener('click', () => {
@@ -384,9 +386,6 @@ async function exportToExcel(orders) {
         // Fetch users
         const usersResponse = await fetch('https://earthph.sdevtech.com.ph/users/getUsers');
         const usersData = await usersResponse.json();
-        console.log('Users API Response:', usersData); // Debugging step
-
-        // Ensure usersData is an array
         const users = Array.isArray(usersData) ? usersData : usersData.users;
         if (!Array.isArray(users)) {
             console.error('Users data is not an array:', users);
@@ -396,33 +395,43 @@ async function exportToExcel(orders) {
         // Fetch products
         const productsResponse = await fetch('https://earthph.sdevtech.com.ph/products/getProduct');
         const productsData = await productsResponse.json();
-        console.log('Products API Response:', productsData); // Debugging step
-
-        // Ensure productsData is an array
         const products = Array.isArray(productsData) ? productsData : productsData.products;
         if (!Array.isArray(products)) {
             console.error('Products data is not an array:', products);
             return;
         }
 
+        // Fetch areas
+        const areasResponse = await fetch('https://earthph.sdevtech.com.ph/area/getAreas');
+        const areasData = await areasResponse.json();
+        const areas = Array.isArray(areasData) ? areasData : areasData.areas;
+        if (!Array.isArray(areas)) {
+            console.error('Areas data is not an array:', areas);
+            return;
+        }
+
         // Convert orders to worksheet format
         const data = orders.flatMap(order => {
             const matchedUser = users.find(user => user.uid === order.userUid);
-            const userID = matchedUser ? matchedUser.id || 'Not Found' : 'Not Found'; // Get 'id' if available
+            const userID = matchedUser ? matchedUser.id || 'Not Found' : 'Not Found';
+
+            const matchedArea = areas.find(area => area.name === order.area);
+            const areaCode = matchedArea ? matchedArea.areaCode : 'No Area Assigned';
 
             return order.products.map(product => {
                 const matchedProduct = products.find(prod => prod.uid === product.product_uid);
                 const productDescription = matchedProduct ? matchedProduct.productDescription : 'No Description';
 
                 return {
-                    OrderID: order._id,
+                    OrderID: order.guid ? order.guid : order._id,
                     CustomerID: userID,
                     TranDate: new Date(order.orderDate).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
                     Location: order.area,
+                    AreaCode: areaCode, // Added AreaCode
                     ItemCode: productDescription,
                     QTYSold: product.quantity,
                     UnitPrice: product.price,
-                    SalesAmt: product.quantity * product.price, // Might need adjustment
+                    SalesAmt: product.quantity * product.price,
                 };
             });
         });

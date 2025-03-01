@@ -88,6 +88,14 @@ function populateOrders(orders) {
 
             <td class="open-button table-data">Open</td>
         `;
+
+        //     <td class="table-data">
+        //     <select class="status-dropdown" data-order-id="${order._id}" ${userRole === 'agent' ? 'disabled' : ''}>
+        //         <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+        //         <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
+        //         <option value="received" ${order.status === 'received' ? 'selected' : ''}>Received</option>
+        //     </select>
+        // </td>
     
         // Add change event listener to status dropdown (inside the loop)
         // row.querySelector('.status-dropdown').addEventListener('change', (e) => {
@@ -356,6 +364,8 @@ function updateOrderStatus(orderId, status) {
 
 
 async function exportToExcel(orders) {
+
+
     try {
         // Fetch users
         const usersResponse = await fetch('https://earthph.sdevtech.com.ph/users/getUsers');
@@ -387,7 +397,7 @@ async function exportToExcel(orders) {
                 const productDescription = matchedProduct ? matchedProduct.productDescription : 'No Description';
 
                 return {
-                    OrderID: order._id,
+                    OrderID: order.guid ? order.guid : order._id,
                     CustomerID: userID,
                     TranDate: new Date(order.orderDate).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
                     Location: order.area,
@@ -410,5 +420,3 @@ async function exportToExcel(orders) {
         console.error('Error exporting orders:', error);
     }
 }
-
-
