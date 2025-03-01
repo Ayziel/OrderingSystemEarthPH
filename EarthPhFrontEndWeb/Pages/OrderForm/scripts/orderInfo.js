@@ -502,12 +502,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function generateGUID() {
         const now = new Date();
-        const year = now.getFullYear();
+        const year = String(now.getFullYear()).slice(2); // Extract last two digits of year
         const month = String(now.getMonth() + 1).padStart(2, '0');
         const day = String(now.getDate()).padStart(2, '0');
         const hour = String(now.getHours()).padStart(2, '0');
         const minute = String(now.getMinutes()).padStart(2, '0');
-        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        const randomNum = Math.floor(1000 + Math.random() * 9000); // Single random number
         return `${year}${month}${day}${hour}${minute}${randomNum}`;
     }
 

@@ -69,7 +69,7 @@ function populateOrders(orders) {
     
         // Populate row with order data and add the button for 'Status' after the totalAmount
         row.innerHTML = `
-            <td class="table-data">${globalCounter++}</td>
+            <td class="table-data">${order.guid || 'No GUID'}</td>
             <td class="table-data">${order.storeName || 'No store name'}</td>
             <td class="table-data">${order.agentName || 'No agent name'}</td>
             <td class="table-data">${new Date(order.orderDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
@@ -85,24 +85,18 @@ function populateOrders(orders) {
                             : 'No method'
                     }
                 </td>
-            <td class="table-data">
-                <select class="status-dropdown" data-order-id="${order._id}" ${userRole === 'agent' ? 'disabled' : ''}>
-                    <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                    <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
-                    <option value="received" ${order.status === 'received' ? 'selected' : ''}>Received</option>
-                </select>
-            </td>
+
             <td class="open-button table-data">Open</td>
         `;
     
         // Add change event listener to status dropdown (inside the loop)
-        row.querySelector('.status-dropdown').addEventListener('change', (e) => {
-            const updatedStatus = e.target.value;
-            const orderId = e.target.getAttribute('data-order-id');
+        // row.querySelector('.status-dropdown').addEventListener('change', (e) => {
+        //     const updatedStatus = e.target.value;
+        //     const orderId = e.target.getAttribute('data-order-id');
         
-            // Call the updateOrderStatus function
-            updateOrderStatus(orderId, updatedStatus);
-        });
+        //     // Call the updateOrderStatus function
+        //     updateOrderStatus(orderId, updatedStatus);
+        // });
     
         // Add click event listener to row
         row.addEventListener('click', () => {
