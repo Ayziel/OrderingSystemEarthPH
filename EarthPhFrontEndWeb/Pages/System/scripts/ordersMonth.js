@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Sort orders by date (latest first)
             orders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
-
+            orders.reverse();
             // Ensure pagination only runs if orders exist
             if (orders.length > 0) {
                 $('#pagination-container').pagination({
