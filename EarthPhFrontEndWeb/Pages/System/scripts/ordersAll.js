@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Get the user data from localStorage
             const matchedUser = JSON.parse(localStorage.getItem('matchedUser'));
+            console.log("matchedUser",matchedUser)
             const userUid = matchedUser ? matchedUser.uid : null;
             const userRole = matchedUser ? matchedUser.role : null;
             const userName = matchedUser ? matchedUser.name : null; // Assuming matchedUser has a "name" property
@@ -88,24 +89,6 @@ function populateOrders(orders) {
 
             <td class="open-button table-data">Open</td>
         `;
-
-        //     <td class="table-data">
-        //     <select class="status-dropdown" data-order-id="${order._id}" ${userRole === 'agent' ? 'disabled' : ''}>
-        //         <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-        //         <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
-        //         <option value="received" ${order.status === 'received' ? 'selected' : ''}>Received</option>
-        //     </select>
-        // </td>
-    
-        // Add change event listener to status dropdown (inside the loop)
-        // row.querySelector('.status-dropdown').addEventListener('change', (e) => {
-        //     const updatedStatus = e.target.value;
-        //     const orderId = e.target.getAttribute('data-order-id');
-        
-        //     // Call the updateOrderStatus function
-        //     updateOrderStatus(orderId, updatedStatus);
-        // });
-    
         // Add click event listener to row
         row.addEventListener('click', () => {
             openModal(order); // Pass the entire order object to the modal

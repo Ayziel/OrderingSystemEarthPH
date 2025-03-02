@@ -87,31 +87,54 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-const buttonsToDisable = document.querySelectorAll("#addAgentBtn, #addProductSubmit, #addStoreSubmit, #edit-product, #edit-button");
+const buttonsToDisable = document.querySelectorAll(".disable-on-offline");
 
 function updateButtonState() {
-    buttonsToDisable.forEach(button => {
-        if (navigator.onLine) {
-            button.removeAttribute("disabled"); // Enable button when online
-        } else {
-            button.setAttribute("disabled", "true"); // Disable button when offline
-        }
-    });
+  buttonsToDisable.forEach(button => {
+      // Store original text only if it's not already set
+      if (!button.hasAttribute("data-original-text")) {
+          button.setAttribute("data-original-text", button.textContent);
+      }
+
+      if (navigator.onLine) {
+          button.removeAttribute("disabled");
+          button.style.removeProperty("background-color");
+          button.textContent = button.getAttribute("data-original-text"); // Restore original text
+      } else {
+          button.setAttribute("disabled", "true");
+          button.style.setProperty("background-color", "red", "important");
+          button.textContent = `Can't ${button.getAttribute("data-original-text")}`; // Add "Can't"
+      }
+  });
 }
 
-// Check connection on page load
+
+
+// Initial check
 updateButtonState();
 
 // Listen for connection changes
 window.addEventListener("online", updateButtonState);
 window.addEventListener("offline", updateButtonState);
 
-// Show an alert when clicking while offline
-buttonsToDisable.forEach(button => {
-    button.addEventListener("click", (event) => {
-        if (!navigator.onLine) {
-            event.preventDefault(); // Prevent action
-            alert("You are offline. This action cannot be performed.");
-        }
-    });
+// Prevent actions and alert when offline
+document.addEventListener("click", (event) => {
+    if (!navigator.onLine && event.target.matches(".disable-on-offline")) {
+        event.preventDefault();
+        alert("You are offline. This action cannot be performed.");
+    }
 });
+function updateOfflineBanner() {
+  const offlineBanner = document.getElementById("offline-banner");
+
+  if (navigator.onLine) {
+      offlineBanner.style.display = "none"; // Hide banner when online
+  } else {
+      offlineBanner.style.display = "flex"; // Show banner when offline
+  }
+}
+
+// Check on page load and listen for connection changes
+updateOfflineBanner();
+window.addEventListener("online", updateOfflineBanner);
+window.addEventListener("offline", updateOfflineBanner);

@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Capture the form data
         const productSKU = document.querySelector('input[placeholder="Enter"]').value;
         const productName = document.querySelector('input[placeholder="Enter product name"]').value;
-        const productDescription = document.querySelector('input[placeholder="Enter product description"]').value;
+        const productDescription = document.querySelector('input[placeholder="Enter product Code"]').value;
         const brand = document.querySelector('input[placeholder="Enter brand name"]').value;
         const productCategory = document.querySelector('select').value;
         const manufacturer = document.querySelector('input[placeholder="Enter manufacturer"]').value;

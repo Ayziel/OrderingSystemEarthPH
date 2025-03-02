@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             area
         };
 
+        console.log('Store Data:', storeData);
         // Decide whether to create or update the store
         let apiUrl = storeId
             ? `https://earthph.sdevtech.com.ph/stores/updateStore`
@@ -73,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 alert(storeId ? 'Store updated successfully' : 'Store created successfully');
-                window.location.reload();
+                 window.location.reload();
             } else {
                 alert('Error: ' + result.message);
             }

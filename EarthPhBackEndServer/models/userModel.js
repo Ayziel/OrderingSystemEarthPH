@@ -3,64 +3,68 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
-    required: true  // Marked as required
+    required: true 
   },
   middleName: {
     type: String,
-    required: false  // Optional field
+    required: false 
   },
   lastName: {
     type: String,
-    required: true  // Marked as required
+    required: true 
   },
   workPhone: {
     type: String,
-    required: true  // Optional field
+    required: true 
   },
   phoneNumber: {
     type: String,
-    required: true  // Marked as required
+    required: true 
   },
   email: {
     type: String,
-    required: true,  // Marked as required
-    unique: true     // Ensures email is unique in the collection
+    required: true,  
+    unique: true    
   },
   team: {
     type: String,
-    required: true  // Marked as required
+    required: true  
   },
   userName: {
     type: String,
-    required: true  // Marked as required
+    required: true 
   },
   tin : { 
     type: Number,
-    required: false  // Marked as required
+    required: false  
   },
   password: {
     type: String,
-    required: true  // Marked as required
+    required: true  
   },
   role: {
     type: String,
-    required: true  // Marked as required
+    required: true 
   },
   address: {
     type: String,
-    required: true  // Optional field
+    required: true  
   },
   uid: {
   type: String,
-  required: true  // Marked as required
+  required: true
 },
 area: {
   type: String,
-  required: true  // Marked as required
+  required: true
 },
 id: {
   type: String,
-  required: true  // Marked as required
+  required: true
+},
+totpSecret: {
+  type: String,
+  required: false 
 },
 });
 

@@ -1,87 +1,131 @@
-fetch('https://earthph.sdevtech.com.ph/viewStoreRoutes/getStores')
-    .then(response => {
-        if (response.status === 404) {
-            console.error("GET Request failed: Endpoint not found (404).");
-        } else if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        } else {
-            console.log("GET Request successful:", response.status);
+const userRole = localStorage.getItem('userRole');
+const usertoken = localStorage.getItem('authToken');
+document.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.getElementById('loginForm');
+
+    loginForm.addEventListener('submit', async function(event) {
+        event.preventDefault(); // Prevent form submission from refreshing the page
+
+        // Capture the login data
+        const userName = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // Check if the fields are filled
+        if (!userName || !password) {
+            alert('Please fill in both fields.');
+            return;
         }
-        return response.json();
-    })
-    .then(data => {
-        console.log("GET Response Data:", data);
 
-        const stores = data.stores || data;  // Pass the stores array to the function
+        try {
+            // Fetch the users data from the server
+            const response = await fetch('https://earthph.sdevtech.com.ph/users/getUsers');
+            const data = await response.json();
+            const users = data.users;
 
-        // Initialize pagination
-        $('#pagination-container').pagination({
-            dataSource: stores.reverse(), // Reverse the array to show the latest stores first
-            pageSize: 10, // Number of stores per page
-            showPageNumbers: true,
-            showPrevious: true,
-            showNext: true,
-            callback: function (data, pagination) {
-                populateStores(data);  // Call populateStores with paginated data
+            // Find the user with the provided username
+            const user = users.find(u => u.userName === userName);
+
+            if (!user) {
+                alert('User not found.');
+                return;
             }
-        });
-    })
-    .catch(error => console.error('Error during GET request:', error));
 
+            // Check if the entered password matches the user's password
+            if (user.password === password) { // In production, this should be hashed comparison
+                alert('Login successful');
 
-    function populateStores(stores) {
-        const tableBody = document.querySelector('.orders-body'); // Select the table body where stores will be displayed
-        tableBody.innerHTML = ''; // Clear previous rows
-    
-        stores.reverse();
-        stores.forEach((store, index) => {
-            const row = document.createElement('tr');
-    
-            // Random image URL from Picsum (or your source)
-            const Image = store.image;
-    
-            // Format createdAt date (day/month/year)
-            const formattedDate = store.createdAt ? new Date(store.createdAt).toLocaleDateString('en-GB') : 'No creation date';
-    
-            // Populate the row with store data
-            row.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${store.storeName || 'No store name'}</td>
-                <td>${store.agentName || 'No agent name'}</td>
-                <td>${store.Location || 'No location'}</td>
-                <td>${formattedDate}</td>
-            `;
-            tableBody.appendChild(row); // Append the row to the table body
-    
-            // Add event listener for when the row is clicked
-            row.addEventListener('click', (e) => {
-                // Toggle row background and set the modal image
-                toggleRowClick(row, store, Image);
-            });
-        });
-    }
-    
+                // Store the user data in localStorage
+                localStorage.setItem('authToken', 'user-jwt-token'); // Store user JWT token
+                localStorage.setItem('userName', user.userName);
+                localStorage.setItem('userFullName', user.firstName + " " + user.lastName);
+                localStorage.setItem('userTeam', user.team);
+                localStorage.setItem('userID', user._id); // Store user ID (or token)
+                localStorage.setItem('userRole', user.role); // Optionally store the role
 
-function toggleRowClick(row, store, imageUrl) {
-    // Add 'clicked' class to highlight the row and show the modal
-    row.classList.toggle('clicked'); // Highlight the clicked row
+                // Create the matched user data with all available information
+                const matchedUser = {
+                    _id: user._id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    workPhone: user.workPhone,
+                    phoneNumber: user.phoneNumber,
+                    email: user.email,
+                    team: user.team,
+                    userName: user.userName,
+                    tin: user.tin,
+                    password: user.password,
+                    role: user.role,
+                    address: user.address,
+                    uid: user.uid, // Unique Identifier
+                };
 
-    // Open the modal and set the image
-    const modal = document.getElementById('image-modal');
-    const modalImage = document.getElementById('modal-image');
-    modalImage.src = imageUrl; // Set the random image URL to the modal image
-    modal.style.display = 'block'; // Show the modal
+                // Save the full user data to localStorage
+                localStorage.setItem('matchedUser', JSON.stringify(matchedUser));
 
-    // Close the modal when clicking the close button
-    const closeBtn = document.querySelector('.close-btn');
-    closeBtn.onclick = function() {
-        modal.style.display = 'none';
-    };
+                // Detect if the user is on a mobile device
+                const isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
 
-    // Also close the modal if the user clicks anywhere outside of the image
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = 'none';
+                // Redirect based on device type
+
+                    window.location.href = 'https://earthhomecareph.astute.services/System/index.html'; // Desktop version URL
+                
+            } else {
+                alert('Incorrect password.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('There was an error with the login process.');
         }
-    };
-}
+    });
+});
+
+document.getElementById('togglePassword').addEventListener('change', function () {
+    const passwordField = document.getElementById('password');
+    if (this.checked) {
+        passwordField.type = 'text';
+    } else {
+        passwordField.type = 'password';
+    }
+});
+
+
+let deferredPrompt; // This will store the 'beforeinstallprompt' event
+
+// Listen for the 'beforeinstallprompt' event
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the default installation prompt from showing automatically
+    e.preventDefault();
+    // Store the event to trigger it later
+    deferredPrompt = e;
+
+    // Show the custom install button if it's not installed yet
+    document.getElementById('installButton').style.display = 'block';
+});
+
+// Handle the install button click
+document.getElementById('installButton').addEventListener('click', () => {
+    // Check if deferredPrompt is available (to prevent errors if it's undefined)
+    if (deferredPrompt) {
+        // Show the installation prompt when the user clicks the button
+        deferredPrompt.prompt();
+
+        // Wait for the user to respond to the prompt
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+            } else {
+                console.log('User dismissed the install prompt');
+            }
+            // Reset the deferred prompt to null after the user responds
+            deferredPrompt = null;
+        });
+    } else {
+        console.log("Install prompt is not available.");
+    }
+});
+
+// Event to hide the install button if the app is already installed
+window.addEventListener('appinstalled', () => {
+    // Hide the install button after installation
+    document.getElementById('installButton').style.display = 'none';
+});

@@ -923,3 +923,41 @@ margin-top: 30px;
     display: none;
    } 
 }
+
+.offline-warning {
+  display: none;
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 400px;
+  background-color: red;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 480px) {
+  
+  .offline-warning {
+      top: 100px;
+      font-size: 12px;
+      right: 30px;
+      left: auto;
+      transform: none;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+  }
+}

@@ -144,7 +144,6 @@ function processOrders(orders) {
             });
         }
     });
-
     return { totalSales, sales, productSales };
 }
 

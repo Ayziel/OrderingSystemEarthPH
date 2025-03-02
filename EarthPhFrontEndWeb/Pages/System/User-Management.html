@@ -6,21 +6,17 @@
 
     <!----======== CSS ======== -->
     <link rel="stylesheet" href="./styles/style.css">
-    <link rel="stylesheet" href="./styles/agentlist.css">
-    
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-     
+    <link rel="stylesheet" href="./styles/navbar.css">
+    <link rel="stylesheet" href="./styles/addAgent.css">
     <!----===== Icons ===== -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.5/pagination.css">
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles/navbar.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 
     <title>EarthPH</title>
 </head>
-
 <body>
+  <div id="offline-banner" class="offline-warning">You're Offline.</div>
+
   <nav class="navbar">
     <div class="logo_item">
         <i class="bx bx-menu" id="sidebarOpen"></i>
@@ -29,7 +25,7 @@
     <div class="navbar_content">
       <i class="bi bi-grid"></i>
       <i class='' id="darkLight"></i>
-      <p style="margin: auto; color: #007bff" ><span id="agent-name-nav-bar">KHARL </span> ( <span id="agent-role-nav-bar"> </span> )</p>
+      <p style="margin: auto; color: #007bff" class="agent-name"><span id="agent-name-nav-bar">KHARL </span> ( <span id="agent-role-nav-bar"> </span> )</p>
       <button class="logout" id="logoutBtn">Logout</button>
     </div>
   </nav>
@@ -62,8 +58,8 @@
             <i class="bx bx-chevron-right arrow-left"></i>
           </div>
           <ul class="menu_items submenu">
-            <a href="https://earthhomecareph.astute.services/System/View-Store.html" class="nav_link sublink">View Stores</a>
-            <a id="viewOrderLink" href="https://earthhomecareph.astute.services/OrderForm/Agent-Info.html" class="nav_link sublink">Visited Stores</a>
+            <a href="https://earthhomecareph.astute.services/System/View-Store.html" class="nav_link sublink">Visited Store</a>
+            <a id="viewOrderLink" href="https://earthhomecareph.astute.services/OrderForm/Agent-Info.html" class="nav_link sublink">View Store</a>
           </ul>
         </li>
         <li class="item">
@@ -156,84 +152,117 @@
   </nav>
 
     <section class="dashboard">
-        <div class="top">
-            <i class="uil uil-bars sidebar-toggle"></i>
-
-            <div class="search-box">
-                <i class="uil uil-search"></i>
-                <input type="text" placeholder="Search here...">
+        <div class="dash-content">
+            <!-- User Management Section -->
+            <div class="user-management">
+                <h3>User Management</h3>
+                <div class="user-info">
+                    <label>First Name</label>
+                    <input type="text" value="Elliss" class="user-firstname">
+        
+                    <label>Last Name</label>
+                    <input type="text" value="Nitario" class="user-lastname">
+        
+                    <label>Email</label>
+                    <input type="email" value="diegoellissmatelass@gmail.com" class="user-email">
+        
+                    <label>Phone Number</label>
+                    <input type="text" value="1231231232" class="user-phone">
+        
+                    <label>Address</label>
+                    <input type="text" value="test" class="user-address">
+        
+                    <label>Password</label>
+                    <input type="password" value="admin123" class="user-password">
+                    
+                    <button class="save-user-btn">Save</button>
+                </div>
             </div>
             
-            <!--<img src="images/profile.jpg" alt="">-->
+            <!-- Two-Factor Authentication Settings -->
+            <div class="two-factor-settings">
+                <h3>Two-Factor Authentication</h3>
+                <button class="toggle-2fa-btn">Enable 2FA</button>
+                
+                <div class="qr-code-container" style="display: none;">
+                    <p>Scan this QR code with Google Authenticator:</p>
+                    <img id="qrCode" src="" alt="QR Code">
+                    <input type="text" class="otp-input" placeholder="Enter 6-digit code">
+                    <button class="verify-otp-btn">Verify</button>
+                    <p class="otp-message"></p>
+                </div>
+            </div>
+        
+            <!-- Change Password Section -->
+            <div class="change-password-container">
+                <h3>Change Password</h3>
+                <input type="password" class="old-password" placeholder="Current Password">
+                <input type="password" class="new-password" placeholder="New Password">
+                <input type="password" class="confirm-password" placeholder="Confirm New Password">
+                <button class="change-password-btn">Change Password</button>
+                <p class="password-message"></p>
+            </div>
         </div>
-
-        <div class="dash-content">
-          <button id="export-btn" class="export">Export to Excel</button>
-          <div class="activity">
-              <div class="title">
-                <i class='bx bxs-user-account'></i>
-                  <span class="text">Team Leaders</span>
-              </div>
-      
-              <div class="activity-data">
-                  <!-- Create a table for displaying agent data -->
-                  <table class="product-table">
-                      <thead class="agent-header-row">
-                          <tr>
-                              <th>Name</th>
-                              <th>Team</th>
-                              <th>Number</th>
-                              <th>Buttons</th>
-                          </tr>
-                      </thead>
-                      <tbody id="agent-data">
-                          <!-- Dynamic agent data will be inserted here -->
-                      </tbody>
-                  </table>
-              </div>
-              <div id="pagination-container"></div>
-          </div>
-      </div>
-      
-      
-          <!-- Modal -->
-    <!-- Modal -->
-<!-- Modal -->
-<div id="userModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h2>User Details</h2>
-    <table>
-      <tbody>
-        <tr><td class="modal-label">First Name:</td><td><span id="modal-firstName"></span></td></tr>
-        <tr><td class="modal-label">Last Name:</td><td><span id="modal-lastName"></span></td></tr>
-        <tr><td class="modal-label">Phone Number:</td><td><span id="modal-phoneNumber"></span></td></tr>
-        <tr><td class="modal-label">Email:</td><td><span id="modal-email"></span></td></tr>
-        <tr><td class="modal-label">Team:</td><td><span id="modal-team"></span></td></tr>
-        <tr><td class="modal-label">Role:</td><td><span id="modal-role"></span></td></tr>
-        <tr><td class="modal-label">Area:</td><td><span id="modal-area"></span></td></tr>
-        <tr><td class="modal-label">Location:</td><td><span id="modal-address"></span></td></tr>
-        <tr>
-          <td class="modal-label">Password:</td>
-          <td>
-            <span id="modal-password" data-password="mySecretPassword">*****</span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <!-- Edit and Save buttons -->
-    <button id="edit-button" style="background-color: #FF9800; color: white;"class="disable-on-offline">Edit</button>
-    <button id="save-button" style="background-color: #66BB6A; color: white;" disabled>Save</button>
-    <button id="delete-button" style="background-color: #961a11; color: white;" class="disable-on-offline">Delete</button>
-  </div>
-</div>
-
+        
     </section>
+    
+    <script src="./scripts/script.js"></script> 
     <script src="./scripts/manifestShared.js"></script>
-    <script src="./scripts/pagination.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-    <script src="./scripts/script.js"></script>
-    <script src="./scripts/sideNavigation.js"></script>
-    <script src="./scripts/teamLeader.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"></script>
 </body>
 </html>
+
+<style>
+    .user-management, .two-factor-settings, .change-password-container {
+        background: #fff;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .user-info {
+        display: flex;
+        flex-direction: column;
+    }
+    .user-info label {
+        margin-top: 10px;
+        font-weight: bold;
+    }
+    .user-info input {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    .qr-code-container {
+        text-align: center;
+        margin-top: 15px;
+    }
+    .otp-input, .old-password, .new-password, .confirm-password {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    .toggle-2fa-btn, .verify-otp-btn, .change-password-btn, .save-user-btn {
+        background: #007bff;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .toggle-2fa-btn:hover, .verify-otp-btn:hover, .change-password-btn:hover, .save-user-btn:hover {
+        background: #0056b3;
+    }
+    .otp-message, .password-message {
+        color: red;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+</style>
