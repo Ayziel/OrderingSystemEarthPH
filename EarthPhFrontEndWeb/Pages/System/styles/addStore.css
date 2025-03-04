@@ -40,3 +40,33 @@
     border-radius: 6px;
     padding: 0 15px;
   }
+
+  @media screen and (max-width: 992px) {
+    .dashboard .dash-content{
+
+        width: 100%!important;
+        left: 0!important;
+        padding-right: 10px;
+    }
+
+    nav.close ~ .dashboard {
+        left: 0;
+        width: 100%;
+        margin: 0;
+    }
+
+    .profile {
+        display: none;
+    }
+
+    .input-box {
+        width: 100%!important;
+        margin-left: 0!important;
+        margin-right: 0!important;
+    }
+
+    .form button {
+        margin: 0;
+        margin-top: 30px;
+    }
+}

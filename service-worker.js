@@ -1,5 +1,5 @@
-const staticCacheName = "site-static-v29";
-const dynamicCacheName = "site-dynamic-v29";
+const staticCacheName = "site-static-v30";
+const dynamicCacheName = "site-dynamic-v30";
 const cacheLimit = 100;
 
 const dashboardAssets = [
@@ -87,7 +87,7 @@ self.addEventListener("activate", (event) => {
 
 async function handleSurveyRequest(event) {
     try {
-        return await fetch(event.request); // Try sending survey online
+        return await fetch(event.request); // ✅ Try sending survey online
     } catch (error) {
         const formData = await event.request.clone().formData();
         const survey = {};
@@ -95,14 +95,20 @@ async function handleSurveyRequest(event) {
 
         saveSurveyToIndexedDB(survey);
 
-        // ✅ Register background sync for surveys
-        self.registration.sync.register("sync-surveys").catch(err => console.error("Sync registration failed", err));
+        // ✅ Register background sync only if supported
+        if ("sync" in self.registration) {
+            self.registration.sync.register("sync-surveys")
+                .catch(err => console.error("Sync registration failed", err));
+        } else {
+            console.warn("Background sync not supported, surveys will stay in IndexedDB until next sync attempt.");
+        }
 
         return new Response(JSON.stringify({ status: "offline", message: "Survey saved locally." }), {
             headers: { "Content-Type": "application/json" }
         });
     }
 }
+
 
 async function syncSurveyData() {
     return new Promise((resolve, reject) => {
@@ -124,7 +130,7 @@ async function syncSurveyData() {
 
                 for (let survey of surveys) {
                     try {
-                        let response = await fetch("/survey-endpoint", {
+                        let response = await fetch("https://earthph.sdevtech.com.ph/survey/createSurvey", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(survey),
@@ -151,7 +157,6 @@ async function syncSurveyData() {
 }
 
 
-
 self.addEventListener("fetch", (event) => {
     const { request } = event;
 
@@ -159,58 +164,30 @@ self.addEventListener("fetch", (event) => {
         return;
     }
 
-    if (request.method === "POST") {
-        if (request.url.includes("/order")) {
-            event.respondWith(handleOrderRequest(event));
-            return;
-        } else if (request.url.includes("/survey")) {  // ✅ Handle surveys
-            event.respondWith(handleSurveyRequest(event));
-            return;
-        }
+    if (request.method === "POST" && request.url.includes("/survey")) {
+        event.respondWith(handleSurveyRequest(event)); // ✅ Handle survey request
+        return;
     }
 
     if (request.method === "GET") {
         event.respondWith(
-            fetch(request) // Try fetching from the network first
+            fetch(request) // ✅ Try fetching from the network first
                 .then((networkResponse) => {
                     return caches.open(dynamicCacheName).then((cache) => {
-                        cache.put(request, networkResponse.clone()); // Update the cache with fresh data
+                        cache.put(request, networkResponse.clone()); // ✅ Update the cache with fresh data
                         limitCacheSize(dynamicCacheName, cacheLimit);
                         return networkResponse;
                     });
                 })
                 .catch(() => {
                     return caches.match(request).then((cacheResponse) => {
-                        if (cacheResponse) return cacheResponse; // Return cached version if available
-                        return caches.match("/EarthPhFrontEndWeb/Pages/System/fallback.html"); // Offline fallback
+                        if (cacheResponse) return cacheResponse; // ✅ Return cached version if available
+                        return caches.match("/EarthPhFrontEndWeb/Pages/System/fallback.html"); // ✅ Offline fallback
                     });
                 })
         );
     }
 });
-
-
-
-
-async function handleOrderRequest(event) {
-    try {
-        return await fetch(event.request);
-    } catch (error) {
-        const formData = await event.request.clone().formData();
-        const order = {};
-        formData.forEach((value, key) => (order[key] = value));
-
-        saveToIndexedDB("ordersDB", "orders", order);
-
-        // ✅ Register background sync
-        self.registration.sync.register("sync-orders").catch(err => console.error("Sync registration failed", err));
-
-        return new Response(JSON.stringify({ status: "offline", message: "Order saved locally." }), {
-            headers: { "Content-Type": "application/json" }
-        });
-    }
-}
-
 
 function saveSurveyToIndexedDB(surveyData) {
     const dbRequest = indexedDB.open("surveysDB", 1);
@@ -229,7 +206,6 @@ function saveSurveyToIndexedDB(surveyData) {
         store.add({ ...surveyData, id: Date.now() }); // Ensure unique ID
     };
 }
-
 
 function saveToIndexedDB(dbName, storeName, data) {
     const dbRequest = indexedDB.open(dbName, 1);
@@ -257,60 +233,15 @@ function saveToIndexedDB(dbName, storeName, data) {
 
 
 self.addEventListener("sync", (event) => {
-    if (event.tag === "sync-orders") {
-        event.waitUntil(syncData("ordersDB", "orders", "/order"));
-    } else if (event.tag === "sync-surveys") {
-        event.waitUntil(syncData("surveyDB", "surveys", "https://earthph.sdevtech.com.ph/survey/createSurvey"));
+    if (event.tag === "sync-surveys") {
+        event.waitUntil(syncSurveyData());
     }
+
+    // Placeholder for future order sync functionality
+    // if (event.tag === "sync-orders") {
+    //     console.log("Sync orders is not implemented yet, but will be in the future.");
+    // }
 });
-
-async function syncData(dbName, storeName, apiEndpoint) {
-    return new Promise((resolve, reject) => {
-        const dbRequest = indexedDB.open(dbName, 1);
-
-        dbRequest.onsuccess = (event) => {
-            let db = event.target.result;
-            let tx = db.transaction(storeName, "readwrite");
-            let store = tx.objectStore(storeName);
-            let getAll = store.getAll();
-
-            getAll.onsuccess = async () => {
-                const dataItems = getAll.result;
-
-                if (dataItems.length === 0) {
-                    console.log("No data to sync.");
-                    return resolve();
-                }
-
-                notifyClients({ type: "sync-start", count: dataItems.length });
-
-                for (let dataItem of dataItems) {
-                    try {
-                        let response = await fetch(apiEndpoint, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(dataItem),
-                        });
-
-                        if (response.ok) {
-                            await deleteOrder(db, storeName, dataItem.id);
-                            notifyClients({ type: "sync-success", message: `Synced order: ${dataItem.id}` });
-                        }
-                    } catch (error) {
-                        console.error("❌ Sync failed for order:", dataItem.id, error);
-                    }
-                }
-
-                resolve();
-            };
-        };
-
-        dbRequest.onerror = (event) => {
-            console.error("❌ IndexedDB error:", event.target.error);
-            reject(event.target.error);
-        };
-    });
-}
 
 async function deleteSurveyFromIndexedDB(db, id) {
     return new Promise((resolve, reject) => {
@@ -325,26 +256,6 @@ async function deleteSurveyFromIndexedDB(db, id) {
 
         request.onerror = (event) => {
             console.error(`❌ Failed to delete survey ${id}`, event.target.error);
-            reject(event.target.error);
-        };
-    });
-}
-
-
-// ✅ This function makes sure the order is deleted AFTER successful sync
-async function deleteOrder(db, storeName, id) {
-    return new Promise((resolve, reject) => {
-        let deleteTx = db.transaction(storeName, "readwrite");
-        let deleteStore = deleteTx.objectStore(storeName);
-        let deleteRequest = deleteStore.delete(id);
-
-        deleteRequest.onsuccess = () => {
-            console.log(`✅ Order ${id} deleted from IndexedDB`);
-            resolve();
-        };
-
-        deleteRequest.onerror = (event) => {
-            console.error(`❌ Failed to delete order ${id}`, event.target.error);
             reject(event.target.error);
         };
     });

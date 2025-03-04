@@ -71,7 +71,7 @@ function populateStoresTable(stores) {
         
         const button = document.createElement('td');
         button.classList.add('table-cell', 'button-cell');
-        button.textContent = 'Open';
+        button.textContent = 'View';
         button.style.padding = '10px';
         button.style.backgroundColor = '#66bb6a';
         button.style.color = 'white';
@@ -199,6 +199,7 @@ document.getElementById('export-btn').addEventListener('click', async () => {
 
     // Prepare the data to be written to Excel
     const excelData = storesData.map(store => ({
+        "UID": store.guid || store.uid || "N/A",
         "Store Name": store.name || "N/A",
         "First Name": store.firstName || "N/A",
         "Last Name": store.lastName || "N/A",
@@ -206,7 +207,6 @@ document.getElementById('export-btn').addEventListener('click', async () => {
         "Phone": store.phone || "N/A",
         "Email": store.email || "N/A",
         "Status": store.status || "N/A",
-        "UID": store.uid || "N/A",
         "Created At": store.createdAt ? new Date(store.createdAt).toLocaleDateString() : "N/A"
     }));
 

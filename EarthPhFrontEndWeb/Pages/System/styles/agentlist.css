@@ -66,6 +66,10 @@ button:hover {
     background-color: #45a049;
 }
 
+#delete-button {
+    background-color: red!important;
+}
+
 
  @media (max-width: 768px) {
     .navbar_content p {

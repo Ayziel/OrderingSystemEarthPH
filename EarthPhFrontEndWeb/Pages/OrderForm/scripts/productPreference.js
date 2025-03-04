@@ -1,43 +1,3 @@
-let orderData = JSON.parse(localStorage.getItem('orderData'));
-console.log("STORENAME TEST", orderData?.storeName);
-
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.addEventListener("message", (event) => {
-        if (event.data && event.data.type === "sync-success") {
-            alert(event.data.message); // Show alert when survey syncs
-        }
-    });
-}
-
-function saveToIndexedDB(dbName, storeName, data) {
-    const dbRequest = indexedDB.open(dbName, 1);
-    
-    dbRequest.onupgradeneeded = (event) => {
-        let db = event.target.result;
-        if (!db.objectStoreNames.contains(storeName)) {
-            db.createObjectStore(storeName, { autoIncrement: true });
-        }
-    };
-
-    dbRequest.onsuccess = (event) => {
-        let db = event.target.result;
-        let tx = db.transaction(storeName, "readwrite");
-        let store = tx.objectStore(storeName);
-        store.add(data);
-    };
-
-    dbRequest.onerror = (event) => {
-        console.error("IndexedDB error:", event.target.error);
-    };
-}
-
-// Now you can use saveSurveyToIndexedDB without errors
-function saveSurveyToIndexedDB(survey) {
-    saveToIndexedDB("surveyDB", "surveys", survey);
-}
-
-
-
 document.getElementById('surveyForm').addEventListener('submit', async (event) => {
     event.preventDefault(); // Prevent page refresh
 
@@ -84,26 +44,77 @@ document.getElementById('surveyForm').addEventListener('submit', async (event) =
         console.warn('No internet. Saving survey locally.');
         saveSurveyToIndexedDB(surveyData);
 
-        navigator.serviceWorker.ready.then((registration) => {
-            return registration.sync.register("sync-surveys").then(() => {
-                console.log("Background sync registered for surveys.");
-            }).catch((err) => {
-                console.error("Failed to register sync-surveys:", err);
+        // Register background sync for surveys
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.ready.then((registration) => {
+                registration.sync.register("sync-surveys").then(() => {
+                    console.log("Background sync registered for surveys.");
+                }).catch((err) => {
+                    console.error("Failed to register sync-surveys:", err);
+                });
             });
-        });
+        }
 
         alert('Survey saved. It will be sent when you go online.');
         window.location.href = "https://earthhomecareph.astute.services/OrderForm/Order-Info.html";
     }
 });
 
+// ✅ Save to IndexedDB
+async function saveSurveyToIndexedDB(survey) {
+    await saveToIndexedDB("surveyDB", "surveys", survey);
+}
+
+// 🔥 Service Worker Registration (Only Once)
 if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.getRegistrations().then((registrations) => {
-        registrations.forEach((registration) => {
-            if (registration.active && registration.active.scriptURL.includes("site-static-v8")) {
-                registration.unregister();
-                console.log("Old service worker unregistered.");
+    navigator.serviceWorker.register("/service-worker.js").then((reg) => {
+        console.log("Service Worker Registered", reg);
+        
+        // ✅ Ensure background sync is registered after SW is ready
+        navigator.serviceWorker.ready.then(async (registration) => {
+            try {
+                await registration.sync.register("sync-surveys");
+                console.log("Background sync registered for surveys.");
+            } catch (err) {
+                console.error("Failed to register sync-surveys:", err);
             }
         });
+
+    }).catch((err) => console.log("Service Worker Failed", err));
+
+    // ✅ Listen for messages from the service worker
+    navigator.serviceWorker.addEventListener("message", (event) => {
+        if (event.data && event.data.type === "sync-success") {
+            alert(event.data.message);
+        }
     });
 }
+
+// ✅ Retry syncing surveys every 10 minutes in case background sync fails
+function retrySurveySync() {
+    setInterval(async () => {
+        const surveys = await getAllFromIndexedDB("surveyDB", "surveys");
+        if (surveys.length > 0) {
+            console.log("Retrying survey sync...");
+            surveys.forEach(async (survey) => {
+                try {
+                    const response = await fetch('https://earthph.sdevtech.com.ph/survey/createSurvey', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(survey),
+                    });
+
+                    if (response.ok) {
+                        console.log("Survey synced successfully, removing from IndexedDB.");
+                        await removeFromIndexedDB("surveyDB", "surveys", survey);
+                    }
+                } catch (err) {
+                    console.warn("Survey sync failed, will retry later.");
+                }
+            });
+        }
+    }, 600000); // ✅ Retry every 10 minutes
+}
+
+// ✅ Call retry sync after registering the service worker
+retrySurveySync();
