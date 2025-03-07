@@ -103,26 +103,26 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 // Handle the install button click
-document.getElementById('installButton').addEventListener('click', () => {
-    // Check if deferredPrompt is available (to prevent errors if it's undefined)
-    if (deferredPrompt) {
-        // Show the installation prompt when the user clicks the button
-        deferredPrompt.prompt();
+// document.getElementById('installButton').addEventListener('click', () => {
+//     // Check if deferredPrompt is available (to prevent errors if it's undefined)
+//     if (deferredPrompt) {
+//         // Show the installation prompt when the user clicks the button
+//         deferredPrompt.prompt();
 
-        // Wait for the user to respond to the prompt
-        deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-                console.log('User accepted the install prompt');
-            } else {
-                console.log('User dismissed the install prompt');
-            }
-            // Reset the deferred prompt to null after the user responds
-            deferredPrompt = null;
-        });
-    } else {
-        console.log("Install prompt is not available.");
-    }
-});
+//         // Wait for the user to respond to the prompt
+//         deferredPrompt.userChoice.then((choiceResult) => {
+//             if (choiceResult.outcome === 'accepted') {
+//                 console.log('User accepted the install prompt');
+//             } else {
+//                 console.log('User dismissed the install prompt');
+//             }
+//             // Reset the deferred prompt to null after the user responds
+//             deferredPrompt = null;
+//         });
+//     } else {
+//         console.log("Install prompt is not available.");
+//     }
+// });
 
 // Event to hide the install button if the app is already installed
 window.addEventListener('appinstalled', () => {

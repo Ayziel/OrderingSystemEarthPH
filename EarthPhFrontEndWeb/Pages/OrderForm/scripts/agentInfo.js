@@ -419,18 +419,18 @@ function populateStoresDropdown(stores) {
 }
 
 // Form validation before submission
-document.getElementById('orderForm').addEventListener('submit', (event) => {
-    const storeSelect = document.getElementById('store-name');
-    const selectedOption = storeSelect.options[storeSelect.selectedIndex];
+// document.getElementById('orderForm').addEventListener('submit', (event) => {
+//     const storeSelect = document.getElementById('store-name');
+//     const selectedOption = storeSelect.options[storeSelect.selectedIndex];
     
-    // Check if no valid store is selected (value is empty or no store data exists)
-    const storeData = selectedOption && selectedOption.getAttribute('data-store') ? JSON.parse(selectedOption.getAttribute('data-store')) : null;
+//     // Check if no valid store is selected (value is empty or no store data exists)
+//     const storeData = selectedOption && selectedOption.getAttribute('data-store') ? JSON.parse(selectedOption.getAttribute('data-store')) : null;
 
-    if (!storeData) {
-        event.preventDefault(); // Prevent form submission
-        alert('Please select a valid store.'); // Show an alert if no valid store is selected
-    }
-});
+//     if (!storeData) {
+//         event.preventDefault(); // Prevent form submission
+//         alert('Please select a valid store.'); // Show an alert if no valid store is selected
+//     }
+// });
 
 
 if ("serviceWorker" in navigator) {

@@ -17,3 +17,33 @@
     box-shadow: 0 5px #666;
     transform: translateY(4px);
 }
+
+.agent-name-nav {
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    padding: 10px 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: #c4c4c4 1px 1px 5px;
+}
+
+.agent-name-nav::before {
+    content: 'Name :';
+    margin-right: 5px;
+}
+
+.agent-role-nav {
+    background-color: #ffffff;
+    padding: 5px 10px;
+    border-radius: 10%;
+    margin-left: 10px;
+}
+
+.agent-role-nav::before {
+    content: 'Role :';
+    margin-right: 5px;
+    font-size: 15px;
+}

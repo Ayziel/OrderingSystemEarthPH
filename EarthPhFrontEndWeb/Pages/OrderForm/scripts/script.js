@@ -1,12 +1,15 @@
 
-    function updateButtonState() {
-        const button = document.getElementById("uploadButton");
+function updateButtonState() {
+    const button = document.getElementById("uploadButton");
+    if (button){
+   
         if (navigator.onLine) {
             button.removeAttribute("disabled"); // Enable button when online
         } else {
             button.setAttribute("disabled", "true"); // Disable button when offline
         }
     }
+}
 
     // Check connection on page load
     updateButtonState();
